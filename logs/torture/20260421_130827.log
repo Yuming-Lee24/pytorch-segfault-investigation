@@ -1,0 +1,98 @@
+Log: logs/torture/20260421_130827.log
+Driver: 12.4  |  Device: NVIDIA GeForce RTX 4090
+PyTorch: 2.5.1  |  cuDNN: 90100  |  cuDNN enabled: True
+VRAM total: 25.2 GB
+Duration: 8 hours
+>>> step 1
+>>> step 2
+>>> step 3
+>>> step 4
+>>> step 5
+>>> step 6
+>>> step 7
+>>> step 8
+>>> step 9
+>>> step 10
+>>> step 11
+>>> step 12
+>>> step 13
+Fatal Python error: Segmentation fault
+
+Thread 0x0000765680bff6c0 (most recent call first):
+  <no Python frame>
+
+Thread 0x0000765681ffb6c0 (most recent call first):
+  File "/home/yuming/pytorch-segfault-investigation/.pixi/envs/default/lib/python3.11/threading.py", line 327 in wait
+  File "/home/yuming/pytorch-segfault-investigation/.pixi/envs/default/lib/python3.11/multiprocessing/queues.py", line 231 in _feed
+  File "/home/yuming/pytorch-segfault-investigation/.pixi/envs/default/lib/python3.11/threading.py", line 982 in run
+  File "/home/yuming/pytorch-segfault-investigation/.pixi/envs/default/lib/python3.11/threading.py", line 1045 in _bootstrap_inner
+  File "/home/yuming/pytorch-segfault-investigation/.pixi/envs/default/lib/python3.11/threading.py", line 1002 in _bootstrap
+
+Thread 0x00007656827fc6c0 (most recent call first):
+  File "/home/yuming/pytorch-segfault-investigation/.pixi/envs/default/lib/python3.11/threading.py", line 327 in wait
+  File "/home/yuming/pytorch-segfault-investigation/.pixi/envs/default/lib/python3.11/multiprocessing/queues.py", line 231 in _feed
+  File "/home/yuming/pytorch-segfault-investigation/.pixi/envs/default/lib/python3.11/threading.py", line 982 in run
+  File "/home/yuming/pytorch-segfault-investigation/.pixi/envs/default/lib/python3.11/threading.py", line 1045 in _bootstrap_inner
+  File "/home/yuming/pytorch-segfault-investigation/.pixi/envs/default/lib/python3.11/threading.py", line 1002 in _bootstrap
+
+Thread 0x0000765682ffd6c0 (most recent call first):
+  File "/home/yuming/pytorch-segfault-investigation/.pixi/envs/default/lib/python3.11/threading.py", line 327 in wait
+  File "/home/yuming/pytorch-segfault-investigation/.pixi/envs/default/lib/python3.11/multiprocessing/queues.py", line 231 in _feed
+  File "/home/yuming/pytorch-segfault-investigation/.pixi/envs/default/lib/python3.11/threading.py", line 982 in run
+  File "/home/yuming/pytorch-segfault-investigation/.pixi/envs/default/lib/python3.11/threading.py", line 1045 in _bootstrap_inner
+  File "/home/yuming/pytorch-segfault-investigation/.pixi/envs/default/lib/python3.11/threading.py", line 1002 in _bootstrap
+
+Thread 0x00007656837fe6c0 (most recent call first):
+  File "/home/yuming/pytorch-segfault-investigation/.pixi/envs/default/lib/python3.11/threading.py", line 327 in wait
+  File "/home/yuming/pytorch-segfault-investigation/.pixi/envs/default/lib/python3.11/multiprocessing/queues.py", line 231 in _feed
+  File "/home/yuming/pytorch-segfault-investigation/.pixi/envs/default/lib/python3.11/threading.py", line 982 in run
+  File "/home/yuming/pytorch-segfault-investigation/.pixi/envs/default/lib/python3.11/threading.py", line 1045 in _bootstrap_inner
+  File "/home/yuming/pytorch-segfault-investigation/.pixi/envs/default/lib/python3.11/threading.py", line 1002 in _bootstrap
+
+Thread 0x00007656477f66c0 (most recent call first):
+  File "/home/yuming/pytorch-segfault-investigation/.pixi/envs/default/lib/python3.11/threading.py", line 327 in wait
+  File "/home/yuming/pytorch-segfault-investigation/.pixi/envs/default/lib/python3.11/multiprocessing/queues.py", line 231 in _feed
+  File "/home/yuming/pytorch-segfault-investigation/.pixi/envs/default/lib/python3.11/threading.py", line 982 in run
+  File "/home/yuming/pytorch-segfault-investigation/.pixi/envs/default/lib/python3.11/threading.py", line 1045 in _bootstrap_inner
+  File "/home/yuming/pytorch-segfault-investigation/.pixi/envs/default/lib/python3.11/threading.py", line 1002 in _bootstrap
+
+Thread 0x0000765646ff56c0 (most recent call first):
+  File "/home/yuming/pytorch-segfault-investigation/.pixi/envs/default/lib/python3.11/threading.py", line 327 in wait
+  File "/home/yuming/pytorch-segfault-investigation/.pixi/envs/default/lib/python3.11/multiprocessing/queues.py", line 231 in _feed
+  File "/home/yuming/pytorch-segfault-investigation/.pixi/envs/default/lib/python3.11/threading.py", line 982 in run
+  File "/home/yuming/pytorch-segfault-investigation/.pixi/envs/default/lib/python3.11/threading.py", line 1045 in _bootstrap_inner
+  File "/home/yuming/pytorch-segfault-investigation/.pixi/envs/default/lib/python3.11/threading.py", line 1002 in _bootstrap
+
+Thread 0x00007656467f46c0 (most recent call first):
+  File "/home/yuming/pytorch-segfault-investigation/.pixi/envs/default/lib/python3.11/threading.py", line 327 in wait
+  File "/home/yuming/pytorch-segfault-investigation/.pixi/envs/default/lib/python3.11/multiprocessing/queues.py", line 231 in _feed
+  File "/home/yuming/pytorch-segfault-investigation/.pixi/envs/default/lib/python3.11/threading.py", line 982 in run
+  File "/home/yuming/pytorch-segfault-investigation/.pixi/envs/default/lib/python3.11/threading.py", line 1045 in _bootstrap_inner
+  File "/home/yuming/pytorch-segfault-investigation/.pixi/envs/default/lib/python3.11/threading.py", line 1002 in _bootstrap
+
+Thread 0x0000765645ff36c0 (most recent call first):
+  File "/home/yuming/pytorch-segfault-investigation/.pixi/envs/default/lib/python3.11/threading.py", line 327 in wait
+  File "/home/yuming/pytorch-segfault-investigation/.pixi/envs/default/lib/python3.11/multiprocessing/queues.py", line 231 in _feed
+  File "/home/yuming/pytorch-segfault-investigation/.pixi/envs/default/lib/python3.11/threading.py", line 982 in run
+  File "/home/yuming/pytorch-segfault-investigation/.pixi/envs/default/lib/python3.11/threading.py", line 1045 in _bootstrap_inner
+  File "/home/yuming/pytorch-segfault-investigation/.pixi/envs/default/lib/python3.11/threading.py", line 1002 in _bootstrap
+
+Thread 0x0000765683fff6c0 (most recent call first):
+  File "/home/yuming/pytorch-segfault-investigation/.pixi/envs/default/lib/python3.11/selectors.py", line 415 in select
+  File "/home/yuming/pytorch-segfault-investigation/.pixi/envs/default/lib/python3.11/multiprocessing/connection.py", line 948 in wait
+  File "/home/yuming/pytorch-segfault-investigation/.pixi/envs/default/lib/python3.11/multiprocessing/connection.py", line 440 in _poll
+  File "/home/yuming/pytorch-segfault-investigation/.pixi/envs/default/lib/python3.11/multiprocessing/connection.py", line 257 in poll
+  File "/home/yuming/pytorch-segfault-investigation/.pixi/envs/default/lib/python3.11/multiprocessing/queues.py", line 113 in get
+  File "/home/yuming/pytorch-segfault-investigation/.pixi/envs/default/lib/python3.11/site-packages/torch/utils/data/_utils/pin_memory.py", line 35 in do_one_step
+  File "/home/yuming/pytorch-segfault-investigation/.pixi/envs/default/lib/python3.11/site-packages/torch/utils/data/_utils/pin_memory.py", line 59 in _pin_memory_loop
+  File "/home/yuming/pytorch-segfault-investigation/.pixi/envs/default/lib/python3.11/threading.py", line 982 in run
+  File "/home/yuming/pytorch-segfault-investigation/.pixi/envs/default/lib/python3.11/threading.py", line 1045 in _bootstrap_inner
+  File "/home/yuming/pytorch-segfault-investigation/.pixi/envs/default/lib/python3.11/threading.py", line 1002 in _bootstrap
+
+Current thread 0x0000765769dfb740 (most recent call first):
+  File "/home/yuming/pytorch-segfault-investigation/.pixi/envs/default/lib/python3.11/site-packages/torch/amp/grad_scaler.py", line 351 in <genexpr>
+  File "/home/yuming/pytorch-segfault-investigation/.pixi/envs/default/lib/python3.11/site-packages/torch/amp/grad_scaler.py", line 351 in _maybe_opt_step
+  File "/home/yuming/pytorch-segfault-investigation/.pixi/envs/default/lib/python3.11/site-packages/torch/amp/grad_scaler.py", line 457 in step
+  File "/home/yuming/pytorch-segfault-investigation/torture.py", line 92 in <module>
+
+Extension modules: numpy._core._multiarray_umath, numpy.linalg._umath_linalg, torch._C, torch._C._dynamo.autograd_compiler, torch._C._dynamo.eval_frame, torch._C._dynamo.guards, torch._C._dynamo.utils, torch._C._fft, torch._C._linalg, torch._C._nested, torch._C._nn, torch._C._sparse, torch._C._special, PIL._imaging, PIL._imagingft, gmpy2.gmpy2, numpy.random._common, numpy.random.bit_generator, numpy.random._bounded_integers, numpy.random._pcg64, numpy.random._generator, numpy.random._mt19937, numpy.random._philox, numpy.random._sfc64, numpy.random.mtrand (total: 25)
