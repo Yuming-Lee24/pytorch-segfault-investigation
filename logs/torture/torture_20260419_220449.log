@@ -1,0 +1,130 @@
+Downloading: "https://github.com/pytorch/vision/zipball/main" to /home/yuming/.cache/torch/hub/main.zip
+[W419 22:04:53.091854042 Module.cpp:182] symbolizing C++ stack trace for exception; if this hangs, rerun with TORCH_DISABLE_ADDR2LINE=1...
+
+Traceback (most recent call last):
+  File "/home/yuming/test/torture.py", line 18, in <module>
+    model = torch.hub.load("pytorch/vision", "resnet50", weights=None).to(device)
+  File "/home/yuming/.local/lib/python3.10/site-packages/torch/hub.py", line 647, in load
+    model = _load_local(repo_or_dir, model, *args, **kwargs)
+  File "/home/yuming/.local/lib/python3.10/site-packages/torch/hub.py", line 673, in _load_local
+    hub_module = _import_module(MODULE_HUBCONF, hubconf_path)
+  File "/home/yuming/.local/lib/python3.10/site-packages/torch/hub.py", line 115, in _import_module
+    spec.loader.exec_module(module)
+  File "<frozen importlib._bootstrap_external>", line 883, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/home/yuming/.cache/torch/hub/pytorch_vision_main/hubconf.py", line 4, in <module>
+    from torchvision.models import get_model_weights, get_weight
+  File "/home/yuming/.cache/torch/hub/pytorch_vision_main/torchvision/__init__.py", line 8, in <module>
+    from torchvision import (
+  File "/home/yuming/.cache/torch/hub/pytorch_vision_main/torchvision/_meta_registrations.py", line 164, in <module>
+    def meta_nms(dets, scores, iou_threshold):
+  File "/home/yuming/.local/lib/python3.10/site-packages/torch/library.py", line 828, in register
+    use_lib._register_fake(op_name, func, _stacklevel=stacklevel + 1)
+  File "/home/yuming/.local/lib/python3.10/site-packages/torch/library.py", line 198, in _register_fake
+    handle = entry.fake_impl.register(func_to_register, source)
+  File "/home/yuming/.local/lib/python3.10/site-packages/torch/_library/fake_impl.py", line 31, in register
+    if torch._C._dispatch_has_kernel_for_dispatch_key(self.qualname, "Meta"):
+RuntimeError: operator torchvision::nms does not exist
+Exception raised from operator() at /pytorch/torch/csrc/utils/python_dispatch.cpp:583 (most recent call first):
+C++ CapturedTraceback:
+#4 std::_Function_handler<std::shared_ptr<c10::LazyValue<std::string> const> (), c10::SetStackTraceFetcher(std::function<std::string ()>)::{lambda()#1}>::_M_invoke(std::_Any_data const&) from Logging.cpp:0
+#5 c10::Error::Error(c10::SourceLocation, std::string) from ??:0
+#6 c10::detail::torchCheckFail(char const*, char const*, unsigned int, std::string const&) from ??:0
+#7 pybind11::cpp_function::initialize<torch::impl::dispatch::initDispatchBindings(_object*)::{lambda(char const*, c10::DispatchKey)#20}, bool, char const*, c10::DispatchKey, pybind11::name, pybind11::scope, pybind11::sibling>(torch::impl::dispatch::initDispatchBindings(_object*)::{lambda(char const*, c10::DispatchKey)#20}&&, bool (*)(char const*, c10::DispatchKey), pybind11::name const&, pybind11::scope const&, pybind11::sibling const&)::{lambda(pybind11::detail::function_call&)#3}::_FUN(pybind11::detail::function_call&) from python_dispatch.cpp:0
+#8 pybind11::cpp_function::dispatcher(_object*, _object*, _object*) from :0
+#9 PyObject_CallFunctionObjArgs from ??:0
+#10 _PyObject_MakeTpCall from ??:0
+#11 _PyEval_EvalFrameDefault from ??:0
+#12 _PyFunction_Vectorcall from ??:0
+#13 _PyEval_EvalFrameDefault from ??:0
+#14 PyMethod_New from ??:0
+#15 _PyEval_EvalFrameDefault from ??:0
+#16 _PyFunction_Vectorcall from ??:0
+#17 _PyEval_EvalFrameDefault from ??:0
+#18 PyEval_EvalCode from ??:0
+#19 PyEval_EvalCode from ??:0
+#20 PyFrozenSet_New from ??:0
+#21 PyCell_New from ??:0
+#22 _PyEval_EvalFrameDefault from ??:0
+#23 _PyFunction_Vectorcall from ??:0
+#24 _PyEval_EvalFrameDefault from ??:0
+#25 _PyFunction_Vectorcall from ??:0
+#26 _PyEval_EvalFrameDefault from ??:0
+#27 _PyFunction_Vectorcall from ??:0
+#28 _PyEval_EvalFrameDefault from ??:0
+#29 _PyFunction_Vectorcall from ??:0
+#30 _PyEval_EvalFrameDefault from ??:0
+#31 _PyFunction_Vectorcall from ??:0
+#32 PyObject_CallFunctionObjArgs from ??:0
+#33 _PyObject_CallMethodIdObjArgs from ??:0
+#34 PyImport_ImportModuleLevelObject from ??:0
+#35 PyImport_Import from ??:0
+#36 PyObject_CallFunctionObjArgs from ??:0
+#37 PyObject_Call from ??:0
+#38 _PyEval_EvalFrameDefault from ??:0
+#39 _PyFunction_Vectorcall from ??:0
+#40 _PyEval_EvalFrameDefault from ??:0
+#41 _PyFunction_Vectorcall from ??:0
+#42 PyObject_CallFunctionObjArgs from ??:0
+#43 _PyObject_CallMethodIdObjArgs from ??:0
+#44 PyImport_ImportModuleLevelObject from ??:0
+#45 _PyEval_EvalFrameDefault from ??:0
+#46 PyEval_EvalCode from ??:0
+#47 PyEval_EvalCode from ??:0
+#48 PyFrozenSet_New from ??:0
+#49 PyCell_New from ??:0
+#50 _PyEval_EvalFrameDefault from ??:0
+#51 _PyFunction_Vectorcall from ??:0
+#52 _PyEval_EvalFrameDefault from ??:0
+#53 _PyFunction_Vectorcall from ??:0
+#54 _PyEval_EvalFrameDefault from ??:0
+#55 _PyFunction_Vectorcall from ??:0
+#56 _PyEval_EvalFrameDefault from ??:0
+#57 _PyFunction_Vectorcall from ??:0
+#58 _PyEval_EvalFrameDefault from ??:0
+#59 _PyFunction_Vectorcall from ??:0
+#60 PyObject_CallFunctionObjArgs from ??:0
+#61 _PyObject_CallMethodIdObjArgs from ??:0
+#62 PyImport_ImportModuleLevelObject from ??:0
+#63 PyImport_Import from ??:0
+#64 PyObject_CallFunctionObjArgs from ??:0
+#65 PyObject_Call from ??:0
+#66 _PyEval_EvalFrameDefault from ??:0
+#67 _PyFunction_Vectorcall from ??:0
+#68 _PyEval_EvalFrameDefault from ??:0
+#69 _PyFunction_Vectorcall from ??:0
+#70 _PyEval_EvalFrameDefault from ??:0
+#71 _PyFunction_Vectorcall from ??:0
+#72 PyObject_CallFunctionObjArgs from ??:0
+#73 _PyObject_CallMethodIdObjArgs from ??:0
+#74 PyImport_ImportModuleLevelObject from ??:0
+#75 _PyEval_EvalFrameDefault from ??:0
+#76 PyEval_EvalCode from ??:0
+#77 PyEval_EvalCode from ??:0
+#78 PyFrozenSet_New from ??:0
+#79 PyCell_New from ??:0
+#80 _PyEval_EvalFrameDefault from ??:0
+#81 _PyFunction_Vectorcall from ??:0
+#82 _PyEval_EvalFrameDefault from ??:0
+#83 _PyFunction_Vectorcall from ??:0
+#84 _PyEval_EvalFrameDefault from ??:0
+#85 _PyFunction_Vectorcall from ??:0
+#86 _PyEval_EvalFrameDefault from ??:0
+#87 _PyFunction_Vectorcall from ??:0
+#88 PyObject_Call from ??:0
+#89 _PyEval_EvalFrameDefault from ??:0
+#90 _PyFunction_Vectorcall from ??:0
+#91 _PyEval_EvalFrameDefault from ??:0
+#92 PyEval_EvalCode from ??:0
+#93 PyEval_EvalCode from ??:0
+#94 PyUnicode_Tailmatch from ??:0
+#95 PyInit__collections from ??:0
+#96 PyUnicode_Tailmatch from ??:0
+#97 _PyRun_SimpleFileObject from ??:0
+#98 _PyRun_AnyFileObject from ??:0
+#99 Py_RunMain from ??:0
+#100 Py_BytesMain from ??:0
+#101 __libc_start_call_main from ./csu/../sysdeps/nptl/libc_start_call_main.h:58
+#102 __libc_start_main_impl from ./csu/../csu/libc-start.c:392
+#103 _start from ??:0
+

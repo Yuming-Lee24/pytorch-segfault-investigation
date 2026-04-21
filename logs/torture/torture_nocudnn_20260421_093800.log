@@ -1,0 +1,91 @@
+step 100 loss 6.943 alloc 0.6GB reserved 13.2GB peak 12.3GB elapsed 20s
+step 200 loss 6.950 alloc 0.6GB reserved 13.2GB peak 12.3GB elapsed 40s
+step 300 loss 6.968 alloc 0.6GB reserved 13.2GB peak 12.3GB elapsed 59s
+step 400 loss 6.960 alloc 0.6GB reserved 13.2GB peak 12.3GB elapsed 78s
+step 500 loss 6.986 alloc 0.6GB reserved 13.2GB peak 12.3GB elapsed 98s
+step 600 loss 6.941 alloc 0.6GB reserved 13.2GB peak 12.3GB elapsed 117s
+step 700 loss 6.923 alloc 0.6GB reserved 13.2GB peak 12.3GB elapsed 136s
+step 800 loss 6.945 alloc 0.6GB reserved 13.2GB peak 12.3GB elapsed 156s
+step 900 loss 6.979 alloc 0.6GB reserved 13.2GB peak 12.3GB elapsed 175s
+step 1000 loss 6.939 alloc 0.6GB reserved 13.2GB peak 12.3GB elapsed 194s
+step 1100 loss 6.944 alloc 0.6GB reserved 13.2GB peak 12.3GB elapsed 214s
+step 1200 loss 6.941 alloc 0.6GB reserved 13.2GB peak 12.3GB elapsed 234s
+step 1300 loss 6.911 alloc 0.6GB reserved 13.2GB peak 12.3GB elapsed 254s
+step 1400 loss 6.917 alloc 0.6GB reserved 13.2GB peak 12.3GB elapsed 273s
+Fatal Python error: Segmentation fault
+
+Thread 0x00007287839e8640 (most recent call first):
+  File "/usr/lib/python3.10/threading.py", line 320 in wait
+  File "/usr/lib/python3.10/multiprocessing/queues.py", line 231 in _feed
+  File "/usr/lib/python3.10/threading.py", line 953 in run
+  File "/usr/lib/python3.10/threading.py", line 1016 in _bootstrap_inner
+  File "/usr/lib/python3.10/threading.py", line 973 in _bootstrap
+
+Thread 0x00007287841e9640 (most recent call first):
+  File "/usr/lib/python3.10/threading.py", line 320 in wait
+  File "/usr/lib/python3.10/multiprocessing/queues.py", line 231 in _feed
+  File "/usr/lib/python3.10/threading.py", line 953 in run
+  File "/usr/lib/python3.10/threading.py", line 1016 in _bootstrap_inner
+  File "/usr/lib/python3.10/threading.py", line 973 in _bootstrap
+
+Thread 0x00007287849ea640 (most recent call first):
+  File "/usr/lib/python3.10/threading.py", line 320 in wait
+  File "/usr/lib/python3.10/multiprocessing/queues.py", line 231 in _feed
+  File "/usr/lib/python3.10/threading.py", line 953 in run
+  File "/usr/lib/python3.10/threading.py", line 1016 in _bootstrap_inner
+  File "/usr/lib/python3.10/threading.py", line 973 in _bootstrap
+
+Thread 0x00007287851eb640 (most recent call first):
+  File "/usr/lib/python3.10/threading.py", line 320 in wait
+  File "/usr/lib/python3.10/multiprocessing/queues.py", line 231 in _feed
+  File "/usr/lib/python3.10/threading.py", line 953 in run
+  File "/usr/lib/python3.10/threading.py", line 1016 in _bootstrap_inner
+  File "/usr/lib/python3.10/threading.py", line 973 in _bootstrap
+
+Thread 0x000072878ddfe640 (most recent call first):
+  File "/usr/lib/python3.10/threading.py", line 320 in wait
+  File "/usr/lib/python3.10/multiprocessing/queues.py", line 231 in _feed
+  File "/usr/lib/python3.10/threading.py", line 953 in run
+  File "/usr/lib/python3.10/threading.py", line 1016 in _bootstrap_inner
+  File "/usr/lib/python3.10/threading.py", line 973 in _bootstrap
+
+Thread 0x0000728787fff640 (most recent call first):
+  File "/usr/lib/python3.10/threading.py", line 320 in wait
+  File "/usr/lib/python3.10/multiprocessing/queues.py", line 231 in _feed
+  File "/usr/lib/python3.10/threading.py", line 953 in run
+  File "/usr/lib/python3.10/threading.py", line 1016 in _bootstrap_inner
+  File "/usr/lib/python3.10/threading.py", line 973 in _bootstrap
+
+Thread 0x000072878cdfc640 (most recent call first):
+  File "/usr/lib/python3.10/threading.py", line 320 in wait
+  File "/usr/lib/python3.10/multiprocessing/queues.py", line 231 in _feed
+  File "/usr/lib/python3.10/threading.py", line 953 in run
+  File "/usr/lib/python3.10/threading.py", line 1016 in _bootstrap_inner
+  File "/usr/lib/python3.10/threading.py", line 973 in _bootstrap
+
+Thread 0x000072878e5ff640 (most recent call first):
+  File "/usr/lib/python3.10/threading.py", line 320 in wait
+  File "/usr/lib/python3.10/multiprocessing/queues.py", line 231 in _feed
+  File "/usr/lib/python3.10/threading.py", line 953 in run
+  File "/usr/lib/python3.10/threading.py", line 1016 in _bootstrap_inner
+  File "/usr/lib/python3.10/threading.py", line 973 in _bootstrap
+
+Thread 0x000072878d5fd640 (most recent call first):
+  File "/home/yuming/.local/lib/python3.10/site-packages/torch/utils/data/_utils/pin_memory.py", line 64 in pin_memory
+  File "/home/yuming/.local/lib/python3.10/site-packages/torch/utils/data/_utils/pin_memory.py", line 98 in pin_memory
+  File "/home/yuming/.local/lib/python3.10/site-packages/torch/utils/data/_utils/pin_memory.py", line 41 in do_one_step
+  File "/home/yuming/.local/lib/python3.10/site-packages/torch/utils/data/_utils/pin_memory.py", line 59 in _pin_memory_loop
+  File "/usr/lib/python3.10/threading.py", line 953 in run
+  File "/usr/lib/python3.10/threading.py", line 1016 in _bootstrap_inner
+  File "/usr/lib/python3.10/threading.py", line 973 in _bootstrap
+
+Current thread 0x0000728768dde640 (most recent call first):
+  <no Python frame>
+
+Thread 0x0000728885a58000 (most recent call first):
+  File "/home/yuming/.local/lib/python3.10/site-packages/torch/autograd/graph.py", line 823 in _engine_run_backward
+  File "/home/yuming/.local/lib/python3.10/site-packages/torch/autograd/__init__.py", line 347 in backward
+  File "/home/yuming/.local/lib/python3.10/site-packages/torch/_tensor.py", line 626 in backward
+  File "/home/yuming/test/torture.py", line 39 in <module>
+
+Extension modules: numpy._core._multiarray_umath, numpy.linalg._umath_linalg, torch._C, torch._C._dynamo.autograd_compiler, torch._C._dynamo.eval_frame, torch._C._dynamo.guards, torch._C._dynamo.utils, torch._C._fft, torch._C._linalg, torch._C._nested, torch._C._nn, torch._C._sparse, torch._C._special, PIL._imaging, PIL._imagingft, numpy.random._common, numpy.random.bit_generator, numpy.random._bounded_integers, numpy.random._mt19937, numpy.random.mtrand, numpy.random._philox, numpy.random._pcg64, numpy.random._sfc64, numpy.random._generator (total: 24)

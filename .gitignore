@@ -1,0 +1,20 @@
+# Third-party cloned repo (not ours)
+gpu-burn/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+venv/
+.venv/
+
+# Core dumps
+core
+core.*
+*.core
+
+# Editor / OS
+.vscode/
+.idea/
+*.swp
+.DS_Store
