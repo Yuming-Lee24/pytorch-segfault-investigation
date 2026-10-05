@@ -1,6 +1,6 @@
 # PyTorch Segfault Investigation Report
 
-**Date:** 2026-04-17 → 2026-04-21
+**Date:** 2026-04-17 → 2026-04-21, re-tested 2026-10-05 (see §4.6)
 **Host:** yuming-MS-7E54 (Ubuntu 24.04.3 LTS — fresh install)
 **Reporter:** yuming@gmail.com
 **Status:** **Hardware fault hypothesis strongly reinforced; XMP instability ruled out.** Fresh Ubuntu 24.04 install with a different NVIDIA driver (580.126.09) and different PyTorch version (2.5.1) **reproduces the same crash within 12–13 steps**, even with `CUDA_LAUNCH_BLOCKING=1`. BIOS audit on 2026-04-21 confirmed **XMP was already disabled** — the RAM is running at JEDEC-spec speeds and still failing. This upgrades the diagnosis from "unstable overclock" to "hardware fault at rated speed." MemTest86+ is now the single most important next action.
@@ -214,7 +214,34 @@ Both runs of `torture.py` on the fresh install crashed almost immediately:
 - Crashes reproduce in **12–13 steps** — faster than on the old install, suggesting the fault is not rare, it's just triggered by a specific access pattern that training hits very quickly.
 - Two consecutive crashes at two different fault sites rule out any deterministic software bug.
 
-### 4.6 Consolidated evidence
+### 4.6 Phase 6 — Re-run on 2026-10-05 (driver 550.163.01, kernel 6.14) still crashes
+
+The machine had been reinstalled again since Phase 5 (login history begins 2026-10-05 14:56): Ubuntu 24.04.3 LTS, kernel 6.14.0-27-generic, **NVIDIA driver 550.163.01 (CUDA 12.4)**. The pixi environment was recreated from `pixi.lock` (PyTorch 2.5.1, torchvision 0.20.1, Python 3.11). One lock entry had to be refreshed first: `cuda-version-13.2-h6f5e358_3` had been re-published upstream with a different hash, so `pixi update cuda-version` moved it to build `he2cc418_4`.
+
+`torture.py` was run three times with `CUDA_LAUNCH_BLOCKING=1 TORCH_SHOW_CPP_STACKTRACES=1 PYTHONFAULTHANDLER=1`, each capped at 8 minutes with `timeout 480`:
+
+| Run | Started | Result |
+|---|---|---|
+| #6 | 15:27:33 | Clean for 8 min (2106 steps), stopped by the time cap |
+| #7 | 15:35:33 | Clean for 8 min (2153 steps), stopped by the time cap |
+| #8 | 15:43:33 | **Segfault at step 1** (exit 139, core dumped) |
+
+**Run #8** — `faulthandler` shows the main thread in the *forward* pass: `torch/nn/modules/conv.py:549 _conv_forward`, reached from `model(x)` in `torture.py`. This is a third distinct fault site for the same script (Run #4: `_engine_run_backward`; Run #5: `grad_scaler._maybe_opt_step`). No kernel-log entry and no NVIDIA Xid was recorded for this crash, and no native backtrace was captured, so the faulting library is unknown.
+
+**Two further crashes in the same session, neither involving the GPU:**
+```
+Oct 05 15:25:13 kernel: traps: update-manager[13350] general protection fault ip:57246a sp:7fff61cfa140 error:0 in python3.12[17246a,420000+2e3000]
+Oct 05 15:27:13 kernel: python[14503]: segfault at 642f4f3d2f70 ip 0000642fce3f5e95 sp 00007fff178c38f0 error 4 in python3.11[204e95,642fce2e2000+240000] likely on CPU 0 (core 0, socket 0)
+```
+- `update-manager` is the system Python 3.12 desktop updater, not part of this investigation.
+- The `python3.11` segfault was a bare `import torch, torchvision` sanity check that died inside the interpreter itself. The identical command then passed five times in a row.
+
+**What this adds:**
+- A third NVIDIA driver (550.163.01, after 590.48.01 and 580.126.09) and a third kernel show the same fault.
+- The crash is far less regular than Phase 5 suggested: about 16 minutes and 4,259 clean steps, then a crash on the very first step of the next run.
+- Crashes in CPU-only processes continue on this install, as in Phase 4.
+
+### 4.7 Consolidated evidence
 
 | Crash | GPU involved? | Explainable by driver bug? | Explainable by bad RAM / CPU cache? |
 |---|---|---|---|
@@ -224,6 +251,8 @@ Both runs of `torture.py` on the fresh install crashed almost immediately:
 | `localedef` segfault (×2) at different addresses | **No** | **No** | Yes |
 | Spontaneous reboots during dpkg | Unlikely | **No** | Yes |
 | **PyTorch segfault on fresh Ubuntu 24 + driver 580 (×2, different fault sites)** | Yes | **No** (different driver, same crash) | Yes |
+| **PyTorch segfault on driver 550.163.01 + kernel 6.14 (2026-10-05, forward pass, step 1 of third run)** | Yes | **No** (third driver, same class of crash) | Yes |
+| `import torch` segfault inside `python3.11` and `update-manager` GPF in `python3.12` (2026-10-05) | **No** | **No** | Yes |
 
 Only a **hardware memory-corruption hypothesis** explains every observation.
 
@@ -326,6 +355,9 @@ Confirm "Configured Memory Speed" is at JEDEC (≈ 4800 MT/s for DDR5). If highe
 | `~/pytorch-segfault-investigation/pixi.toml` | Reproducible env spec (pytorch 2.5.1, torchvision 0.20.1, pytorch-cuda 12.4, conda-forge) |
 | `~/pytorch-segfault-investigation/logs/torture/20260421_130707.log` | **Run #4** — Ubuntu 24, driver 580 — segfault at step 12 in `_engine_run_backward` |
 | `~/pytorch-segfault-investigation/logs/torture/20260421_130827.log` | **Run #5** — Ubuntu 24, driver 580 — segfault at step 13 in `grad_scaler._maybe_opt_step` (different fault site, same binary) |
+| `~/pytorch-segfault-investigation/logs/torture/20261005_152734.log` | **Run #6** — driver 550.163.01, kernel 6.14 — clean, 2106 steps, stopped at 8 min |
+| `~/pytorch-segfault-investigation/logs/torture/20261005_153534.log` | **Run #7** — same setup — clean, 2153 steps, stopped at 8 min |
+| `~/pytorch-segfault-investigation/logs/torture/20261005_154334.log` | **Run #8** — same setup — segfault at step 1 in `_conv_forward` |
 | `~/pytorch-segfault-investigation/logs/gpu_burn/*` | 8-hour gpu-burn logs (Ubuntu 22 era) |
 | `~/pytorch-segfault-investigation/logs/memtester/*` | 32 GB memtester log (2 passes, all `ok`) (Ubuntu 22 era) |
 | `~/pytorch-segfault-investigation/logs/torture/torture_*.log` | Ubuntu 22 era training reproducer logs (original 3 segfaults) |
@@ -354,6 +386,11 @@ Confirm "Configured Memory Speed" is at JEDEC (≈ 4800 MT/s for DDR5). If highe
 | 2026-04-21 13:08 | **Run #5 segfaulted at step 13** inside `grad_scaler.py:_maybe_opt_step` (a different fault site than run #4, same workload, same binary, one minute apart). |
 | 2026-04-21 | **Hardware-fault hypothesis reinforced.** Driver, kernel, OS, and PyTorch version have all been replaced while the fault persists. Only the physical hardware is constant. |
 | 2026-04-21 | **BIOS audit:** user confirmed **XMP is already disabled** — RAM has been running at JEDEC-spec speeds throughout the entire investigation. XMP instability hypothesis ruled out. Diagnosis upgrades to "hardware fault at rated speed." MemTest86+ elevated to top priority. |
+| 2026-10-05 14:56 | Machine found reinstalled again: kernel 6.14.0-27-generic, NVIDIA driver 550.163.01 (CUDA 12.4). |
+| 2026-10-05 15:25 | `update-manager` (system Python 3.12) general protection fault — no GPU involvement. |
+| 2026-10-05 15:27 | pixi environment recreated (PyTorch 2.5.1). First `import torch` **segfaulted inside `python3.11`**; five retries passed. |
+| 2026-10-05 15:27 → 15:43 | `torture.py` runs #6 and #7 clean for 8 minutes each (4,259 steps total). |
+| 2026-10-05 15:43 | **Run #8 segfaulted at step 1** in the forward pass (`_conv_forward`). Fault reproduced on a third driver and kernel. |
 
 ---
 
