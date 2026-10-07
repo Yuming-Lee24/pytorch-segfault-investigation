@@ -407,9 +407,11 @@ def run_spawns(cpu, args):
             "telemetry": tele.summary()}
 
 
-def start_load(cpus):
-    """Keep `cpus` fully busy so the CPU under test runs in the all-core regime."""
-    return [subprocess.Popen(["taskset", "-c", str(c), sys.executable, "-c", "while True: pass"])
+def start_load(cpus, idle_priority=False):
+    """Spin on `cpus`. At idle priority the spinner only fills otherwise idle time."""
+    prefix = ["chrt", "-i", "0"] if idle_priority else []
+    return [subprocess.Popen(prefix + ["taskset", "-c", str(c), sys.executable, "-c",
+                                       "while True: pass"])
             for c in cpus]
 
 
@@ -432,6 +434,8 @@ def sweep(args):
         label += "_load" + args.load_cpus.replace(",", "+")
     elif args.load_others:
         label += "_loaded"
+    if args.keep_awake:
+        label += "_awake"
     path = "logs/core_probe/%s_%s.tsv" % (datetime.now().strftime("%Y%m%d_%H%M%S"), label)
     log = open(path, "a", buffering=1)
 
@@ -460,6 +464,8 @@ def sweep(args):
             else:
                 busy = []
             load = start_load(busy)
+            if args.keep_awake:
+                load += start_load(group, idle_priority=True)
             if load:
                 time.sleep(2)
             started = time.time()
@@ -521,6 +527,8 @@ def main():
     s.add_argument("--load-others", action="store_true",
                    help="keep every CPU not under test busy with a spin loop")
     s.add_argument("--load-cpus", help="keep just these CPUs busy, for example 2,3")
+    s.add_argument("--keep-awake", action="store_true",
+                   help="idle-priority spin loop on the CPU under test, so it never idles")
     s.add_argument("--cores", action="store_true", help="let crashes leave core dumps")
     s.add_argument("--seed", type=int, default=1)
 
