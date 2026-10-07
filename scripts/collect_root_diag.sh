@@ -22,11 +22,19 @@ run() {
 }
 
 # Firmware error record left by the previous boot (overwritten at next boot).
-cp /sys/firmware/acpi/tables/BERT "$OUT/BERT.table.bin" 2>/dev/null
-cp /sys/firmware/acpi/tables/data/BERT "$OUT/BERT.data.bin" 2>/dev/null
+cp /sys/firmware/acpi/tables/BERT "$OUT/BERT.table.bin" 2> "$OUT/BERT.err"
+cp /sys/firmware/acpi/tables/data/BERT "$OUT/BERT.data.bin" 2>> "$OUT/BERT.err"
 
 # Machine-check records the kernel is still holding.
 cat /dev/mcelog > "$OUT/mcelog.bin" 2> "$OUT/mcelog.err"
+
+# Which boot this capture belongs to, and whether it logged a machine check.
+{
+    echo "boot_id=$(cat /proc/sys/kernel/random/boot_id)"
+    echo "booted=$(uptime -s)"
+    echo "mcelog_bytes=$(stat -c %s "$OUT/mcelog.bin")"
+    journalctl -k -b 0 --no-pager -o short-iso | grep -E 'mce:|BERT|Hardware Error|microcode:'
+} > "$OUT/boot_context.txt" 2>&1
 
 # Kernel oops text that pstore carried across the reset.
 if [ -d /var/lib/systemd/pstore ]; then
@@ -99,6 +107,7 @@ else
 fi
 
 run turbostat.txt turbostat --quiet --interval 5 --num_iterations 2
+run turbostat_config.txt turbostat --interval 1 --num_iterations 1
 
 if [ -n "${SUDO_UID:-}" ]; then
     chown -R "$SUDO_UID:${SUDO_GID:-$SUDO_UID}" logs/rootdiag

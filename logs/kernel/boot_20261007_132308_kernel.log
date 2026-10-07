@@ -1232,3 +1232,18 @@
 2026-10-07T13:23:15+02:00 yuming-MS-7E54 kernel: wlp129s0f0: associated
 2026-10-07T13:23:15+02:00 yuming-MS-7E54 kernel: wlp129s0f0: Limiting TX power to 30 (30 - 0) dBm as advertised by 10:7c:61:a0:a6:92
 2026-10-07T13:23:18+02:00 yuming-MS-7E54 kernel: wlp129s0f0: deauthenticated from 10:7c:61:a0:a6:92 (Reason: 2=PREV_AUTH_NOT_VALID)
+2026-10-07T13:51:08+02:00 yuming-MS-7E54 kernel: show_signal_msg: 1 callbacks suppressed
+2026-10-07T13:51:08+02:00 yuming-MS-7E54 kernel: python[26519]: segfault at 0 ip 00007cf76d78b75d sp 00007fff6f960b38 error 4 in libc.so.6[18b75d,7cf76d628000+188000] likely on CPU 22 (core 38, socket 0)
+2026-10-07T13:51:08+02:00 yuming-MS-7E54 kernel: Code: 00 00 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 89 f8 48 89 fa c5 f9 ef c0 25 ff 0f 00 00 3d e0 0f 00 00 0f 87 33 01 00 00 <c5> fd 74 0f c5 fd d7 c1 85 c0 74 57 f3 0f bc c0 c5 f8 77 c3 66 66
+2026-10-07T13:52:35+02:00 yuming-MS-7E54 kernel: python[26745]: segfault at 20 ip 000064bcb93c28a8 sp 00007ffc310d3830 error 4 in python3.11[1f38a8,64bcb92c0000+240000] likely on CPU 0 (core 0, socket 0)
+2026-10-07T13:52:35+02:00 yuming-MS-7E54 kernel: Code: 8b 44 24 08 49 89 ea 48 83 c0 48 48 89 44 24 18 48 8b 74 24 40 4c 89 f8 48 8b 5c 24 08 4d 89 d6 48 29 f0 48 d1 f8 44 8d 60 ff <4c> 8b 43 20 49 8b 48 28 48 8b 71 10 48 8d 41 20 48 8d 14 30 48 83
+2026-10-07T13:52:38+02:00 yuming-MS-7E54 kernel: python[26758]: segfault at 8 ip 00005e492c825235 sp 00007fff91524100 error 4 in python3.11[1ee235,5e492c728000+240000] likely on CPU 0 (core 0, socket 0)
+2026-10-07T13:52:38+02:00 yuming-MS-7E54 kernel: Code: 00 00 00 0f b6 c2 66 c1 ed 08 48 8b 04 c1 0f b7 ed ff e0 4d 8b 72 f8 48 8b 44 24 08 4c 89 54 24 48 4d 8d 7c 24 02 4c 89 60 38 <49> 8b 46 08 4c 89 f7 ff 90 e0 00 00 00 4c 8b 54 24 48 48 85 c0 0f
+2026-10-07T13:53:01+02:00 yuming-MS-7E54 kernel: traps: python[26833] general protection fault ip:5b824ed0dce0 sp:7ffddbfda2e0 error:0 in python3.11[1d3ce0,5b824ec2b000+240000]
+2026-10-07T13:56:32+02:00 yuming-MS-7E54 kernel: traps: python[27430] general protection fault ip:58e25b6d8228 sp:7ffe526e9120 error:0 in python3.11[218228,58e25b5b1000+240000]
+2026-10-07T13:56:36+02:00 yuming-MS-7E54 kernel: python[27451]: segfault at 415 ip 00005cec5d31eb22 sp 00007fff37adba80 error 6 in python3.11[217b22,5cec5d1f8000+240000] likely on CPU 0 (core 0, socket 0)
+2026-10-07T13:56:36+02:00 yuming-MS-7E54 kernel: Code: 31 c0 e9 61 fe ff ff 90 41 57 66 0f ef c0 41 56 41 55 41 54 55 53 48 83 ec 28 48 8b 05 07 c7 33 00 f3 0f 6f 48 60 4c 8b 60 70 <0f> 11 40 60 48 c7 40 70 00 00 00 00 48 8b 47 20 8b 58 4c 03 58 44
+2026-10-07T13:57:02+02:00 yuming-MS-7E54 kernel: python[27521]: segfault at 24 ip 00006054fd67f228 sp 00007ffceb3e5040 error 4 in python3.11[218228,6054fd558000+240000] likely on CPU 0 (core 0, socket 0)
+2026-10-07T13:57:02+02:00 yuming-MS-7E54 kernel: Code: 67 ff ff ff 66 0f 1f 44 00 00 49 ff 4d 00 0f 85 57 ff ff ff 49 8b 45 08 4c 89 ef ff 50 30 e9 48 ff ff ff 48 8d 05 98 c0 31 00 <49> 39 44 24 08 0f 85 f1 29 f0 ff 48 8d 05 06 ce 32 00 48 39 47 08
+2026-10-07T13:57:14+02:00 yuming-MS-7E54 kernel: python[27563]: segfault at 10 ip 00005d7e5679a228 sp 00007ffee3188aa0 error 4 in python3.11[218228,5d7e56673000+240000] likely on CPU 0 (core 0, socket 0)
+2026-10-07T13:57:14+02:00 yuming-MS-7E54 kernel: Code: 67 ff ff ff 66 0f 1f 44 00 00 49 ff 4d 00 0f 85 57 ff ff ff 49 8b 45 08 4c 89 ef ff 50 30 e9 48 ff ff ff 48 8d 05 98 c0 31 00 <49> 39 44 24 08 0f 85 f1 29 f0 ff 48 8d 05 06 ce 32 00 48 39 47 08

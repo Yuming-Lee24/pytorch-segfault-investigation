@@ -16,6 +16,8 @@ never touches the GPU, and it needs no root.
     python scripts/core_probe.py sweep --mode spawn --count 20 --cpus 0-7
     # the same, with every other CPU kept busy
     python scripts/core_probe.py sweep --mode spawn --count 40 --cpus 0 --load-others
+    # the same, with two other P-cores busy: caps turbo at 5.4 GHz, rest stay idle
+    python scripts/core_probe.py sweep --mode spawn --count 40 --cpus 0 --load-cpus 2,3
 
 Results are appended to logs/core_probe/<timestamp>_<mode>.tsv, one row per
 CPU per round, and flushed to disk after every row.
@@ -425,7 +427,11 @@ def sweep(args):
         resource.setrlimit(resource.RLIMIT_CORE, (resource.RLIM_INFINITY, resource.RLIM_INFINITY))
 
     os.makedirs("logs/core_probe", exist_ok=True)
-    label = args.mode + ("_parallel" if args.parallel else "") + ("_loaded" if args.load_others else "")
+    label = args.mode + ("_parallel" if args.parallel else "")
+    if args.load_cpus:
+        label += "_load" + args.load_cpus.replace(",", "+")
+    elif args.load_others:
+        label += "_loaded"
     path = "logs/core_probe/%s_%s.tsv" % (datetime.now().strftime("%Y%m%d_%H%M%S"), label)
     log = open(path, "a", buffering=1)
 
@@ -447,7 +453,13 @@ def sweep(args):
         for group in groups:
             if home is not None and not args.parallel:
                 os.sched_setaffinity(0, {home if home not in group else spare[-1]})
-            load = start_load([c for c in everything if c not in group]) if args.load_others else []
+            if args.load_cpus:
+                busy = [c for c in parse_cpus(args.load_cpus) if c not in group]
+            elif args.load_others:
+                busy = [c for c in everything if c not in group]
+            else:
+                busy = []
+            load = start_load(busy)
             if load:
                 time.sleep(2)
             started = time.time()
@@ -508,6 +520,7 @@ def main():
     s.add_argument("--parallel", action="store_true", help="load all CPUs at once")
     s.add_argument("--load-others", action="store_true",
                    help="keep every CPU not under test busy with a spin loop")
+    s.add_argument("--load-cpus", help="keep just these CPUs busy, for example 2,3")
     s.add_argument("--cores", action="store_true", help="let crashes leave core dumps")
     s.add_argument("--seed", type=int, default=1)
 
