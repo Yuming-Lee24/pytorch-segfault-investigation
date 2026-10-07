@@ -1,0 +1,2 @@
+time	round	cpu	type	mode	work	iterations	bad	exit	avg_mhz	max_mhz	max_temp_c	kernel_events	detail
+14:36:34	0	0	P	spawn	25 spawns	25	1	SIGSEGV	5670	5700	47	1	{"failures": [{"n": 3, "pid_time": "14:36:12", "exit": "SIGSEGV", "stderr": ""}], "kernel": ["2026-10-07T14:36:11+02:00 yuming-MS-7E54 kernel: python[16879]: segfault at 8 ip 00006159d60b4235 sp 00007ffe70db3410 error 4 in python3.11[1ee235,6159d5fb7000+240000] likely on CPU 0 (core 0, socket 0)"]}
