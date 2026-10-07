@@ -10,7 +10,7 @@ incorrectly when it runs at top turbo speed (about 5.7 GHz). The NVIDIA driver, 
 PyTorch and the RAM are cleared.
 
 - Pinned to CPU 0, `import torch` fails about 5 % of the time. On every other CPU it has
-  never failed in 1,189 runs.
+  never failed in 1,185 runs.
 - Not yet settled: whether the core is defective or the 17-month-old BIOS is to blame.
   Update the BIOS, re-run the reproducer, and replace the CPU if CPU 0 still fails.
 
@@ -19,7 +19,7 @@ Full evidence and the step-by-step plan are in [DEBUG_REPORT.md](DEBUG_REPORT.md
 ## Reproduce it
 
 No GPU and no root are needed. This runs 300 pinned imports on each of CPUs 0 and 4 and
-takes about 15 minutes. **It can reset the machine**, because CPU 0 also raises fatal
+takes about 10 minutes. **It can reset the machine**, because CPU 0 also raises fatal
 machine checks.
 
 ```bash

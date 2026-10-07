@@ -3,7 +3,7 @@
 **Date:** 2026-04-17 → 2026-04-21; re-tested 2026-10-05 (§4.6); memory tests 2026-10-05 → 2026-10-06 (§4.7); reproduced and localised 2026-10-07 (§4.8)
 **Host:** yuming-MS-7E54 (Ubuntu 24.04.3 LTS)
 **Reporter:** yuming@gmail.com
-**Status (2026-10-07):** **The fault is in the CPU: its first performance core (Linux CPU 0) executes code incorrectly when it runs at top turbo speed.** It can now be reproduced on demand in a few minutes without the GPU. Whether the core is defective or the 17-month-old firmware is to blame is not yet settled; a BIOS update followed by a 15-minute re-test decides it (§5, §6).
+**Status (2026-10-07):** **The fault is in the CPU: its first performance core (Linux CPU 0) executes code incorrectly when it runs at top turbo speed.** It can now be reproduced on demand in a few minutes without the GPU. Whether the core is defective or the 17-month-old firmware is to blame is not yet settled; a BIOS update followed by a ten-minute re-test decides it (§5, §6).
 
 ---
 
@@ -11,12 +11,12 @@
 
 Random segmentation faults during PyTorch training, crashes in unrelated CPU-only programs and spontaneous resets on this workstation have one source: **CPU 0, the first P-core of the Core Ultra 9 285K, mis-executes instructions.**
 
-- **Reproduction.** `import torch` pinned to CPU 0 failed 27 times in 540 runs. The identical test passed 1,189 of 1,189 times on the other 23 CPUs, including CPU 4, which runs at the same 5.7 GHz (§4.8.2).
+- **Reproduction.** `import torch` pinned to CPU 0 failed 27 times in 540 runs. The identical test passed 1,185 of 1,185 times on the other 23 CPUs, including CPU 4, which runs at the same 5.7 GHz (§4.8.2).
 - **Nature of the fault.** Four events on CPU 0 are impossible for a working processor, for example a store that faults at an address its operands cannot produce. No memory contents enter those computations, so the RAM is not the cause (§4.8.3).
 - **Resets.** Two resets provoked by tests on CPU 0 each left a machine-check record naming CPU 0 (§4.8.4).
-- **Why it stayed hidden.** A core reaches 5.7 GHz only when the machine is lightly loaded. Every stress test loads many cores, which limits them to 5.4 GHz, so every stress test passed. `torture.py`, `pip`, `localedef` and system updates are all light, single-threaded loads (§4.8.6).
+- **Why it stayed hidden.** A core reaches 5.7 GHz only when the machine is lightly loaded. Every stress test loads many cores at once, which holds them at about 5.4 GHz while it is checking results, so every stress test passed. `torture.py`, `pip`, `localedef` and system updates are all light, single-threaded loads (§4.8.6).
 - **Speed dependence.** Held to 5.4 GHz, CPU 0 passed 220 of 220 runs. This is suggestive rather than proven, because failures come in bursts (§4.8.2).
-- **`torture.py`.** Confined to CPUs 1–23 it ran nine times, 6,356 steps in all, without a crash (§4.8.7).
+- **`torture.py`.** Confined to CPUs 1–23 it ran nine times, 6,357 steps in all, without a crash (§4.8.7).
 - **Not yet settled.** A marginal or defective core fits the evidence best. The BIOS is eight releases behind, though, and Intel has since fixed CPU errata with matching symptoms, so the firmware must be updated before that conclusion is safe. If CPU 0 still fails afterwards, the CPU should be replaced under warranty (§5, §6).
 
 Sections 4.1–4.7 record how the NVIDIA driver, the OS, PyTorch and the RAM were each suspected and cleared between April and October.
@@ -77,7 +77,7 @@ CPU, motherboard, BIOS, and RAM details are taken from the MemTest86 log of 2026
 |---|---|
 | OS / kernel | Ubuntu 24.04.3 LTS, 6.14.0-27-generic |
 | NVIDIA driver | 550.163.01 |
-| PyTorch / Python | 2.5.1 / 3.11.9 (pixi, conda-forge) |
+| PyTorch / Python | 2.5.1 (pytorch channel) / 3.11.9 (conda-forge), via pixi |
 | BIOS | 1.A70 |
 | CPU microcode | 0x118 (BIOS carries 0x117; Ubuntu loads 0x118 at boot) |
 | Intel ME firmware | 19.0.5.1948 |
@@ -277,7 +277,7 @@ After Run #8, the memory test called for in §6 was carried out, along with thre
 | PassMark MemTest86 V11.7 Free (booted from USB) | 2026-10-06, 13:50 → 18:24 | 4 h 33 min, 4 passes | **PASS, 0 errors** |
 
 **MemTest86 details** (from the log; its timestamps are in UTC, two hours behind local time):
-- Tests 0–10 and 13 (Hammer test) ran in each of the 4 passes in parallel mode, using 16 of the 24 CPUs (an earlier version of this report said all). The cumulative error count stayed at 0 throughout.
+- Tests 0–10 and 13 (Hammer test) ran in each of the 4 passes, in parallel mode on at most 16 of the 24 CPUs. Tests 0, 1 and 10 use one CPU and the Hammer test four. (An earlier version of this report said all CPUs.) The cumulative error count stayed at 0 throughout.
 - The log confirms the RAM configuration: 4800 MT/s at 40-39-39-77, i.e. JEDEC speed. This independently confirms the "XMP disabled" finding from the BIOS audit and answers the `dmidecode` check in §6 Step 1.
 - The tool used was PassMark MemTest86, not the open-source MemTest86+ that §6 originally named. Both are full RAM testers, so the result answers the same question.
 - No HTML report exists. MemTest86 did not write one to the USB stick, so the log is the only record.
@@ -300,7 +300,7 @@ Work for this phase is on branch `repro-root-cause`. Everything below was measur
 
 #### 4.8.1 Run #9 of `torture.py`: clean, then a kernel oops on CPU 0
 
-Run #9 (13:03:43, `CUDA_LAUNCH_BLOCKING=1`, 8-minute cap) completed 2,059 steps with no error. When `timeout` ended it, the kernel oopsed while the process was being torn down:
+Run #9 (13:03:43, `CUDA_LAUNCH_BLOCKING=1`, 8-minute cap) reached step 2,059 with no error. When `timeout` ended it, the kernel oopsed while the process was being torn down:
 
 ```text
 BUG: unable to handle page fault for address: 000045957ee10d90
@@ -312,14 +312,14 @@ RSP: ffffb46d4f12f5d8  RBP: ffffb46d4f12f608  RAX: 85bd2842d5081100
 CR2: 000045957ee10d90
 ```
 
-- The faulting instruction is `mov %rax,-0x8(%rbp)`: it stores the stack canary just below a frame pointer that was pushed two instructions earlier. With `RBP = ffffb46d4f12f608` it can only write to `ffffb46d4f12f600`, which is in the page the same function had just written to.
+- The faulting instruction is `mov %rax,-0x8(%rbp)`: it stores the stack canary just below a frame pointer that was pushed four instructions earlier. With `RBP = ffffb46d4f12f608` it can only write to `ffffb46d4f12f600`, which is in the page the same function had just written to.
 - The CPU reported the fault at `000045957ee10d90`, an address unrelated to any register or stack word in the dump. No correct execution of this instruction produces that fault, and no memory contents are involved in computing the address, so a bad DIMM cannot explain it.
 - A second oops at 13:18:57 (`nvidia-smi`, CPU 15) dereferenced a pointer into the dead thread's freed stack. It is a software consequence of the first oops, not a second hardware event. It died holding a lock with interrupts off, which hung the machine; it was reset by hand.
 - Kernel log: `logs/kernel/boot_20261007_123826_kernel.log` (oops at line 1241). pstore copies: `logs/rootdiag/20261007_133822/pstore/`.
 
 #### 4.8.2 A CPU-only reproducer, one CPU at a time
 
-`scripts/core_probe.py` pins work to a single CPU and records failures per CPU. It never touches the GPU and needs no root. Its `spawn` mode runs `taskset -c N python -c "import torch, torchvision"` repeatedly; this is the same command that segfaulted once on 2026-10-05. Each run takes about 1.4 s.
+`scripts/core_probe.py` pins work to a single CPU and records failures per CPU. It never touches the GPU and needs no root. Its `spawn` mode runs `taskset -c N python -c "import torch, torchvision"` repeatedly; this is the same command that segfaulted once on 2026-10-05. Each run takes about 1.1 s on a P-core.
 
 | CPU under test | Condition | Measured frequency | Failed / runs |
 |---|---|---|---|
@@ -330,11 +330,11 @@ CR2: 000045957ee10d90
 | CPU 0 | speculative store bypass disabled for the process | 5.67–5.69 GHz | 0 / 30 |
 | **CPU 0** | two other P-cores kept busy (turbo limit drops to 54x) | 5.38–5.40 GHz | **0 / 220** |
 | CPU 4 (the other 57x core) | alone | 5.66–5.68 GHz | 0 / 395 |
-| CPUs 1–3, 5–7 | alone | 5.48–5.50 GHz | 0 / 554 |
+| CPUs 1–3, 5–7 | alone | 5.48–5.50 GHz | 0 / 550 |
 | E-cores, CPUs 8–23 | alone | 4.60 GHz | 0 / 240 |
 
-- **CPU 0 at about 5.7 GHz: 27 failures in 540 runs (5.0 %),** over three separate boots. Failures are `SIGSEGV`, general protection faults, or a Python exception raised from corrupted state.
-- **Every other CPU: 0 failures in 1,189 runs.** CPU 4 has the same 57x turbo limit as CPU 0 and passed 395 of 395.
+- **CPU 0 at about 5.7 GHz: 27 failures in 540 runs (5.0 %),** over two separate boots. Failures are `SIGSEGV`, general protection faults, or a Python exception raised from corrupted state.
+- **Every other CPU: 0 failures in 1,185 runs.** CPU 4 has the same 57x turbo limit as CPU 0 and passed 395 of 395.
 - **CPU 0 at 5.4 GHz: 0 failures in 220 runs.** This points to the top turbo speed as a condition, but it is not proven:
   - Failures come in bursts. At 5.7 GHz there were stretches of 98 and 81 consecutive clean runs, and most of the 5.4 GHz runs fell inside one such quiet stretch.
   - Only two speeds were compared, and the lower one was reached by loading two neighbouring cores, which changes more than the frequency.
@@ -342,10 +342,10 @@ CR2: 000045957ee10d90
 - Keeping CPU 0 out of idle states, or keeping E-cores busy, does not prevent the failures.
 - Self-checking compute (hashing, compression, sorting, numpy, 16 MB copies, each verified against a reference digest):
   - Steady, on CPU 4: 2 × 90 s and 2 × 150 s, clean. On CPU 1: 2 × 90 s, clean.
-  - Steady, on CPU 0: the first attempt segfaulted within seconds; the second ended in a spontaneous reset about 45 s in (§4.8.4).
+  - Steady, on CPU 0: the first attempt segfaulted within seconds; the second ended in a spontaneous reset less than a minute in (§4.8.4).
   - Bursty, 2 × 15 s per CPU: clean on all 24. This amounts to only a few seconds of work per CPU, too little to count as a pass for CPU 0.
   - No run ever produced a wrong digest; every detected failure was a crash, an exception or a reset.
-- Core 0 was at 60–66 °C in the runs where its temperature was logged. CPU 4 reached 76–78 °C in its steady runs without failing.
+- Core 0 was at 56–66 °C in the runs where its temperature was logged. CPU 4 reached 76–78 °C in its steady runs without failing.
 
 Raw results: `logs/core_probe/*.tsv`. The `max_temp_c` column in files written before 15:10 is wrong (it read the Wi-Fi sensor); later files read the core under test.
 
@@ -385,15 +385,15 @@ addr   0x00005b9d2564a239 (first), 0x000062bd607dea30 (second)
 ```
 
 - Intel's specification update for this CPU family (document 834774, rev 023) lists erratum **ARL050**: a system hang, or a hang with an internal-timer machine check with exactly `MCACOD=400h` and `MSCOD=E1C4h`, following a core C1 exit. Its status is "Fixed", and it was first published in September 2025, after this board's BIOS was built.
-- The code pair matches the erratum, but the erratum's trigger does not match these events. ARL050 follows a C1 idle exit, and in the first event CPU 0 had been continuously busy for about 45 s. Both address fields are user-space addresses, and the first one's page offset matches the instruction after a known crash site in `python3.11`. The simpler reading is that core 0 stopped retiring instructions in the same code that segfaults, so these records do not decide between firmware and silicon (§5).
-- Two earlier resets logged `mce: [Hardware Error]: Machine check events logged` at the next boot: 2026-10-06 about 12:36 and 2026-10-07 about 12:37. Both happened while `unattended-upgrade`, a single-threaded Python program, was running on an otherwise idle machine. Their records were not captured, so which CPU raised them is unknown. An OCCT screenshot taken about a minute before the first one shows the single busy thread on CPU 4 at 5.65 GHz.
+- The code pair matches the erratum, but the erratum's trigger does not match these events. ARL050 follows a C1 idle exit, and in the first event CPU 0 had been continuously busy for most of a minute. Both address fields are user-space addresses, and the first one's page offset matches the instruction after a known crash site in `python3.11`. The simpler reading is that core 0 stopped retiring instructions in the same code that segfaults, so these records do not decide between firmware and silicon (§5).
+- Two earlier resets logged `mce: [Hardware Error]: Machine check events logged` at the next boot: 2026-10-06 about 12:36 and 2026-10-07 about 12:37. Both happened while `unattended-upgrade`, a single-threaded Python program, was running on an otherwise idle machine. Their records were not captured, so which CPU raised them is unknown. An OCCT screenshot taken within about a minute before the first one shows the single busy thread on CPU 4 at 5.65 GHz.
 - The firmware also leaves an Intel CrashLog record in the ACPI BERT table after each unclean reset. `scripts/decode_bert.py` lists its sections; decoding their contents needs Intel's own tool.
 
 #### 4.8.5 Firmware is far behind
 
 | Item | Installed | Current |
 |---|---|---|
-| BIOS | 1.A70 (7E54v1A7, spring 2025) | 7E54v1AE0 (2026-08-03), eight releases later |
+| BIOS | 1.A70 (7E54v1A70, spring 2025) | 7E54v1AE0 (2026-08-03), eight releases later |
 | Microcode | 0x118 (loaded by Ubuntu; the BIOS itself carries 0x117) | 0x122 (Intel, 2026-08-11); Ubuntu 24.04 packages 0x11b |
 | Intel ME | 19.0.5.1948 | 19.0.11.2289 on other vendors' boards |
 
@@ -402,7 +402,7 @@ Intel's errata list for this CPU includes four that fit the symptoms and were fi
 #### 4.8.6 Why every earlier test passed
 
 - The 285K runs its P-cores at 57x (5.7 GHz) only when at most two P-cores are busy, and only CPUs 0 and 4 are allowed that ratio. With three or more busy the limit is 54x.
-- `gpu-burn`, `stress-ng`, OCCT and MemTest86 all load many cores at once, so none of them ever ran CPU 0 above 54x. MemTest86 measured 54x on the boot CPU and used 16 of the 24 CPUs.
+- `gpu-burn`, `stress-ng`, OCCT and MemTest86 all load many cores at once, which holds the P-cores at about 54x while they work. None of them checked results on CPU 0 at 57x. OCCT did log 5.70 GHz maxima on cores 0 and 4, from the lightly loaded moments around its tests. MemTest86 measured 54x on the boot CPU and used at most 16 of the 24 CPUs.
 - `torture.py` loads the CPU lightly: system CPU use was 3.6 % during run #9. Its main thread therefore often runs alone on a preferred core at 57x, as do `pip`, `localedef`, `import torch`, `update-manager` and `unattended-upgrade`.
 - Linux places single-threaded work on CPUs 0 and 4 first, which is why the fault looked random rather than rare.
 
@@ -415,9 +415,9 @@ Intel's errata list for this CPU includes four that fit the symptoms and were fi
 | 8 | 75 s each | 311–313 each | all clean |
 | 1 | 15 min | 3,860 | clean |
 
-- Nine starts, 6,356 steps, 25 minutes: no crash, clean teardown every time, and no kernel fault line.
+- Nine starts, 6,357 steps, 25 minutes: no crash, clean teardown every time, and no kernel fault line.
 - This is supporting evidence, not proof. Unconfined runs have also gone 4,259 steps without a crash (runs #6 and #7), and `taskset` does not keep the kernel or other programs off CPU 0.
-- During these runs the main thread used about one core and each DataLoader worker about 4 %, which confirms the light CPU load described in §4.8.6.
+- A `ps` snapshot at 14:49 showed the main thread using about one core and each DataLoader worker about 4 %, which confirms the light CPU load described in §4.8.6.
 
 ### 4.9 Consolidated evidence
 
@@ -448,7 +448,7 @@ Tests that have passed, for comparison:
 | OCCT Memory (×2) | 1 h each | no errors |
 | MemTest86 V11.7 | 4 passes, 4 h 33 min | 0 errors |
 
-None of these tests ran any core above 54x, which is why they passed (§4.8.6). The per-CPU test of §4.8.2 does reproduce the fault.
+Under their sustained all-core load these tests held the P-cores at about 54x, which is why they passed (§4.8.6). The per-CPU test of §4.8.2 does reproduce the fault.
 
 ---
 
@@ -461,7 +461,7 @@ None of these tests ran any core above 54x, which is why they passed (§4.8.6). 
 1. **It follows the core.** The same pinned test fails on CPU 0 and on no other CPU (§4.8.2).
 2. **It is the processor, not the data.** Four events on CPU 0 cannot occur on a working processor, and none involves memory contents (§4.8.3).
 3. **The resets come from the same core.** Both captured machine-check records name CPU 0 (§4.8.4).
-4. **It is consistent across the whole history.** Every kernel crash line that names a CPU names CPU 0: both `localedef` crashes in April, the `python3.11` crash on 2026-10-05, and all 15 on 2026-10-07. The 2026-10-05 `update-manager` core also shows CPU 0.
+4. **It is consistent across the whole history.** Every kernel crash line that names a CPU names CPU 0: both `localedef` crashes in April, the `python3.11` crash on 2026-10-05, and all 15 on 2026-10-07. The only exceptions are the deliberate test crash (CPU 22) and the follow-on `nvidia-smi` oops (CPU 15). The 2026-10-05 `update-manager` core also shows CPU 0.
 
 ### Probable
 
@@ -473,7 +473,7 @@ None of these tests ran any core above 54x, which is why they passed (§4.8.6). 
 |---|---|---|
 | **A marginal or defective core** | The fault is confined to one of eight identical cores. CPU 4 runs the same 5.7 GHz cleanly. A design erratum or a firmware bug would be expected to affect all P-cores alike. At least one published case of an unstable 285K with clean memory tests was cured by replacing the CPU (`logs/agent_reports/web-arl-instability.md`). | Not yet re-tested on current firmware. |
 | **Outdated firmware** (BIOS 1.A70, microcode 0x118, ME 19.0.5) | Seventeen months old. Intel has since fixed errata whose descriptions fit (§4.8.5), and the machine-check code pair is the one listed for ARL050. Per-core voltage and frequency handling is under firmware control. | CPU 4 is clean. ARL050's trigger does not match the captured events (§4.8.4). |
-| **Board voltage delivery** (BIOS voltage settings, voltage regulator) | A shortfall would show first on the core that needs the most voltage at the highest speed. In five samples CPU 0 was requesting 1.32–1.36 V at 57x against 1.36–1.38 V for CPU 4; the sample is too small to rely on. | Turbo ratios and power limits are at Intel's values, and all-core runs at far higher current pass. |
+| **Board voltage delivery** (BIOS voltage settings, voltage regulator) | A shortfall would show first on the core that needs the most voltage at the highest speed. At 57x CPU 0 was requesting 1.32–1.36 V (three samples) against 1.36–1.38 V for CPU 4 (two samples); that is too few to rely on. | Turbo ratios are at Intel's values and the power limits are at or below them (PL1 200 W, PL2 250 W). All-core runs at far higher current pass. |
 
 The first candidate fits best. The three cannot be separated without changing the firmware, the BIOS settings or the hardware (§6).
 
@@ -483,7 +483,7 @@ The first candidate fits best. The three cannot be separated without changing th
 - **GPU and NVIDIA driver.** The reproducer never opens a GPU device, and three driver versions behave the same.
 - **OS, kernel, Python, PyTorch.** Three installs and three kernels behave the same. The failing import is single-threaded with a fixed hash seed, so software has no way to fail 5 % of the time on one CPU only.
 - **Storage.** The interpreter matches its package checksum, and the code bytes in every crash line match the file on disk.
-- **Overheating.** Core 0 was at 60–66 °C during the runs where its temperature was recorded, and thermal-throttle counters are zero.
+- **Overheating.** Core 0 was at 56–66 °C during the runs where its temperature was recorded, and thermal-throttle counters are zero.
 - **Memory overclock.** XMP is off; the RAM runs at JEDEC 4800.
 - **Something special about the boot CPU.** No device's interrupts are routed specifically to CPU 0, no system-management interrupts were counted, and all 24 CPUs run the same microcode revision.
 
@@ -499,7 +499,7 @@ The first candidate fits best. The three cannot be separated without changing th
 
 ### Step 1 — Keep work away from the fault (now, reversible)
 
-- **Best: limit the P-core turbo ratio to 54 in the BIOS.** This keeps every program, including the kernel and background updates, below the speed at which CPU 0 fails. It costs about 5 % in single-thread speed. Check that it worked with the Step 3 command; expect no failures and a frequency column near 5400.
+- **Best: limit the P-core turbo ratio to 54 in the BIOS.** This keeps every program, including the kernel and background updates, below the speed at which CPU 0 fails. It costs about 5 % in single-thread speed. Check that it worked with the Step 3 command, leaving off `--require-mhz 5600`; expect no failures and an `avg_mhz` column near 5400.
 - **Without a reboot: prefix a job with `taskset -c 1-23`.** This protects that job only. The kernel and every other program still use CPU 0.
 - **`unattended-upgrade` runs next early on Thursday 2026-10-08** (currently scheduled for 06:17). Both unprovoked resets happened while it was running, so expect another unless the ratio limit is in place.
 
@@ -510,9 +510,9 @@ The first candidate fits best. The three cannot be separated without changing th
 3. Load defaults. Confirm XMP and "200S Boost" are off and the CPU is on Intel Default Settings.
 4. In Linux, record `journalctl -k | grep microcode` and `cat /sys/class/mei/mei0/fw_ver`.
 
-Flashing carries some risk: this board has no BIOS flashback button, and a reset during the flash could leave it unbootable. The risk is small, because the machine sat in the UEFI MemTest86 environment for about 22 hours without a reset, and all the resets have happened in Linux.
+Flashing carries some risk: this board has no BIOS flashback button, and a reset during the flash could leave it unbootable. The risk is small, because the machine sat in the UEFI MemTest86 environment for nearly 23 hours without a reset, and all the resets have happened in Linux.
 
-### Step 3 — Re-run the reproducer (about 15 minutes)
+### Step 3 — Re-run the reproducer (about 10 minutes)
 
 ```bash
 .pixi/envs/default/bin/python scripts/core_probe.py sweep --mode spawn --cpus 0,4 --count 50 --rounds 6 --require-mhz 5600
@@ -543,7 +543,7 @@ Run `sudo scripts/collect_root_diag.sh` before anything else. The machine-check 
 - **Results computed on CPU 0 cannot be trusted.** Most failures are crashes, but some were ordinary Python exceptions raised from corrupted state, and one kernel bounds check misfired without stopping anything. Silent wrong results are possible.
 - **The machine can reset without warning** during light, single-threaded work. Save often.
 - **After a kernel `BUG:` or `Oops` line, reboot before touching the GPU.** On 2026-10-07 running `nvidia-smi` after an oops hung the machine.
-- **Filesystem.** Four unclean restarts occurred on 2026-10-07. The journal recovered each time; no filesystem errors have been logged.
+- **Filesystem.** Four unclean restarts occurred on 2026-10-07. No errors have been logged for the system disk. The USB stick's FAT volumes were flagged as not cleanly unmounted.
 - **Core dumps** of the CPU 0 crashes are in `/var/lib/apport/coredump/` (apport keeps only the newest five). They are not copied into this repository.
 
 ---
@@ -568,13 +568,13 @@ Run `sudo scripts/collect_root_diag.sh` before anything else. The machine-check 
 | `scripts/cpu_conditions.sh` | Compares conditions on one CPU in small interleaved blocks (alone, one or two other P-cores busy, store bypass disabled) |
 | `scripts/run_torture_loop.sh` | Runs `torture.py` repeatedly, optionally confined to a CPU list, and records how each run ended |
 | `scripts/collect_root_diag.sh` | Root-only capture: machine-check buffer, BERT record, pstore, MSRs, turbostat. Run it straight after any spontaneous reset |
-| `scripts/decode_mcelog.py`, `scripts/decode_bert.py` | Decoders for the two captures above. `decode_mcelog.py` has been run on one real record |
+| `scripts/decode_mcelog.py`, `scripts/decode_bert.py` | Decoders for the two captures above. `decode_mcelog.py` has been run on two real records |
 | `logs/core_probe/*.tsv` | Every per-CPU test result of 2026-10-07 |
 | `logs/forensics/spawn_crash_*.txt` | `gdb` summaries of five CPU 0 crash cores |
-| `logs/kernel/boot_*_kernel.log` | Kernel logs of the three boots of 2026-10-07, including the oops |
+| `logs/kernel/boot_*_kernel.log` | Kernel logs of four boots of 2026-10-07 (12:38, 13:23, 14:09, 15:20), including the oops |
 | `logs/rootdiag/20261007_133822/`, `…_143159/`, `…_152153/` | Root captures. The second and third each hold a machine-check record (`mcelog.decoded.txt`). `dmidecode.txt` contains board and DIMM serial numbers |
-| `logs/agent_reports/*.md` | Supporting analyses with sources: crash forensics, journal timeline, firmware and errata research, MemTest86/OCCT facts |
-| `logs/torture/summary_20261007_*.tsv` | Run #9 and the runs confined to CPUs 1–23 |
+| `logs/agent_reports/*.md` | Supporting analyses with sources: crash forensics, journal timeline, firmware and errata research, MemTest86/OCCT facts. The `review-*.md` files are five independent attempts to refute the Phase 8 conclusions; they hold the checks behind several statements in §4.8.3 and §5 |
+| `logs/torture/summary_20261007_*.tsv` | The runs confined to CPUs 1–23. Run #9's summary has no row because the machine hung first; its log is `logs/torture/20261007_130343.log` |
 | `~/pytorch-segfault-investigation/logs/gpu_burn/*` | 8-hour gpu-burn logs (Ubuntu 22 era) |
 | `~/pytorch-segfault-investigation/logs/memtester/*` | 32 GB memtester log (2 passes, all `ok`) (Ubuntu 22 era) |
 | `~/pytorch-segfault-investigation/logs/torture/torture_*.log` | Ubuntu 22 era training reproducer logs (original 3 segfaults) |
@@ -615,10 +615,10 @@ Run `sudo scripts/collect_root_diag.sh` before anything else. The machine-check 
 | 2026-10-07 12:37 | Spontaneous reset while `unattended-upgrade` ran; next boot logs "Machine check events logged" (record not captured). |
 | 2026-10-07 13:03 → 13:11 | `torture.py` run #9: 2,059 clean steps, then a **kernel oops on CPU 0** during teardown. A follow-on oops in `nvidia-smi` hung the machine; reset by hand. |
 | 2026-10-07 13:30 → 13:57 | Per-CPU tests: bursty self-check clean on all 24 CPUs; **pinned `import torch` fails only on CPU 0** (8 of 95; every other CPU 0 of 585). Five core dumps examined. |
-| 2026-10-07 14:05 → 14:09 | Steady self-check: CPUs 4 and 1 clean; CPU 0 segfaults, then the **machine resets itself**. |
+| 2026-10-07 14:02 → 14:09 | Steady self-check: CPUs 4 and 1 clean; CPU 0 segfaults, then the **machine resets itself**. |
 | 2026-10-07 14:32 | Machine-check record captured: **CPU 0, bank 3, internal timer error, MSCOD 0xE1C4**. |
-| 2026-10-07 14:35 → 14:47 | CPU 0 by condition: fails at 5.7 GHz alone, never-idle, or with E-cores busy (27 of 470 in total); **0 of 200 when held to 5.4 GHz**. |
-| 2026-10-07 14:48 → 15:13 | `torture.py` confined to CPUs 1–23: nine starts, 6,356 steps, no crash (§4.8.7). |
+| 2026-10-07 14:35 → 14:47 | CPU 0 by condition: fails at 5.7 GHz alone, never-idle, or with E-cores busy (19 of 375 in this window; 27 of 470 with the earlier runs); **0 of 200 when held to 5.4 GHz**. |
+| 2026-10-07 14:48 → 15:13 | `torture.py` confined to CPUs 1–23: nine starts, 6,357 steps, no crash (§4.8.7). |
 | 2026-10-07 15:17 → 15:19 | Interleaved CPU 0 test: 90 clean imports, then **another spontaneous reset**. Second machine-check record: again CPU 0, bank 3, same code. |
 | 2026-10-07 15:22 → 15:38 | More exposure on healthy cores: CPU 4 passes 300 imports and 300 s of steady self-check at 5.7 GHz; CPUs 1–3, 5–7 pass 300 imports. |
 
