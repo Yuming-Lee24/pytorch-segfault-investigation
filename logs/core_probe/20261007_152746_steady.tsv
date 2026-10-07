@@ -1,0 +1,3 @@
+time	round	cpu	type	mode	work	iterations	bad	exit	avg_mhz	max_mhz	max_temp_c	kernel_events	detail
+15:30:17	0	4	P	steady	150s	3626	0	0	5654	5700	78	0	
+15:32:47	1	4	P	steady	150s	3635	0	0	5656	5700	76	0	
