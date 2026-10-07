@@ -25,6 +25,7 @@ CPU per round, and flushed to disk after every row.
 import argparse
 import collections
 import faulthandler
+import glob
 import hashlib
 import heapq
 import json
@@ -43,7 +44,7 @@ import zlib
 from datetime import datetime
 
 KERNEL_FAULT = re.compile(
-    r"segfault|general protection|traps:|BUG:|Oops|Hardware Error|mce:|"
+    r"segfault|general protection|traps:|BUG:|Oops|UBSAN|Hardware Error|mce:|"
     r"soft lockup|rcu.*stall",
     re.IGNORECASE,
 )
@@ -312,11 +313,21 @@ def kernel_events(since_epoch):
     return [line for line in out.splitlines() if KERNEL_FAULT.search(line)]
 
 
+def core_temp_path(cpu):
+    """sysfs file with the temperature of the physical core behind `cpu`."""
+    core_id = read("/sys/devices/system/cpu/cpu%d/topology/core_id" % cpu)
+    for label in glob.glob("/sys/class/hwmon/hwmon*/temp*_label"):
+        if read(os.path.dirname(label) + "/name") == "coretemp" and read(label) == "Core " + core_id:
+            return label[:-len("_label")] + "_input"
+    return None
+
+
 class Telemetry:
-    """Frequency of the CPUs under test and package temperature, sampled."""
+    """Frequency and core temperature of the CPUs under test, sampled."""
 
     def __init__(self, cpus):
         self.cpus = cpus
+        self.temp_paths = [p for p in map(core_temp_path, cpus) if p]
         self.mhz = []
         self.temp = []
 
@@ -325,9 +336,10 @@ class Telemetry:
             v = read("/sys/devices/system/cpu/cpu%d/cpufreq/scaling_cur_freq" % cpu)
             if v.isdigit():
                 self.mhz.append(int(v) // 1000)
-        t = read("/sys/class/thermal/thermal_zone4/temp")
-        if t.isdigit():
-            self.temp.append(int(t) // 1000)
+        for path in self.temp_paths:
+            t = read(path)
+            if t.isdigit():
+                self.temp.append(int(t) // 1000)
 
     def summary(self):
         avg = sum(self.mhz) // len(self.mhz) if self.mhz else 0
@@ -436,7 +448,11 @@ def sweep(args):
         label += "_loaded"
     if args.keep_awake:
         label += "_awake"
-    path = "logs/core_probe/%s_%s.tsv" % (datetime.now().strftime("%Y%m%d_%H%M%S"), label)
+    if args.tag:
+        label += "_" + args.tag
+    path = args.out or "logs/core_probe/%s_%s.tsv" % (
+        datetime.now().strftime("%Y%m%d_%H%M%S"), label)
+    fresh = not os.path.exists(path)
     log = open(path, "a", buffering=1)
 
     def emit(*fields):
@@ -446,10 +462,12 @@ def sweep(args):
         os.fsync(log.fileno())
         print(line, flush=True)
 
-    emit("time", "round", "cpu", "type", "mode", "work", "iterations", "bad", "exit",
-         "avg_mhz", "max_mhz", "max_temp_c", "kernel_events", "detail")
+    if fresh:
+        emit("time", "round", "cpu", "type", "mode", "work", "iterations", "bad", "exit",
+             "avg_mhz", "max_mhz", "max_temp_c", "kernel_events", "detail")
 
     references = collections.defaultdict(dict)   # unit -> {digest: [cpus]}
+    slow_rows = 0
     for rnd in range(args.rounds):
         order = list(cpus)
         random.Random(args.seed + rnd).shuffle(order)
@@ -473,6 +491,8 @@ def sweep(args):
                 if args.mode == "spawn":
                     results = {group[0]: run_spawns(group[0], args)}
                     work = "%d spawns" % args.count
+                    if args.code != SPAWN_CODE:
+                        work += " (custom code)"
                 else:
                     results = run_workers(group, args, args.seed + 1000 * rnd)
                     work = "%ds" % args.seconds
@@ -490,6 +510,9 @@ def sweep(args):
                 if events:
                     detail["kernel"] = events[:6]
                 avg, peak, temp = r["telemetry"]
+                if args.require_mhz and avg < args.require_mhz:
+                    detail["too_slow"] = "average %d MHz is below --require-mhz" % avg
+                    slow_rows += 1
                 emit(datetime.now().strftime("%H:%M:%S"), rnd, cpu, kind(cpu), label, work,
                      r["iterations"], r["mismatches"], r["exit"], avg, peak, temp,
                      len(events), json.dumps(detail) if detail else "")
@@ -502,6 +525,8 @@ def sweep(args):
         if len(by_digest) > 1:
             groups = {d[:12]: sorted(set(c)) for d, c in by_digest.items()}
             emit("NOTE", "reference digests differ between CPUs", unit, json.dumps(groups))
+    if slow_rows:
+        emit("NOTE", "%d row(s) ran below --require-mhz; a pass there proves nothing" % slow_rows)
     print("Wrote", path)
     return 0
 
@@ -530,6 +555,10 @@ def main():
     s.add_argument("--keep-awake", action="store_true",
                    help="idle-priority spin loop on the CPU under test, so it never idles")
     s.add_argument("--cores", action="store_true", help="let crashes leave core dumps")
+    s.add_argument("--require-mhz", type=int,
+                   help="flag rows whose CPU averaged below this frequency")
+    s.add_argument("--tag", help="extra text for the mode column")
+    s.add_argument("--out", help="append rows to this file instead of a new one")
     s.add_argument("--seed", type=int, default=1)
 
     args = ap.parse_args()

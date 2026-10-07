@@ -1223,3 +1223,71 @@
 2026-10-07T14:09:59+02:00 yuming-MS-7E54 kernel: wlp129s0f0: associated
 2026-10-07T14:10:00+02:00 yuming-MS-7E54 kernel: wlp129s0f0: Limiting TX power to 30 (30 - 0) dBm as advertised by 10:7c:61:a0:a6:92
 2026-10-07T14:10:03+02:00 yuming-MS-7E54 kernel: wlp129s0f0: deauthenticated from 10:7c:61:a0:a6:92 (Reason: 2=PREV_AUTH_NOT_VALID)
+2026-10-07T14:35:24+02:00 yuming-MS-7E54 kernel: show_signal: 1 callbacks suppressed
+2026-10-07T14:35:24+02:00 yuming-MS-7E54 kernel: traps: python[16737] general protection fault ip:5f86d6a3e6c6 sp:7ffd1eb669e0 error:0 in python3.11[1e06c6,5f86d694f000+240000]
+2026-10-07T14:35:37+02:00 yuming-MS-7E54 kernel: python[16784]: segfault at 76bb00000000 ip 0000637771618c35 sp 00007fff49993c90 error 7 in python3.11[132c35,6377715d7000+240000] likely on CPU 0 (core 0, socket 0)
+2026-10-07T14:35:37+02:00 yuming-MS-7E54 kernel: Code: 74 24 18 48 89 44 24 20 31 c0 48 89 43 70 e8 82 3b 0e 00 48 8b 6c 24 08 48 85 ed 74 13 48 8b 7c 24 10 48 89 ee e8 9b 57 0e 00 <48> ff 4d 00 74 74 48 8b 7c 24 18 48 ff 0f 74 63 48 8d 4c 24 20 48
+2026-10-07T14:36:11+02:00 yuming-MS-7E54 kernel: python[16879]: segfault at 8 ip 00006159d60b4235 sp 00007ffe70db3410 error 4 in python3.11[1ee235,6159d5fb7000+240000] likely on CPU 0 (core 0, socket 0)
+2026-10-07T14:36:11+02:00 yuming-MS-7E54 kernel: Code: 00 00 00 0f b6 c2 66 c1 ed 08 48 8b 04 c1 0f b7 ed ff e0 4d 8b 72 f8 48 8b 44 24 08 4c 89 54 24 48 4d 8d 7c 24 02 4c 89 60 38 <49> 8b 46 08 4c 89 f7 ff 90 e0 00 00 00 4c 8b 54 24 48 48 85 c0 0f
+2026-10-07T14:42:46+02:00 yuming-MS-7E54 kernel: python[17756]: segfault at 24 ip 00005d908eb4f228 sp 00007ffd6fca25b0 error 4 in python3.11[218228,5d908ea28000+240000] likely on CPU 0 (core 0, socket 0)
+2026-10-07T14:42:46+02:00 yuming-MS-7E54 kernel: Code: 67 ff ff ff 66 0f 1f 44 00 00 49 ff 4d 00 0f 85 57 ff ff ff 49 8b 45 08 4c 89 ef ff 50 30 e9 48 ff ff ff 48 8d 05 98 c0 31 00 <49> 39 44 24 08 0f 85 f1 29 f0 ff 48 8d 05 06 ce 32 00 48 39 47 08
+2026-10-07T14:42:58+02:00 yuming-MS-7E54 kernel: python[17778]: segfault at 10 ip 0000624851d38228 sp 00007ffd673211f0 error 4 in python3.11[218228,624851c11000+240000] likely on CPU 0 (core 0, socket 0)
+2026-10-07T14:42:58+02:00 yuming-MS-7E54 kernel: Code: 67 ff ff ff 66 0f 1f 44 00 00 49 ff 4d 00 0f 85 57 ff ff ff 49 8b 45 08 4c 89 ef ff 50 30 e9 48 ff ff ff 48 8d 05 98 c0 31 00 <49> 39 44 24 08 0f 85 f1 29 f0 ff 48 8d 05 06 ce 32 00 48 39 47 08
+2026-10-07T14:43:05+02:00 yuming-MS-7E54 kernel: traps: python[17798] general protection fault ip:56591e7dbce0 sp:7ffcfa26c7b0 error:0 in python3.11[1d3ce0,56591e6f9000+240000]
+2026-10-07T14:43:27+02:00 yuming-MS-7E54 kernel: python[17837]: segfault at 24 ip 00005f2f5ab86228 sp 00007fff6bad1ac0 error 4 in python3.11[218228,5f2f5aa5f000+240000] likely on CPU 0 (core 0, socket 0)
+2026-10-07T14:43:27+02:00 yuming-MS-7E54 kernel: Code: 67 ff ff ff 66 0f 1f 44 00 00 49 ff 4d 00 0f 85 57 ff ff ff 49 8b 45 08 4c 89 ef ff 50 30 e9 48 ff ff ff 48 8d 05 98 c0 31 00 <49> 39 44 24 08 0f 85 f1 29 f0 ff 48 8d 05 06 ce 32 00 48 39 47 08
+2026-10-07T14:43:35+02:00 yuming-MS-7E54 kernel: python[17859]: segfault at 3c ip 00005b277b1a5228 sp 00007ffdc0033e30 error 4 in python3.11[218228,5b277b07e000+240000] likely on CPU 0 (core 0, socket 0)
+2026-10-07T14:43:35+02:00 yuming-MS-7E54 kernel: Code: 67 ff ff ff 66 0f 1f 44 00 00 49 ff 4d 00 0f 85 57 ff ff ff 49 8b 45 08 4c 89 ef ff 50 30 e9 48 ff ff ff 48 8d 05 98 c0 31 00 <49> 39 44 24 08 0f 85 f1 29 f0 ff 48 8d 05 06 ce 32 00 48 39 47 08
+2026-10-07T14:43:41+02:00 yuming-MS-7E54 kernel: traps: python[17880] general protection fault ip:5e4b63fe9ce0 sp:7fff91b890a0 error:0 in python3.11[1d3ce0,5e4b63f07000+240000]
+2026-10-07T14:44:11+02:00 yuming-MS-7E54 kernel: python[17941]: segfault at 3c ip 00006500c080d228 sp 00007ffe787659c0 error 4 in python3.11[218228,6500c06e6000+240000] likely on CPU 0 (core 0, socket 0)
+2026-10-07T14:44:11+02:00 yuming-MS-7E54 kernel: Code: 67 ff ff ff 66 0f 1f 44 00 00 49 ff 4d 00 0f 85 57 ff ff ff 49 8b 45 08 4c 89 ef ff 50 30 e9 48 ff ff ff 48 8d 05 98 c0 31 00 <49> 39 44 24 08 0f 85 f1 29 f0 ff 48 8d 05 06 ce 32 00 48 39 47 08
+2026-10-07T14:44:14+02:00 yuming-MS-7E54 kernel: ------------[ cut here ]------------
+2026-10-07T14:44:14+02:00 yuming-MS-7E54 kernel: UBSAN: array-index-out-of-bounds in /build/linux-hwe-6.14-km8TX5/linux-hwe-6.14-6.14.0/mm/memcontrol.c:356:31
+2026-10-07T14:44:14+02:00 yuming-MS-7E54 kernel: index 18 is out of range for type 'u8 [55]'
+2026-10-07T14:44:14+02:00 yuming-MS-7E54 kernel: CPU: 0 UID: 1000 PID: 17951 Comm: python Tainted: P           O       6.14.0-27-generic #27~24.04.1-Ubuntu
+2026-10-07T14:44:14+02:00 yuming-MS-7E54 kernel: Tainted: [P]=PROPRIETARY_MODULE, [O]=OOT_MODULE
+2026-10-07T14:44:14+02:00 yuming-MS-7E54 kernel: Hardware name: Micro-Star International Co., Ltd. MS-7E54/PRO Z890-S WIFI (MS-7E54), BIOS 1.A70 04/27/2025
+2026-10-07T14:44:14+02:00 yuming-MS-7E54 kernel: Call Trace:
+2026-10-07T14:44:14+02:00 yuming-MS-7E54 kernel:  <TASK>
+2026-10-07T14:44:14+02:00 yuming-MS-7E54 kernel:  dump_stack_lvl+0x76/0xa0
+2026-10-07T14:44:14+02:00 yuming-MS-7E54 kernel:  dump_stack+0x10/0x20
+2026-10-07T14:44:14+02:00 yuming-MS-7E54 kernel:  __ubsan_handle_out_of_bounds+0xcb/0x110
+2026-10-07T14:44:14+02:00 yuming-MS-7E54 kernel:  __mod_memcg_lruvec_state+0x205/0x250
+2026-10-07T14:44:14+02:00 yuming-MS-7E54 kernel:  __lruvec_stat_mod_folio+0x86/0xf0
+2026-10-07T14:44:14+02:00 yuming-MS-7E54 kernel:  folio_remove_rmap_ptes+0x44/0x110
+2026-10-07T14:44:14+02:00 yuming-MS-7E54 kernel:  zap_present_ptes.constprop.0+0x331/0x780
+2026-10-07T14:44:14+02:00 yuming-MS-7E54 kernel:  zap_pte_range+0x199/0x5a0
+2026-10-07T14:44:14+02:00 yuming-MS-7E54 kernel:  zap_pmd_range.isra.0+0x120/0x280
+2026-10-07T14:44:14+02:00 yuming-MS-7E54 kernel:  zap_pud_range.isra.0+0xab/0x200
+2026-10-07T14:44:14+02:00 yuming-MS-7E54 kernel:  unmap_page_range+0x219/0x360
+2026-10-07T14:44:14+02:00 yuming-MS-7E54 kernel:  unmap_single_vma+0x89/0xf0
+2026-10-07T14:44:14+02:00 yuming-MS-7E54 kernel:  unmap_vmas+0xb5/0x190
+2026-10-07T14:44:14+02:00 yuming-MS-7E54 kernel:  exit_mmap+0xfa/0x3f0
+2026-10-07T14:44:14+02:00 yuming-MS-7E54 kernel:  mmput+0x69/0x130
+2026-10-07T14:44:14+02:00 yuming-MS-7E54 kernel:  exit_mm+0xb8/0x120
+2026-10-07T14:44:14+02:00 yuming-MS-7E54 kernel:  do_exit+0x22c/0x4e0
+2026-10-07T14:44:14+02:00 yuming-MS-7E54 kernel:  ? count_memcg_events.constprop.0+0x2a/0x50
+2026-10-07T14:44:14+02:00 yuming-MS-7E54 kernel:  do_group_exit+0x34/0x90
+2026-10-07T14:44:14+02:00 yuming-MS-7E54 kernel:  __x64_sys_exit_group+0x18/0x20
+2026-10-07T14:44:14+02:00 yuming-MS-7E54 kernel:  x64_sys_call+0x1666/0x2650
+2026-10-07T14:44:14+02:00 yuming-MS-7E54 kernel:  do_syscall_64+0x7e/0x170
+2026-10-07T14:44:14+02:00 yuming-MS-7E54 kernel:  ? irqentry_exit+0x43/0x50
+2026-10-07T14:44:14+02:00 yuming-MS-7E54 kernel:  ? exc_page_fault+0x96/0x1e0
+2026-10-07T14:44:14+02:00 yuming-MS-7E54 kernel:  entry_SYSCALL_64_after_hwframe+0x76/0x7e
+2026-10-07T14:44:14+02:00 yuming-MS-7E54 kernel: RIP: 0033:0x7d1813eee21d
+2026-10-07T14:44:14+02:00 yuming-MS-7E54 kernel: Code: Unable to access opcode bytes at 0x7d1813eee1f3.
+2026-10-07T14:44:14+02:00 yuming-MS-7E54 kernel: RSP: 002b:00007ffc9d868568 EFLAGS: 00000202 ORIG_RAX: 00000000000000e7
+2026-10-07T14:44:14+02:00 yuming-MS-7E54 kernel: RAX: ffffffffffffffda RBX: 00007d1814004fa8 RCX: 00007d1813eee21d
+2026-10-07T14:44:14+02:00 yuming-MS-7E54 kernel: RDX: 00000000000000e7 RSI: ffffffffffffff88 RDI: 0000000000000000
+2026-10-07T14:44:14+02:00 yuming-MS-7E54 kernel: RBP: 00007ffc9d8685c0 R08: 00007ffc9d868508 R09: 0000000000000007
+2026-10-07T14:44:14+02:00 yuming-MS-7E54 kernel: R10: 000063fbfc2ca2f0 R11: 0000000000000202 R12: 000000000000489c
+2026-10-07T14:44:14+02:00 yuming-MS-7E54 kernel: R13: 0000000000000000 R14: 0000000000000000 R15: 00007d1814004fc0
+2026-10-07T14:44:14+02:00 yuming-MS-7E54 kernel:  </TASK>
+2026-10-07T14:44:14+02:00 yuming-MS-7E54 kernel: ---[ end trace ]---
+2026-10-07T14:44:15+02:00 yuming-MS-7E54 kernel: python[17954]: segfault at 24 ip 00005b58581e9228 sp 00007ffe9d3006d0 error 4 in python3.11[218228,5b58580c2000+240000] likely on CPU 0 (core 0, socket 0)
+2026-10-07T14:44:15+02:00 yuming-MS-7E54 kernel: Code: 67 ff ff ff 66 0f 1f 44 00 00 49 ff 4d 00 0f 85 57 ff ff ff 49 8b 45 08 4c 89 ef ff 50 30 e9 48 ff ff ff 48 8d 05 98 c0 31 00 <49> 39 44 24 08 0f 85 f1 29 f0 ff 48 8d 05 06 ce 32 00 48 39 47 08
+2026-10-07T14:44:44+02:00 yuming-MS-7E54 kernel: python[18012]: segfault at 0 ip 00005d314e746747 sp 00007ffe4b83e3e0 error 6 in python3.11[217747,5d314e620000+240000] likely on CPU 0 (core 0, socket 0)
+2026-10-07T14:44:44+02:00 yuming-MS-7E54 kernel: Code: e9 0e 41 fb ff 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 53 48 8b 4f f0 48 89 fb 48 8b 57 f8 48 8b 41 08 48 83 e2 fc 83 e0 03 <48> 89 0a 48 09 d0 48 89 41 08 48 c7 47 f0 00 00 00 00 48 83 67 f8
+2026-10-07T14:44:54+02:00 yuming-MS-7E54 kernel: python[18032]: segfault at 24 ip 00006050d00d2228 sp 00007ffd4481a360 error 4 in python3.11[218228,6050cffab000+240000] likely on CPU 0 (core 0, socket 0)
+2026-10-07T14:44:54+02:00 yuming-MS-7E54 kernel: Code: 67 ff ff ff 66 0f 1f 44 00 00 49 ff 4d 00 0f 85 57 ff ff ff 49 8b 45 08 4c 89 ef ff 50 30 e9 48 ff ff ff 48 8d 05 98 c0 31 00 <49> 39 44 24 08 0f 85 f1 29 f0 ff 48 8d 05 06 ce 32 00 48 39 47 08
+2026-10-07T15:00:22+02:00 yuming-MS-7E54 kernel: audit: type=1400 audit(1791378022.932:168): apparmor="DENIED" operation="open" class="file" profile="snap.firmware-updater.firmware-notifier" name="/proc/sys/vm/max_map_count" pid=24638 comm="firmware-notifi" requested_mask="r" denied_mask="r" fsuid=1000 ouid=0
