@@ -1,0 +1,25 @@
+time	round	cpu	type	mode	work	iterations	bad	exit	avg_mhz	max_mhz	max_temp_c	kernel_events	detail
+13:43:11	0	20	E	spawn	15 spawns	15	0	0	4601	4601	48	0	
+13:43:32	0	11	E	spawn	15 spawns	15	0	0	4600	4601	48	0	
+13:43:53	0	23	E	spawn	15 spawns	15	0	0	4600	4601	48	0	
+13:44:14	0	17	E	spawn	15 spawns	15	0	0	4600	4601	48	0	
+13:44:34	0	21	E	spawn	15 spawns	15	0	0	4601	4601	48	0	
+13:44:55	0	13	E	spawn	15 spawns	15	0	0	4601	4601	48	0	
+13:45:11	0	5	P	spawn	15 spawns	15	0	0	5486	5500	48	0	
+13:45:31	0	10	E	spawn	15 spawns	15	0	0	4601	4601	48	0	
+13:45:52	0	9	E	spawn	15 spawns	15	0	0	4601	4601	48	0	
+13:46:08	0	6	P	spawn	15 spawns	15	0	0	5482	5500	48	0	
+13:46:24	0	0	P	spawn	15 spawns	15	1	SIGSEGV	5664	5700	48	0	{"failures": [{"n": 1, "exit": "SIGSEGV", "stderr": "ing>\", line 1 in <module>\n\nExtension modules: numpy._core._multiarray_umath, numpy.linalg._umath_linalg, torch._C, torch._C._dynamo.autograd_compiler, torch._C._dynamo.eval_frame, torch._C._dynamo.guards, torch._C._dynamo.utils, torch._C._fft, torch._C._linalg, torch._C._nested, torch._C._nn, torch._C._sparse, torch._C._special, PIL._imaging, PIL._imagingft, gmpy2.gmpy2, numpy.random._common, numpy.random.bit_generator, numpy.random._bounded_integers, numpy.random._pcg64, numpy.random._generator, numpy.random._mt19937, numpy.random._philox, numpy.random._sfc64, numpy.random.mtrand (total: 25)\n"}]}
+13:46:40	0	7	P	spawn	15 spawns	15	0	0	5487	5500	48	0	
+13:46:56	0	1	P	spawn	15 spawns	15	0	0	5477	5500	48	0	
+13:47:16	0	19	E	spawn	15 spawns	15	0	0	4600	4601	48	0	
+13:47:37	0	16	E	spawn	15 spawns	15	0	0	4600	4601	48	0	
+13:47:57	0	12	E	spawn	15 spawns	15	0	0	4601	4601	48	0	
+13:48:18	0	22	E	spawn	15 spawns	15	0	0	4600	4601	48	0	
+13:48:39	0	14	E	spawn	15 spawns	15	0	0	4601	4601	48	0	
+13:48:59	0	15	E	spawn	15 spawns	15	0	0	4601	4601	48	0	
+13:49:15	0	3	P	spawn	15 spawns	15	0	0	5489	5500	48	0	
+13:49:35	0	8	E	spawn	15 spawns	15	0	0	4601	4601	48	0	
+13:49:51	0	2	P	spawn	15 spawns	15	0	0	5484	5500	48	0	
+13:50:12	0	18	E	spawn	15 spawns	15	0	0	4601	4601	48	0	
+13:50:28	0	4	P	spawn	15 spawns	15	0	0	5656	5700	48	0	

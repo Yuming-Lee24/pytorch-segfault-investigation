@@ -8,6 +8,8 @@ never touches the GPU, and it needs no root.
     # one CPU busy at a time, the rest idle (light load, maximum turbo)
     python scripts/core_probe.py sweep --mode burst --seconds 20 --rounds 3
     python scripts/core_probe.py sweep --mode steady --seconds 20
+    # sleep, then kernel-heavy work straight after each wake-up
+    python scripts/core_probe.py sweep --mode wake --seconds 20
     # every CPU busy at once (heavy load, the regime stress tests cover)
     python scripts/core_probe.py sweep --mode steady --seconds 60 --parallel
     # short-lived processes, like the `import torch` that segfaulted
@@ -23,9 +25,11 @@ import hashlib
 import heapq
 import json
 import math
+import mmap
 import os
 import random
 import re
+import resource
 import signal
 import struct
 import subprocess
@@ -183,9 +187,61 @@ def call(fn):
 
 # ------------------------------------------------------------------- worker
 
+def wake_loop(args):
+    """Sleep into deep idle, then do kernel-heavy work the moment the CPU wakes.
+
+    Each pass maps, touches and unmaps anonymous memory (page faults, then the
+    page-freeing path the 2026-10-07 kernel oops died in), moves data through
+    a pipe, and forks a child that exits straight away.
+    """
+    rng = random.Random(args.seed)
+    payload = hashlib.shake_256(b"core-probe-pipe").digest(4096)
+    child_code = zlib.crc32(payload) & 0x3F
+    t0 = time.monotonic()
+    iterations, mismatches = 0, []
+
+    def bad(what, **extra):
+        event = dict(unit=what, iteration=iterations,
+                     elapsed=round(time.monotonic() - t0, 3), **extra)
+        mismatches.append(event)
+        print("MISMATCH " + json.dumps(event), file=sys.stderr, flush=True)
+
+    while time.monotonic() - t0 < args.seconds:
+        time.sleep(rng.uniform(0.0002, 0.008))
+
+        size = rng.choice((1, 2, 4, 8)) << 20
+        fill = bytes([rng.randrange(1, 256)]) * (size // 4096)
+        m = mmap.mmap(-1, size)
+        m[::4096] = fill
+        if m[::4096] != fill:
+            bad("mmap readback", size=size)
+        m.close()
+
+        r, w = os.pipe()
+        os.write(w, payload)
+        if os.read(r, len(payload)) != payload:
+            bad("pipe")
+        os.close(r)
+        os.close(w)
+
+        pid = os.fork()
+        if pid == 0:
+            os._exit(child_code)
+        status = os.waitpid(pid, 0)[1]
+        if os.WIFSIGNALED(status) or os.WEXITSTATUS(status) != child_code:
+            bad("child exit", status=status)
+        iterations += 1
+
+    print(json.dumps({"cpu": args.cpu, "iterations": iterations,
+                      "mismatches": mismatches, "startup_disagreements": [],
+                      "reference": {}}), flush=True)
+
+
 def worker(args):
     os.sched_setaffinity(0, {args.cpu})
     faulthandler.enable()
+    if args.mode == "wake":
+        return wake_loop(args)
     units = build_units()
 
     # Reference digests: three runs on this CPU must agree with each other.
@@ -324,16 +380,23 @@ def run_workers(cpus, args, seed):
 
 
 def run_spawns(cpu, args):
-    """Start `count` short-lived interpreters pinned to `cpu`."""
+    """Start `count` short-lived interpreters pinned to `cpu`.
+
+    faulthandler is left off on purpose: an unhandled SIGSEGV makes the kernel
+    log the fault address and CPU, and lets apport write a core dump to
+    /var/lib/apport/coredump/.
+    """
+    env = worker_env()
+    del env["PYTHONFAULTHANDLER"]
     tele = Telemetry([cpu])
     failures = []
     for i in range(args.count):
-        p = subprocess.run(
-            ["taskset", "-c", str(cpu), sys.executable, "-X", "faulthandler", "-c", SPAWN_CODE],
-            capture_output=True, text=True, env=worker_env())
+        p = subprocess.run(["taskset", "-c", str(cpu), sys.executable, "-c", args.code],
+                           capture_output=True, text=True, env=env)
         tele.sample()
         if p.returncode != 0:
-            failures.append({"n": i, "exit": exit_name(p.returncode), "stderr": p.stderr[-600:]})
+            failures.append({"n": i, "pid_time": datetime.now().strftime("%H:%M:%S"),
+                             "exit": exit_name(p.returncode), "stderr": p.stderr[:800]})
     exits = sorted({f["exit"] for f in failures})
     return {"exit": ",".join(exits) if exits else "0", "iterations": args.count,
             "mismatches": len(failures), "detail": {"failures": failures[:5]} if failures else {},
@@ -347,6 +410,9 @@ def sweep(args):
     # Keep this supervising process off the CPUs it is measuring where possible.
     spare = [c for c in sorted(os.sched_getaffinity(0), reverse=True) if c not in cpus]
     home = spare[0] if spare else None
+
+    if args.mode == "spawn":
+        resource.setrlimit(resource.RLIMIT_CORE, (resource.RLIM_INFINITY, resource.RLIM_INFINITY))
 
     os.makedirs("logs/core_probe", exist_ok=True)
     label = args.mode + ("_parallel" if args.parallel else "")
@@ -410,14 +476,15 @@ def main():
     w = sub.add_parser("worker", help="run the self-check on one CPU (used by sweep)")
     w.add_argument("--cpu", type=int, required=True)
     w.add_argument("--seconds", type=float, default=20)
-    w.add_argument("--mode", choices=["steady", "burst"], default="steady")
+    w.add_argument("--mode", choices=["steady", "burst", "wake"], default="steady")
     w.add_argument("--seed", type=int, default=0)
 
     s = sub.add_parser("sweep", help="test CPUs in turn and log the results")
     s.add_argument("--cpus", help="for example 0-7 or 0,4,16 (default: all)")
-    s.add_argument("--mode", choices=["steady", "burst", "spawn"], default="burst")
+    s.add_argument("--mode", choices=["steady", "burst", "wake", "spawn"], default="burst")
     s.add_argument("--seconds", type=float, default=20, help="per CPU per round")
     s.add_argument("--count", type=int, default=20, help="spawns per CPU per round")
+    s.add_argument("--code", default=SPAWN_CODE, help="what each spawned interpreter runs")
     s.add_argument("--rounds", type=int, default=1)
     s.add_argument("--parallel", action="store_true", help="load all CPUs at once")
     s.add_argument("--seed", type=int, default=1)
