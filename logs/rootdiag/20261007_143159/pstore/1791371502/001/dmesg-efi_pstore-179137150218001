@@ -1,0 +1,16 @@
+Oops#1 Part18
+<5>[    9.054834] audit: type=1400 audit(1791369513.102:165): apparmor="DENIED" operation="symlink" class="file" profile="snap.snapd-desktop-integration.snapd-desktop-integration" name="/dev/char/195:0" pid=2725 comm="snapd-desktop-i" requested_mask="c" denied_mask="c" fsuid=1000 ouid=1000
+<5>[    9.054891] audit: type=1400 audit(1791369513.102:166): apparmor="DENIED" operation="symlink" class="file" profile="snap.snapd-desktop-integration.snapd-desktop-integration" name="/dev/char/195:0" pid=2725 comm="snapd-desktop-i" requested_mask="c" denied_mask="c" fsuid=1000 ouid=1000
+<6>[   12.205488] wlp129s0f0: authenticate with 10:7c:61:a0:a6:92 (local address=28:a0:6b:bb:9d:97)
+<6>[   12.206015] wlp129s0f0: send auth to 10:7c:61:a0:a6:92 (try 1/3)
+<6>[   12.217975] wlp129s0f0: authenticated
+<6>[   12.218605] wlp129s0f0: associate with 10:7c:61:a0:a6:92 (try 1/3)
+<6>[   12.222508] wlp129s0f0: RX AssocResp from 10:7c:61:a0:a6:92 (capab=0x1c11 status=0 aid=1)
+<6>[   12.225648] wlp129s0f0: associated
+<7>[   12.332307] wlp129s0f0: Limiting TX power to 30 (30 - 0) dBm as advertised by 10:7c:61:a0:a6:92
+<6>[   15.316884] wlp129s0f0: deauthenticated from 10:7c:61:a0:a6:92 (Reason: 2=PREV_AUTH_NOT_VALID)
+<6>[   68.639530] loop11: detected capacity change from 0 to 2097152
+<6>[   68.657938]  loop11: p1 p2 p3
+<6>[   68.658812]  loop11: p1 p2 p3
+<1>[ 1997.667945] BUG: unable to handle page fault for address: 000045957ee10d90
+<1>[ 1997.667950] #PF: supervisor write access in kernel mode

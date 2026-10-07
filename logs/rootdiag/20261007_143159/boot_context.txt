@@ -1,0 +1,10 @@
+boot_id=b7dd0ffd-08fe-4534-8144-397efc2a71f9
+booted=2026-10-07 14:09:50
+mcelog_bytes=128
+2026-10-07T14:09:52+02:00 yuming-MS-7E54 kernel: ACPI: BERT 0x000000005C2D2000 000030 (v01 INTEL  EDK2     00000001 INTL 00000001)
+2026-10-07T14:09:52+02:00 yuming-MS-7E54 kernel: ACPI: Reserving BERT table memory at [mem 0x5c2d2000-0x5c2d202f]
+2026-10-07T14:09:53+02:00 yuming-MS-7E54 kernel: microcode: Current revision: 0x00000118
+2026-10-07T14:09:53+02:00 yuming-MS-7E54 kernel: microcode: Updated early from: 0x00000117
+2026-10-07T14:09:53+02:00 yuming-MS-7E54 kernel: mce: [Hardware Error]: Machine check events logged
+2026-10-07T14:09:53+02:00 yuming-MS-7E54 kernel: BERT: [Hardware Error]: Skipped 1 error records
+2026-10-07T14:09:53+02:00 yuming-MS-7E54 kernel: BERT: Total records found: 1
