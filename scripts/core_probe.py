@@ -14,6 +14,8 @@ never touches the GPU, and it needs no root.
     python scripts/core_probe.py sweep --mode steady --seconds 60 --parallel
     # short-lived processes, like the `import torch` that segfaulted
     python scripts/core_probe.py sweep --mode spawn --count 20 --cpus 0-7
+    # the same, with every other CPU kept busy
+    python scripts/core_probe.py sweep --mode spawn --count 40 --cpus 0 --load-others
 
 Results are appended to logs/core_probe/<timestamp>_<mode>.tsv, one row per
 CPU per round, and flushed to disk after every row.
@@ -383,8 +385,8 @@ def run_spawns(cpu, args):
     """Start `count` short-lived interpreters pinned to `cpu`.
 
     faulthandler is left off on purpose: an unhandled SIGSEGV makes the kernel
-    log the fault address and CPU, and lets apport write a core dump to
-    /var/lib/apport/coredump/.
+    log the fault address and CPU, and with --cores lets apport write a core
+    dump to /var/lib/apport/coredump/.
     """
     env = worker_env()
     del env["PYTHONFAULTHANDLER"]
@@ -403,19 +405,27 @@ def run_spawns(cpu, args):
             "telemetry": tele.summary()}
 
 
+def start_load(cpus):
+    """Keep `cpus` fully busy so the CPU under test runs in the all-core regime."""
+    return [subprocess.Popen(["taskset", "-c", str(c), sys.executable, "-c", "while True: pass"])
+            for c in cpus]
+
+
 def sweep(args):
     cpus = parse_cpus(args.cpus) if args.cpus else sorted(os.sched_getaffinity(0))
+    everything = sorted(os.sched_getaffinity(0))
     kind = core_types()
 
     # Keep this supervising process off the CPUs it is measuring where possible.
     spare = [c for c in sorted(os.sched_getaffinity(0), reverse=True) if c not in cpus]
     home = spare[0] if spare else None
 
-    if args.mode == "spawn":
+    if args.cores:
+        # apport keeps only the newest few cores in /var/lib/apport/coredump/.
         resource.setrlimit(resource.RLIMIT_CORE, (resource.RLIM_INFINITY, resource.RLIM_INFINITY))
 
     os.makedirs("logs/core_probe", exist_ok=True)
-    label = args.mode + ("_parallel" if args.parallel else "")
+    label = args.mode + ("_parallel" if args.parallel else "") + ("_loaded" if args.load_others else "")
     path = "logs/core_probe/%s_%s.tsv" % (datetime.now().strftime("%Y%m%d_%H%M%S"), label)
     log = open(path, "a", buffering=1)
 
@@ -437,13 +447,22 @@ def sweep(args):
         for group in groups:
             if home is not None and not args.parallel:
                 os.sched_setaffinity(0, {home if home not in group else spare[-1]})
+            load = start_load([c for c in everything if c not in group]) if args.load_others else []
+            if load:
+                time.sleep(2)
             started = time.time()
-            if args.mode == "spawn":
-                results = {group[0]: run_spawns(group[0], args)}
-                work = "%d spawns" % args.count
-            else:
-                results = run_workers(group, args, args.seed + 1000 * rnd)
-                work = "%ds" % args.seconds
+            try:
+                if args.mode == "spawn":
+                    results = {group[0]: run_spawns(group[0], args)}
+                    work = "%d spawns" % args.count
+                else:
+                    results = run_workers(group, args, args.seed + 1000 * rnd)
+                    work = "%ds" % args.seconds
+            finally:
+                for p in load:
+                    p.kill()
+                for p in load:
+                    p.wait()
             events = kernel_events(started)
             for cpu in group:
                 r = results[cpu]
@@ -487,6 +506,9 @@ def main():
     s.add_argument("--code", default=SPAWN_CODE, help="what each spawned interpreter runs")
     s.add_argument("--rounds", type=int, default=1)
     s.add_argument("--parallel", action="store_true", help="load all CPUs at once")
+    s.add_argument("--load-others", action="store_true",
+                   help="keep every CPU not under test busy with a spin loop")
+    s.add_argument("--cores", action="store_true", help="let crashes leave core dumps")
     s.add_argument("--seed", type=int, default=1)
 
     args = ap.parse_args()
