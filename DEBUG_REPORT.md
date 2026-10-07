@@ -1,15 +1,17 @@
 # PyTorch Segfault Investigation Report
 
-**Date:** 2026-04-17 → 2026-04-21, re-tested 2026-10-05 (see §4.6)
+**Date:** 2026-04-17 → 2026-04-21, re-tested 2026-10-05 (see §4.6), memory tests 2026-10-05 → 2026-10-06 (see §4.7)
 **Host:** yuming-MS-7E54 (Ubuntu 24.04.3 LTS — fresh install)
 **Reporter:** yuming@gmail.com
-**Status:** **Hardware fault hypothesis strongly reinforced; XMP instability ruled out.** Fresh Ubuntu 24.04 install with a different NVIDIA driver (580.126.09) and different PyTorch version (2.5.1) **reproduces the same crash within 12–13 steps**, even with `CUDA_LAUNCH_BLOCKING=1`. BIOS audit on 2026-04-21 confirmed **XMP was already disabled** — the RAM is running at JEDEC-spec speeds and still failing. This upgrades the diagnosis from "unstable overclock" to "hardware fault at rated speed." MemTest86+ is now the single most important next action.
+**Status:** **Hardware fault hypothesis strongly reinforced; XMP instability ruled out.** Fresh Ubuntu 24.04 install with a different NVIDIA driver (580.126.09) and different PyTorch version (2.5.1) **reproduces the same crash within 12–13 steps**, even with `CUDA_LAUNCH_BLOCKING=1`. BIOS audit on 2026-04-21 confirmed **XMP was already disabled** — the RAM is running at JEDEC-spec speeds and still failing. This upgrades the diagnosis from "unstable overclock" to "hardware fault at rated speed."
+
+**Update 2026-10-06:** the memory tests have now been run and **found nothing** — PassMark MemTest86 completed 4 passes with 0 errors, and three 1-hour OCCT runs (one Combined, two Memory) reported no errors (§4.7). A hardware fault is still the only explanation that fits every crash, but a simple bad-DIMM fault is now much less likely. The untested candidates are the CPU, the motherboard / DIMM seating, and power delivery (§5, §6).
 
 ---
 
 ## 1. Executive Summary
 
-A user-reported intermittent segmentation fault during PyTorch training was investigated. A reliable PyTorch reproducer (< 4 min) was built, and the initial core-dump backtrace pointed at the NVIDIA driver (`libcuda.so.1`, version 590.48.01). However, subsequent events — a `pip` segfault, two `localedef` segfaults (pure CPU code, no GPU involvement), and multiple spontaneous reboots during routine `dpkg` operations — were **not explainable by a GPU driver bug**, shifting the hypothesis to a hardware fault. To rule out any remaining software contamination, the machine was **wiped and reinstalled with Ubuntu 24.04.3 LTS**, a different kernel (6.17.0-22), a **different NVIDIA driver (580.126.09)**, and a different PyTorch version (2.5.1). The reproducer was then re-run — **and the same backward-pass crash reproduced twice in a row, within 12–13 steps**, even with `CUDA_LAUNCH_BLOCKING=1` forcing synchronous CUDA execution. Every software variable has been changed while the fault persists. The common factor across all observed crashes is memory access under load, and a **hardware fault (most likely RAM, CPU cache, or memory overclock instability)** is now the dominant hypothesis. Extensive GPU, stress, and basic memtester tests all passed, but none of them provoke the class of fault suspected here.
+A user-reported intermittent segmentation fault during PyTorch training was investigated. A reliable PyTorch reproducer (< 4 min) was built, and the initial core-dump backtrace pointed at the NVIDIA driver (`libcuda.so.1`, version 590.48.01). However, subsequent events — a `pip` segfault, two `localedef` segfaults (pure CPU code, no GPU involvement), and multiple spontaneous reboots during routine `dpkg` operations — were **not explainable by a GPU driver bug**, shifting the hypothesis to a hardware fault. To rule out any remaining software contamination, the machine was **wiped and reinstalled with Ubuntu 24.04.3 LTS**, a different kernel (6.17.0-22), a **different NVIDIA driver (580.126.09)**, and a different PyTorch version (2.5.1). The reproducer was then re-run — **and the same backward-pass crash reproduced twice in a row, within 12–13 steps**, even with `CUDA_LAUNCH_BLOCKING=1` forcing synchronous CUDA execution. Every software variable has been changed while the fault persists. The common factor across all observed crashes is memory access under load, and a **hardware fault (most likely RAM, CPU cache, or memory overclock instability)** is now the dominant hypothesis. Extensive GPU, stress, and basic memtester tests all passed, but none of them provoke the class of fault suspected here. In October 2026 the fault was reproduced again on a third driver and kernel (§4.6), and the dedicated memory tests were finally run: **MemTest86 (4 passes) and OCCT (3 × 1 hour) all passed with zero errors** (§4.7). The fault therefore does not show up as a plain RAM cell error, and the investigation moves on to the CPU, motherboard, and power delivery.
 
 ---
 
@@ -18,10 +20,13 @@ A user-reported intermittent segmentation fault during PyTorch training was inve
 ### 2.1 Hardware
 | Component | Spec |
 |---|---|
-| CPU | 24 logical cores (Intel, platform `MS-7E54`) |
+| CPU | Intel Core Ultra 9 285K (Arrow Lake) — 24 cores: 8 P-cores + 16 E-cores |
+| Motherboard | MSI PRO Z890-S WIFI (MS-7E54), BIOS 1.A70 dated 2025-04-27 |
 | GPU | NVIDIA GeForce RTX 4090, 24,564 MiB VRAM |
-| RAM | ≥ 64 GB installed (only 32 GB tested with memtester) |
-| Integrated GPU | Intel iGPU (Meteor Lake) — pre-existing `i915` GSC firmware noise, unrelated to this bug |
+| RAM | 64 GB DDR5 — Kingston `KF560C30-32` modules (rated DDR5-6000 CL30 via XMP), running at JEDEC 4800 MT/s, 40-39-39-77. No ECC. |
+| Integrated GPU | Intel iGPU — pre-existing `i915` GSC firmware noise, unrelated to this bug |
+
+CPU, motherboard, BIOS, and RAM details are taken from the MemTest86 log of 2026-10-06 (§4.7).
 
 ### 2.2 Software — initial state (Ubuntu 22.04, before any changes)
 | Item | Version |
@@ -241,7 +246,36 @@ Oct 05 15:27:13 kernel: python[14503]: segfault at 642f4f3d2f70 ip 0000642fce3f5
 - The crash is far less regular than Phase 5 suggested: about 16 minutes and 4,259 clean steps, then a crash on the very first step of the next run.
 - Crashes in CPU-only processes continue on this install, as in Phase 4.
 
-### 4.7 Consolidated evidence
+### 4.7 Phase 7 — Memory and combined stress tests all pass (2026-10-05 → 2026-10-06)
+
+After Run #8, the memory test called for in §6 was carried out, along with three OCCT runs. **Every test passed with zero errors.**
+
+| Test | When (local) | Duration | Result |
+|---|---|---|---|
+| OCCT 17.1.6 — Combined (CPU + GPU + memory) | 2026-10-05, finished ~17:13 | 1 h | No errors detected |
+| OCCT 17.1.6 — Memory | 2026-10-06, finished ~12:35 | 1 h | No errors detected |
+| OCCT 17.1.6 — Memory | 2026-10-06, finished ~13:38 | 1 h | No errors detected |
+| PassMark MemTest86 V11.7 Free (booted from USB) | 2026-10-06, 13:50 → 18:24 | 4 h 33 min, 4 passes | **PASS, 0 errors** |
+
+**MemTest86 details** (from the log; its timestamps are in UTC, two hours behind local time):
+- Tests 0–10 and 13 (Hammer test) ran in each of the 4 passes, with all CPUs in parallel mode. The cumulative error count stayed at 0 throughout.
+- The log confirms the RAM configuration: 4800 MT/s at 40-39-39-77, i.e. JEDEC speed. This independently confirms the "XMP disabled" finding from the BIOS audit and answers the `dmidecode` check in §6 Step 1.
+- The tool used was PassMark MemTest86, not the open-source MemTest86+ that §6 originally named. Both are full RAM testers, so the result answers the same question.
+- No HTML report exists. MemTest86 did not write one to the USB stick, so the log is the only record.
+
+**OCCT details** (from the screenshots):
+- Combined run: GPU power peaked at 432 W of the 450 W limit, GPU temperature at 67 °C, CPU package at 91 °C, physical memory load at about 58 GB.
+- Memory runs: CPU package peaked at 80 °C and 68 °C.
+
+**What this means:**
+- **A plain bad-DIMM fault is now much less likely.** In real workloads the machine crashes within minutes to tens of minutes (§4.6: three crashes in about 20 minutes). Six and a half hours of dedicated memory testing (MemTest86 plus the two OCCT Memory runs) with no error is hard to reconcile with a defective memory cell.
+- **It is not excluded.** The fault is intermittent, and MemTest86 runs outside the operating system with the GPU idle, so it does not reproduce the thermal and electrical conditions of a training run.
+- **The Combined run counts against a simple power-delivery problem**, since it loaded CPU and GPU together for an hour at up to 432 W on the GPU without an error. One hour is a short sample, so this is weak evidence.
+- **Suspicion shifts toward the CPU and motherboard.** The crashing workloads all execute ordinary application code (Python, `localedef`, the CUDA driver), and none of the stress tests that passed check the results of that kind of code.
+
+**An unverified observation worth testing:** every crash where the kernel log names a CPU names CPU 0 — both `localedef` segfaults in §4.4 ("on CPU 0") and the `python3.11` segfault in §4.6 ("likely on CPU 0 (core 0, socket 0)"). Three samples is too few to conclude anything, but a single faulty core would explain why whole-system stress tests pass while ordinary programs crash at random. §6 Step 1 tests this directly.
+
+### 4.8 Consolidated evidence
 
 | Crash | GPU involved? | Explainable by driver bug? | Explainable by bad RAM / CPU cache? |
 |---|---|---|---|
@@ -256,22 +290,36 @@ Oct 05 15:27:13 kernel: python[14503]: segfault at 642f4f3d2f70 ip 0000642fce3f5
 
 Only a **hardware memory-corruption hypothesis** explains every observation.
 
+Tests that have passed, for comparison:
+
+| Test | Duration | Result |
+|---|---|---|
+| `gpu-burn` | 8 h | 0 errors |
+| `stress-ng` CPU and VM | 8 h each | completed |
+| `memtester` 32 GB | 2 passes | all `ok` |
+| OCCT Combined | 1 h | no errors |
+| OCCT Memory (×2) | 1 h each | no errors |
+| MemTest86 V11.7 | 4 passes, 4 h 33 min | 0 errors |
+
+No synthetic test has ever reproduced the fault. Only real workloads do.
+
 ---
 
 ## 5. Revised Root Cause (Leading Hypothesis)
 
-**Intermittent memory corruption originating from a hardware fault *at manufacturer-rated speeds*** — most likely one of:
+**Intermittent memory corruption originating from a hardware fault *at manufacturer-rated speeds***. After the clean memory tests of §4.7 the candidates are re-ranked as follows:
 
-1. **Marginal RAM**, either a failing DIMM or a subtle fault that basic memtester patterns don't provoke
-2. **CPU memory controller fault** — Intel Raptor Lake / Meteor Lake memory controllers have had documented degradation issues
-3. **CPU cache fault** (L1/L2/L3) corrupting specific cache lines under load
-4. **Power delivery instability** (PSU or VRM) under combined CPU + GPU load
-5. **Poor DIMM seating / slot contact** — oxidation or partial insertion can cause intermittent failures that only show under specific access patterns
+1. **CPU fault** — a defective core, cache (L1/L2/L3), or memory controller in the Core Ultra 9 285K that corrupts data during ordinary code execution. Possibly limited to one core (see the CPU 0 observation in §4.7).
+2. **Motherboard fault or poor DIMM seating / slot contact** — intermittent failures that only show under specific conditions.
+3. **Power delivery instability** (PSU or VRM) under transient load — made less likely, but not excluded, by the clean 1-hour OCCT Combined run.
+4. **Marginal RAM** — made much less likely by 4 clean MemTest86 passes and two clean OCCT Memory runs.
 
-This explains why:
-- Simple sequential-pattern memory tests (memtester, stress-ng) pass — they don't provoke the right access patterns
-- GPU-only stress (gpu-burn) passes — GPU has its own VRAM, doesn't touch the suspect host RAM heavily
-- Real-world workloads (PyTorch, pip, dpkg) crash — they perform complex random memory access under load
+This is consistent with what passes and what fails:
+- Dedicated memory tests (memtester, stress-ng, OCCT Memory, MemTest86) pass — the memory cells themselves hold data correctly
+- GPU-only stress (gpu-burn) passes — the GPU and its VRAM are healthy
+- Real-world workloads (PyTorch, pip, dpkg, the Python interpreter) crash — they execute complex, branching code whose results no stress test verifies
+
+**Correction:** earlier versions of this report referred to Intel Raptor Lake / Meteor Lake and to the Raptor Lake degradation issue. The CPU is a Core Ultra 9 285K (Arrow Lake), which is a different generation, so the Raptor Lake degradation issue and its extended warranty program do not apply.
 
 ### Ruled out
 **By the fresh Ubuntu 24 install (Phase 5):**
@@ -285,8 +333,12 @@ This explains why:
 **By BIOS audit (2026-04-21):**
 - **Unstable XMP/EXPO memory overclock** — user confirmed **XMP is already disabled** in BIOS, meaning the RAM has been running at JEDEC-spec (manufacturer-guaranteed) speeds throughout the entire investigation. The fault is therefore not caused by running RAM above spec; the RAM (or the memory path feeding it) is failing *at rated speed*. This is a materially more serious finding than XMP instability would have been, and narrows the hypothesis to a true hardware fault rather than a compatibility / tuning issue.
 
+**By memory testing (2026-10-05 → 2026-10-06, §4.7):**
+- Nothing is strictly ruled out, but **a consistently failing memory cell** is no longer a credible explanation: MemTest86 found 0 errors in 4 passes.
+
 ### Not ruled out
-- The remaining hypotheses listed above: DIMM fault, CPU memory controller fault, CPU cache fault, power delivery, or DIMM seating — none of which the OS reinstall or BIOS toggle would have touched.
+- CPU fault (core, cache, or memory controller), motherboard fault, DIMM seating, and power delivery — none of which the OS reinstalls, the BIOS toggle, or the memory tests would have cleared.
+- An intermittent RAM fault that only appears under the heat and electrical load of a real workload.
 
 ---
 
@@ -295,41 +347,35 @@ This explains why:
 ### ✅ Already completed
 - **BIOS audit — XMP status:** confirmed **already disabled** on 2026-04-21. RAM is running at JEDEC-spec. XMP instability hypothesis ruled out.
 
-### Step 1 — MemTest86+ (now the top priority)
-`memtest86+` v7.00 is already installed on this system. Note that after installation the GRUB menu must be regenerated for the entry to appear:
-```bash
-sudo update-grub
-```
-Then:
-- Reboot and hold `Shift` (or `Esc`) at boot to show the GRUB menu
-- Select **"Memory test (memtest86+x64.efi)"**
-- Let it run at least one full pass (~1–2 h for 64 GB at JEDEC), ideally **overnight** for multiple passes
-- Any single error → DIMM fault confirmed → the failing address identifies which module
+- **Memory test:** PassMark MemTest86 V11.7, 4 passes, **0 errors** on 2026-10-06 (§4.7). The log also confirms the RAM is configured at 4800 MT/s.
+- **OCCT:** Combined 1 h and Memory 2 × 1 h, no errors (§4.7).
 
-**Before launching MemTest86+, quickly verify configured memory speed in Ubuntu:**
-```bash
-sudo dmidecode -t memory | grep -iE "Speed|Configured|Size"
-```
-Confirm "Configured Memory Speed" is at JEDEC (≈ 4800 MT/s for DDR5). If higher, the BIOS is still auto-applying a profile despite XMP being "disabled."
+### Step 1 — Test whether the fault follows a CPU core (free, no hardware changes)
+The kernel log named CPU 0 in all three crashes where it named a CPU (§4.7). Check whether that is a pattern:
+- Run `torture.py` repeatedly with CPU 0 excluded, for example `taskset -c 1-23 pixi run python torture.py`, for at least an hour.
+- Then run it pinned to CPU 0 only (`taskset -c 0 ...`, with `num_workers` reduced accordingly).
+- If it crashes only when CPU 0 is in use → a faulty core, and the CPU should go back under warranty.
+- If it crashes either way → the fault is not core-specific; continue below.
+- In every future crash, record the CPU number from the kernel log (`journalctl -k | grep -iE "segfault|general protection"`).
 
-### Step 2 — Reseat DIMMs (5 min, free, do before or after MemTest86+)
+### Step 2 — Reseat DIMMs (5 min, free)
 - Power off completely, unplug the PSU
 - Pop each DIMM out, inspect for dust or oxidation on the edge contacts, reinsert firmly until both side latches click
 - Do this for all DIMMs — intermittent slot contact is a classic cause of "passes synthetic tests but fails real workload" failures
 
 ### Step 3 — BIOS firmware update
-- Check current BIOS version on the main BIOS screen
-- Compare against latest on MSI's support page for the MS-7E54 board
-- Memory training and stability fixes are the most common reason for BIOS updates on Intel Raptor Lake / Meteor Lake boards; updating frequently fixes "stable at JEDEC but still crashes" bugs
+- The current BIOS is 1.A70, dated 2025-04-27
+- Compare against the latest on MSI's support page for the PRO Z890-S WIFI (MS-7E54)
+- Arrow Lake boards received several microcode and stability updates after launch; a BIOS that is over a year old is worth updating before replacing hardware
 
-### Step 4 — DIMM isolation (if MemTest86+ passes clean)
+### Step 4 — DIMM isolation
 - Power off, leave only one DIMM in the primary slot (usually DIMM A2)
-- Re-run `torture.py` for ~15 min
+- Re-run `torture.py` several times, for at least an hour in total — Phase 6 showed that 16 clean minutes prove nothing
 - If stable → repeat with each other DIMM in turn to identify the failing module
-- If crashes persist with every single DIMM → the issue is not a single bad stick; escalate to CPU memory controller / PSU / motherboard
+- If crashes persist with every single DIMM → the issue is not a single bad stick; escalate to CPU / PSU / motherboard
 
-### Step 5 — CPU memory controller / PSU investigation (last resort)
-- Intel Raptor Lake CPUs (13th/14th gen) had documented VMin shift / degradation issues. If the CPU is in that family and out of warranty, Intel's extended warranty program may still apply.
+### Step 5 — CPU / PSU / motherboard replacement (last resort)
+- The Core Ultra 9 285K was released in late 2024, so it should still be within Intel's standard warranty. If Steps 1–4 point at the CPU, request a replacement.
 - Swap PSU with a known-good unit if available. PyTorch + RTX 4090 under load pulls transient spikes that can exceed a PSU's stable rail output even if its rated wattage is nominally sufficient.
 
 ### Defer until hardware is cleared
@@ -341,7 +387,7 @@ Confirm "Configured Memory Speed" is at JEDEC (≈ 4800 MT/s for DDR5). If highe
 
 - **dpkg is clean** — the `localedef` / `locales` instability from Ubuntu 22.04 is resolved by the fresh Ubuntu 24.04 install. Normal `apt` operations should work.
 - **Filesystem integrity** — the repeated hard reboots on the old install may have caused filesystem corruption. The fresh install provides a clean slate; monitor for any new filesystem errors in `dmesg`.
-- **Hardware fault is still unconfirmed** — the underlying RAM/CPU fault hypothesis has not been cleared. Run MemTest86+ (§6) before doing intensive workloads to avoid recurrence.
+- **Hardware fault is still unconfirmed** — the memory tests passed (§4.7), but the crashes continue and their cause has not been found. A clean MemTest86 result does not make the machine safe for important workloads.
 - **Save important work frequently** until hardware is cleared.
 
 ---
@@ -358,6 +404,10 @@ Confirm "Configured Memory Speed" is at JEDEC (≈ 4800 MT/s for DDR5). If highe
 | `~/pytorch-segfault-investigation/logs/torture/20261005_152734.log` | **Run #6** — driver 550.163.01, kernel 6.14 — clean, 2106 steps, stopped at 8 min |
 | `~/pytorch-segfault-investigation/logs/torture/20261005_153534.log` | **Run #7** — same setup — clean, 2153 steps, stopped at 8 min |
 | `~/pytorch-segfault-investigation/logs/torture/20261005_154334.log` | **Run #8** — same setup — segfault at step 1 in `_conv_forward` |
+| `~/pytorch-segfault-investigation/0510-test-result/memtest86/MemTest86-20261006-115028_603727.log` | MemTest86 V11.7 log — 4 passes, 0 errors (timestamps in UTC) |
+| `~/pytorch-segfault-investigation/0510-test-result/occt-screenshot/OCCT-26105-0513*.png` | OCCT Combined, 1 h, no errors (two views of the same run) |
+| `~/pytorch-segfault-investigation/0510-test-result/occt-screenshot/OCCT-26106-123526.png` | OCCT Memory, 1 h, no errors |
+| `~/pytorch-segfault-investigation/0510-test-result/occt-screenshot/OCCT-26106-013836.png` | OCCT Memory, second 1 h run, no errors |
 | `~/pytorch-segfault-investigation/logs/gpu_burn/*` | 8-hour gpu-burn logs (Ubuntu 22 era) |
 | `~/pytorch-segfault-investigation/logs/memtester/*` | 32 GB memtester log (2 passes, all `ok`) (Ubuntu 22 era) |
 | `~/pytorch-segfault-investigation/logs/torture/torture_*.log` | Ubuntu 22 era training reproducer logs (original 3 segfaults) |
@@ -391,19 +441,24 @@ Confirm "Configured Memory Speed" is at JEDEC (≈ 4800 MT/s for DDR5). If highe
 | 2026-10-05 15:27 | pixi environment recreated (PyTorch 2.5.1). First `import torch` **segfaulted inside `python3.11`**; five retries passed. |
 | 2026-10-05 15:27 → 15:43 | `torture.py` runs #6 and #7 clean for 8 minutes each (4,259 steps total). |
 | 2026-10-05 15:43 | **Run #8 segfaulted at step 1** in the forward pass (`_conv_forward`). Fault reproduced on a third driver and kernel. |
+| 2026-10-05 ~17:13 | OCCT Combined test, 1 hour — no errors. |
+| 2026-10-06 ~12:35, ~13:38 | Two OCCT Memory tests, 1 hour each — no errors. |
+| 2026-10-06 13:50 → 18:24 | **MemTest86 V11.7, 4 passes — PASS, 0 errors.** RAM confirmed at 4800 MT/s. |
+| 2026-10-07 | Results reviewed. CPU identified as Core Ultra 9 285K (Arrow Lake), correcting earlier Raptor Lake references. RAM demoted from leading suspect; CPU / motherboard / power delivery remain. |
 
 ---
 
 ## 10. Open Questions
 
-1. Does MemTest86+ find any errors? (Ground-truth hardware test — now the single most important action.)
+1. Does the fault follow a specific CPU core? (All three crashes with a CPU number in the kernel log name CPU 0 — §6 Step 1.)
 2. Does reseating all DIMMs change behavior? (Cheapest physical test.)
-3. Is a single DIMM responsible? (Isolate by testing one at a time.)
-4. Is there a BIOS/UEFI firmware update available for this board (MSI MS-7E54)? Memory training / stability improvements sometimes come via firmware.
-5. If DIMMs all pass, is the CPU memory controller the fault? (Relevant especially if CPU is 13th/14th-gen Raptor Lake.)
-6. Is the PSU providing stable power under combined CPU + GPU load?
+3. Is a single DIMM responsible despite the clean memory tests? (Isolate by testing one at a time.)
+4. Is there a newer BIOS than 1.A70 (2025-04-27) for the MSI PRO Z890-S WIFI? Microcode and stability improvements come via firmware.
+5. Is the CPU (core, cache, or memory controller) the fault?
+6. Is the PSU providing stable power under transient CPU + GPU load? (One clean hour of OCCT Combined is not conclusive.)
 
 **Resolved:**
+- ~~Does a memory test find errors?~~ — No. MemTest86 V11.7 ran 4 passes with 0 errors, and OCCT Memory passed twice (§4.7).
 - ~~Driver 590 bug~~ — driver 580 crashes identically (Phase 5).
 - ~~Kernel 6.8.0-107 regression~~ — kernel 6.17 crashes identically (Phase 5).
 - ~~Ubuntu 22.04 userspace / dpkg state corruption~~ — Ubuntu 24.04.3 from-scratch crashes identically (Phase 5).
