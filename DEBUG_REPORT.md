@@ -258,7 +258,7 @@ After Run #8, the memory test called for in §6 was carried out, along with thre
 | PassMark MemTest86 V11.7 Free (booted from USB) | 2026-10-06, 13:50 → 18:24 | 4 h 33 min, 4 passes | **PASS, 0 errors** |
 
 **MemTest86 details** (from the log; its timestamps are in UTC, two hours behind local time):
-- Tests 0–10 and 13 (Hammer test) ran in each of the 4 passes, with all CPUs in parallel mode. The cumulative error count stayed at 0 throughout.
+- Tests 0–10 and 13 (Hammer test) ran in each of the 4 passes in parallel mode, using 16 of the 24 CPUs (an earlier version of this report said all). The cumulative error count stayed at 0 throughout.
 - The log confirms the RAM configuration: 4800 MT/s at 40-39-39-77, i.e. JEDEC speed. This independently confirms the "XMP disabled" finding from the BIOS audit and answers the `dmidecode` check in §6 Step 1.
 - The tool used was PassMark MemTest86, not the open-source MemTest86+ that §6 originally named. Both are full RAM testers, so the result answers the same question.
 - No HTML report exists. MemTest86 did not write one to the USB stick, so the log is the only record.
@@ -270,7 +270,7 @@ After Run #8, the memory test called for in §6 was carried out, along with thre
 **What this means:**
 - **A plain bad-DIMM fault is now much less likely.** In real workloads the machine crashes within minutes to tens of minutes (§4.6: three crashes in about 20 minutes). Six and a half hours of dedicated memory testing (MemTest86 plus the two OCCT Memory runs) with no error is hard to reconcile with a defective memory cell.
 - **It is not excluded.** The fault is intermittent, and MemTest86 runs outside the operating system with the GPU idle, so it does not reproduce the thermal and electrical conditions of a training run.
-- **The Combined run counts against a simple power-delivery problem**, since it loaded CPU and GPU together for an hour at up to 432 W on the GPU without an error. One hour is a short sample, so this is weak evidence.
+- **The Combined run counts weakly against a simple power-delivery problem.** It loaded CPU and GPU together for an hour without an error, but 432 W was the GPU's peak; its average was about 100 W.
 - **Suspicion shifts toward the CPU and motherboard.** The crashing workloads all execute ordinary application code (Python, `localedef`, the CUDA driver), and none of the stress tests that passed check the results of that kind of code.
 
 **An unverified observation worth testing:** every crash where the kernel log names a CPU names CPU 0 — both `localedef` segfaults in §4.4 ("on CPU 0") and the `python3.11` segfault in §4.6 ("likely on CPU 0 (core 0, socket 0)"). Three samples is too few to conclude anything, but a single faulty core would explain why whole-system stress tests pass while ordinary programs crash at random. §6 Step 1 tests this directly.
@@ -324,19 +324,27 @@ Raw results: `logs/core_probe/*.tsv`.
 
 #### 4.8.3 What the crashes look like inside
 
-Five CPU 0 crashes left core dumps; `gdb` summaries are in `logs/forensics/`.
+Four events on CPU 0 are impossible for a correctly working processor. In each, the value that went wrong was computed from registers alone, so no memory contents are involved:
+
+| Event | Instruction | Why it cannot happen |
+|---|---|---|
+| Kernel oops, 13:11:42 (§4.8.1) | `mov %rax,-0x8(%rbp)` | Fault reported at an address unrelated to `RBP`. |
+| PID 27451, 13:56:36 | `movups %xmm0,0x60(%rax)` in `_PyErr_Fetch` | `rax` is a valid pointer, and the two preceding instructions read `0x60(%rax)` and `0x70(%rax)` successfully. The target is mapped and writable and still holds its old value in the core. The kernel reported a write fault at address `0x415`. |
+| `update-manager`, 2026-10-05 15:25 | `and %r15,%r8` in `_Py_dict_lookup` | The core shows `r8` still holding the unmasked hash, as if the `and` had not run. Every other register matches normal execution, and the dictionary in memory is intact. The crash file's thread data shows it ran on CPU 0. |
+| Kernel UBSAN report, 14:44:14 | bounds check in `__mod_memcg_lruvec_state` | "index 18 is out of range for type 'u8 [55]'". 18 is in range. The process carried on and exited normally. |
+
+The other crashes are consistent with the same fault but do not prove it on their own. In each, a register received a wrong value from a memory load a few instructions earlier, and a core dump cannot show whether the CPU loaded it wrongly or an earlier faulty store had put it there:
 
 | PID | Where | What the core shows |
 |---|---|---|
-| 27451 | `movups %xmm0,0x60(%rax)` in `_PyErr_Fetch` | `rax` is a valid pointer, and the two preceding instructions read `0x60(%rax)` and `0x70(%rax)` successfully. The write should go to `rax+0x60`, which is mapped and writable. The kernel reported a write fault at address `0x415`. |
-| 27430 | `cmp %rax,0x8(%r12)` in `PyTraceBack_Here` | The traceback pointer in `r12` is `0x6e6f68747970632e`, the ASCII bytes `.cpython`. |
-| 27521, 27563 | same instruction | `r12` is `0x1c` and `0x8`: small integers where a pointer or NULL belongs. |
-| 26833 | `mov 0x18(%rax),%rcx` in `PyTuple_Pack` | The tuple free-list head in memory holds `0x8a9d884d400c87bc`, which is not a pointer. |
+| 27430, 27521, 27563 | `cmp %rax,0x8(%r12)` in `PyTraceBack_Here` | The traceback pointer is `0x6e6f68747970632e` (the ASCII bytes `.cpython`), `0x1c` and `0x8`. |
+| 26833 | `mov 0x18(%rax),%rcx` in `PyTuple_Pack` | The tuple free-list head holds `0x8a9d884d400c87bc`, which is the hash of the string `__dict__`, not a pointer. |
 
-- PID 27451 is the same kind of event as the kernel oops: a store whose reported address cannot come from its operands.
-- The other four show values from unrelated operations sitting where pointers belong.
-- The `update-manager` crash of 2026-10-05 (`/var/crash/_usr_bin_update-manager.1000.crash`) was re-examined. It ran on CPU 0, and its core shows a register still holding the value it had *before* an `and` instruction that must have executed. Memory was intact. Details: `logs/agent_reports/crash-forensics.md`.
-- The kernel logged 15 `segfault` lines for these tests today, and all 15 say "likely on CPU 0". The 5 general-protection lines do not print a CPU.
+- Most failures are one event repeating. Of the 20 crash lines from `python3.11`, 10 are at the same instruction (`PyTraceBack_Here+728`), and 6 of the non-crash failures are the same `TypeError: __traceback__ must be a traceback or None`. All lie on one path: a `KeyError` raised and caught inside `inspect.getattr_static` during `import torch`.
+- That path reads and clears three adjacent pointers with a 16-byte access that straddles a cache-line boundary. This may be the specific operation that core 0 gets wrong, but that has not been tested directly.
+- The kernel logged 15 `segfault` lines for these tests today, and all 15 say "likely on CPU 0". The 5 general-protection lines do not print a CPU; the two of them that left cores ran on CPU 0 according to the cores. One further line, `python[26519]` on CPU 22 at 13:51:08, is a null-pointer crash triggered on purpose to check that core dumps were being saved.
+- The interpreter binary matches its package checksum, and the code bytes the kernel printed match the file on disk in all 15 lines, so the program being executed was not corrupted.
+- `gdb` summaries of the five cores: `logs/forensics/`. Fuller analysis: `logs/agent_reports/crash-forensics.md`.
 
 #### 4.8.4 The spontaneous resets are machine checks on CPU 0
 
@@ -349,8 +357,8 @@ MCACOD 0x0400 (internal timer error), MSCOD 0xe1c4
 ```
 
 - Intel's specification update for this CPU family (document 834774, rev 023) lists erratum **ARL050**: a system hang, or a hang with an internal-timer machine check with exactly `MCACOD=400h` and `MSCOD=E1C4h`, following a core C1 exit. Its status is "Fixed", and it was first published in September 2025, after this board's BIOS was built.
-- The code pair means a core stopped retiring instructions. It matches the erratum, but a core that is failing for another reason could raise the same code, so it does not by itself decide between firmware and silicon (§5).
-- Two earlier resets logged `mce: [Hardware Error]: Machine check events logged` at the next boot: 2026-10-06 about 12:36 and 2026-10-07 about 12:37. Both happened while `unattended-upgrade`, a single-threaded Python program, was running on an otherwise idle machine. Their records were not captured.
+- The code pair matches the erratum, but the erratum's trigger does not match this event. ARL050 follows a C1 idle exit, and here CPU 0 had been continuously busy for about 45 s. The record's address field (`0x5b9d2564a239`) is a user-space address whose page offset matches the instruction after a known crash site in `python3.11`. The simpler reading is that core 0 stopped retiring instructions in the same code that segfaults, so this record does not decide between firmware and silicon (§5).
+- Two earlier resets logged `mce: [Hardware Error]: Machine check events logged` at the next boot: 2026-10-06 about 12:36 and 2026-10-07 about 12:37. Both happened while `unattended-upgrade`, a single-threaded Python program, was running on an otherwise idle machine. Their records were not captured, so which CPU raised them is unknown. An OCCT screenshot taken about a minute before the first one shows the single busy thread on CPU 4 at 5.65 GHz.
 - The firmware also leaves an Intel CrashLog record in the ACPI BERT table after each unclean reset. `scripts/decode_bert.py` lists its sections; decoding their contents needs Intel's own tool.
 
 #### 4.8.5 Firmware is far behind
@@ -361,7 +369,7 @@ MCACOD 0x0400 (internal timer error), MSCOD 0xe1c4
 | Microcode | 0x118 (loaded by Ubuntu; the BIOS itself carries 0x117) | 0x122 (Intel, 2026-08-11); Ubuntu 24.04 packages 0x11b |
 | Intel ME | 19.0.5.1948 | 19.0.11.2289 on other vendors' boards |
 
-Intel's errata list for this CPU includes four that fit the symptoms and were fixed or published after this BIOS: ARL036 (a core may see incorrect data when other cores enter deep sleep), ARL047 (an indirect branch may execute incorrect instructions), ARL050 (above), and ARL037 (hang on C6 entry or exit, still unfixed). Intel does not say which microcode revision carries which fix. Sources and the full table: `logs/agent_reports/web-bios-microcode.md`.
+Intel's errata list for this CPU includes four that fit the symptoms and were fixed or published after this BIOS: ARL036 (a core may see incorrect data when other cores enter deep sleep), ARL047 (an indirect branch may execute incorrect instructions), ARL050 (above), and ARL037 (hang on C6 entry or exit, still unfixed). Intel's release notes do not say which microcode revision carries which fix. Sources and the full table: `logs/agent_reports/web-bios-microcode.md`.
 
 #### 4.8.6 Why every earlier test passed
 
@@ -369,6 +377,19 @@ Intel's errata list for this CPU includes four that fit the symptoms and were fi
 - `gpu-burn`, `stress-ng`, OCCT and MemTest86 all load many cores at once, so none of them ever ran CPU 0 above 54x. MemTest86 measured 54x on the boot CPU and used 16 of the 24 CPUs.
 - `torture.py` loads the CPU lightly: system CPU use was 3.6 % during run #9. Its main thread therefore often runs alone on a preferred core at 57x, as do `pip`, `localedef`, `import torch`, `update-manager` and `unattended-upgrade`.
 - Linux places single-threaded work on CPUs 0 and 4 first, which is why the fault looked random rather than rare.
+
+#### 4.8.7 `torture.py` kept off CPU 0
+
+`CPUS=1-23 scripts/run_torture_loop.sh` confines the script and its DataLoader workers to CPUs 1–23 with `taskset`.
+
+| Runs | Length | Steps | Result |
+|---|---|---|---|
+| 8 | 75 s each | 311–313 each | all clean |
+| 1 | 15 min | 3,860 | clean |
+
+- Nine starts, 6,356 steps, 25 minutes: no crash, clean teardown every time, and no kernel fault line.
+- This is supporting evidence, not proof. Unconfined runs have also gone 4,259 steps without a crash (runs #6 and #7), and `taskset` does not keep the kernel or other programs off CPU 0.
+- During these runs the main thread used about one core and each DataLoader worker about 4 %, which confirms the light CPU load described in §4.8.6.
 
 ### 4.9 Consolidated evidence
 

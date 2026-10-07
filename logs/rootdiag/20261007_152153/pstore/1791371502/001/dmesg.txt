@@ -1,0 +1,419 @@
+Oops#1 Part20
+<6>[    5.862851] iwlwifi 0000:81:00.0: Registered PHC clock: iwlwifi-PTP, with index: 0
+<4>[    5.966956] kauditd_printk_skb: 146 callbacks suppressed
+<5>[    5.966961] audit: type=1400 audit(1791369510.014:157): apparmor="DENIED" operation="capable" class="cap" profile="/usr/sbin/cupsd" pid=1733 comm="cupsd" capability=12  capname="net_admin"
+<44>[    6.112745] systemd-journald[528]: File /var/log/journal/83cf717c923a4c0f975ed92c6f9599d2/user-1000.journal corrupted or uncleanly shut down, renaming and replacing.
+<6>[    6.549175] Bluetooth: RFCOMM TTY layer initialized
+<6>[    6.549185] Bluetooth: RFCOMM socket layer initialized
+<6>[    6.549188] Bluetooth: RFCOMM ver 1.11
+<7>[    8.471071] rfkill: input handler disabled
+<6>[    8.485156] r8169 0000:82:00.0 enp130s0: Link is Up - 1Gbps/Full - flow control rx/tx
+<4>[    8.567521] exFAT-fs (sda1): Volume was not properly unmounted. Some data may be corrupt. Please run fsck.
+<4>[    8.584416] FAT-fs (sda2): Volume was not properly unmounted. Some data may be corrupt. Please run fsck.
+<5>[    9.049011] audit: type=1400 audit(1791369513.096:158): apparmor="DENIED" operation="symlink" class="file" profile="snap.snapd-desktop-integration.snapd-desktop-integration" name="/dev/char/195:255" pid=2725 comm="snapd-desktop-i" requested_mask="c" denied_mask="c" fsuid=1000 ouid=1000
+<5>[    9.049995] audit: type=1400 audit(1791369513.097:159): apparmor="DENIED" operation="symlink" class="file" profile="snap.snapd-desktop-integration.snapd-desktop-integration" name="/dev/char/195:0" pid=2725 comm="snapd-desktop-i" requested_mask="c" denied_mask="c" fsuid=1000 ouid=1000
+Oops#1 Part19
+<5>[    9.050032] audit: type=1400 audit(1791369513.097:160): apparmor="DENIED" operation="symlink" class="file" profile="snap.snapd-desktop-integration.snapd-desktop-integration" name="/dev/char/195:0" pid=2725 comm="snapd-desktop-i" requested_mask="c" denied_mask="c" fsuid=1000 ouid=1000
+<5>[    9.050101] audit: type=1400 audit(1791369513.097:161): apparmor="DENIED" operation="symlink" class="file" profile="snap.snapd-desktop-integration.snapd-desktop-integration" name="/dev/char/195:0" pid=2725 comm="snapd-desktop-i" requested_mask="c" denied_mask="c" fsuid=1000 ouid=1000
+<5>[    9.050159] audit: type=1400 audit(1791369513.097:162): apparmor="DENIED" operation="symlink" class="file" profile="snap.snapd-desktop-integration.snapd-desktop-integration" name="/dev/char/195:0" pid=2725 comm="snapd-desktop-i" requested_mask="c" denied_mask="c" fsuid=1000 ouid=1000
+<5>[    9.054731] audit: type=1400 audit(1791369513.102:163): apparmor="DENIED" operation="symlink" class="file" profile="snap.snapd-desktop-integration.snapd-desktop-integration" name="/dev/char/195:255" pid=2725 comm="snapd-desktop-i" requested_mask="c" denied_mask="c" fsuid=1000 ouid=1000
+<5>[    9.054800] audit: type=1400 audit(1791369513.102:164): apparmor="DENIED" operation="symlink" class="file" profile="snap.snapd-desktop-integration.snapd-desktop-integration" name="/dev/char/195:254" pid=2725 comm="snapd-desktop-i" requested_mask="c" denied_mask="c" fsuid=1000 ouid=1000
+Oops#1 Part18
+<5>[    9.054834] audit: type=1400 audit(1791369513.102:165): apparmor="DENIED" operation="symlink" class="file" profile="snap.snapd-desktop-integration.snapd-desktop-integration" name="/dev/char/195:0" pid=2725 comm="snapd-desktop-i" requested_mask="c" denied_mask="c" fsuid=1000 ouid=1000
+<5>[    9.054891] audit: type=1400 audit(1791369513.102:166): apparmor="DENIED" operation="symlink" class="file" profile="snap.snapd-desktop-integration.snapd-desktop-integration" name="/dev/char/195:0" pid=2725 comm="snapd-desktop-i" requested_mask="c" denied_mask="c" fsuid=1000 ouid=1000
+<6>[   12.205488] wlp129s0f0: authenticate with 10:7c:61:a0:a6:92 (local address=28:a0:6b:bb:9d:97)
+<6>[   12.206015] wlp129s0f0: send auth to 10:7c:61:a0:a6:92 (try 1/3)
+<6>[   12.217975] wlp129s0f0: authenticated
+<6>[   12.218605] wlp129s0f0: associate with 10:7c:61:a0:a6:92 (try 1/3)
+<6>[   12.222508] wlp129s0f0: RX AssocResp from 10:7c:61:a0:a6:92 (capab=0x1c11 status=0 aid=1)
+<6>[   12.225648] wlp129s0f0: associated
+<7>[   12.332307] wlp129s0f0: Limiting TX power to 30 (30 - 0) dBm as advertised by 10:7c:61:a0:a6:92
+<6>[   15.316884] wlp129s0f0: deauthenticated from 10:7c:61:a0:a6:92 (Reason: 2=PREV_AUTH_NOT_VALID)
+<6>[   68.639530] loop11: detected capacity change from 0 to 2097152
+<6>[   68.657938]  loop11: p1 p2 p3
+<6>[   68.658812]  loop11: p1 p2 p3
+<1>[ 1997.667945] BUG: unable to handle page fault for address: 000045957ee10d90
+<1>[ 1997.667950] #PF: supervisor write access in kernel mode
+Oops#1 Part17
+<1>[ 1997.667952] #PF: error_code(0x0002) - not-present page
+<6>[ 1997.667953] PGD 0 P4D 0 
+<4>[ 1997.667955] Oops: Oops: 0002 [#1] PREEMPT SMP NOPTI
+<4>[ 1997.667958] CPU: 0 UID: 1000 PID: 7668 Comm: cuda00001800007 Tainted: P           O       6.14.0-27-generic #27~24.04.1-Ubuntu
+<4>[ 1997.667959] Tainted: [P]=PROPRIETARY_MODULE, [O]=OOT_MODULE
+<4>[ 1997.667960] Hardware name: Micro-Star International Co., Ltd. MS-7E54/PRO Z890-S WIFI (MS-7E54), BIOS 1.A70 04/27/2025
+<4>[ 1997.667961] RIP: 0010:__mem_cgroup_uncharge+0x16/0x80
+<4>[ 1997.667965] Code: 0f 1f 40 00 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 0f 1f 44 00 00 55 48 89 e5 48 83 ec 30 65 48 8b 04 25 28 00 00 00 <48> 89 45 f8 31 c0 48 83 7f 38 07 76 3a 48 8d 75 d0 48 c7 45 d0 00
+<4>[ 1997.667966] RSP: 0018:ffffb46d4f12f5d8 EFLAGS: 00010286
+<4>[ 1997.667968] RAX: 85bd2842d5081100 RBX: ffffe6970d83cb40 RCX: 0000000000000000
+<4>[ 1997.667968] RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffffe6970d83cb40
+<4>[ 1997.667969] RBP: ffffb46d4f12f608 R08: 0000000000000000 R09: 0000000000000000
+<4>[ 1997.667969] R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000400
+<4>[ 1997.667970] R13: ffffb46d6446f008 R14: 0000000000008000 R15: 000000005c000002
+<4>[ 1997.667970] FS:  0000000000000000(0000) GS:ffff8ed7bf800000(0000) knlGS:0000000000000000
+<4>[ 1997.667971] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+<4>[ 1997.667972] CR2: 000045957ee10d90 CR3: 0000000177935001 CR4: 0000000000f72ef0
+<4>[ 1997.667972] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+<4>[ 1997.667973] DR3: 0000000000000000 DR6: 00000000ffff07f0 DR7: 0000000000000400
+<4>[ 1997.667973] PKRU: 55555554
+Oops#1 Part16
+<4>[ 1997.667974] Call Trace:
+<4>[ 1997.667975]  <TASK>
+<4>[ 1997.667978]  __folio_put+0x8d/0x110
+<4>[ 1997.667980]  gup_put_folio+0xaa/0xc0
+<4>[ 1997.667982]  unpin_user_page+0x22/0x60
+<4>[ 1997.667985]  os_unlock_user_pages+0x36/0x60 [nvidia]
+<4>[ 1997.668173]  _nv041598rm+0x9c/0x140 [nvidia]
+<4>[ 1997.668319] WARNING: kernel stack frame pointer at 0000000031115092 in cuda00001800007:7668 has bad value 00000000123da346
+<4>[ 1997.668321] unwind stack type:0 next_sp:0000000000000000 mask:0x2 graph_idx:0
+<4>[ 1997.668322] 000000004e948059: ffffb46d4f12f638 (0xffffb46d4f12f638)
+<4>[ 1997.668323] 00000000da538a98: ffffffffb669431d (__folio_put+0x8d/0x110)
+<4>[ 1997.668325] 000000007b2d0f05: ffff8ec8afe79840 (0xffff8ec8afe79840)
+<4>[ 1997.668326] 00000000a68c5362: 0000000000000246 (0x246)
+<4>[ 1997.668326] 00000000c0aaf581: 85bd2842d5081100 (0x85bd2842d5081100)
+<4>[ 1997.668327] 0000000051747915: ffffe6970d83cb40 (0xffffe6970d83cb40)
+<4>[ 1997.668327] 0000000011cd2c42: ffffb46d4f12f658 (0xffffb46d4f12f658)
+<4>[ 1997.668327] 00000000819d0a19: ffffffffb66db14a (gup_put_folio+0xaa/0xc0)
+<4>[ 1997.668329] 000000003ae771a4: 0000000000003794 (0x3794)
+<4>[ 1997.668329] 00000000f5db1fa6: ffffb46d6448aca8 (0xffffb46d6448aca8)
+<4>[ 1997.668330] 000000006d4b2680: ffffb46d4f12f668 (0xffffb46d4f12f668)
+<4>[ 1997.668330] 000000004db6d3e7: ffffffffb66db192 (unpin_user_page+0x22/0x60)
+<4>[ 1997.668331] 00000000ec7b28af: ffffb46d4f12f698 (0xffffb46d4f12f698)
+<4>[ 1997.668331] 000000006c2de4d6: ffffffffc19d2d36 (os_unlock_user_pages+0x36/0x60 [nvidia])
+<4>[ 1997.668488] 0000000051eb88d4: 0000000000000000 ...
+<4>[ 1997.668489] 00000000937c0c28: ffffb46d644b1008 (0xffffb46d644b1008)
+Oops#1 Part15
+<4>[ 1997.668489] 000000009acae471: ffff8ec899faf000 (0xffff8ec899faf000)
+<4>[ 1997.668490] 000000002c9b8d5d: 0000000000008000 (0x8000)
+<4>[ 1997.668490] 0000000031115092: ffff8ec888005c80 (0xffff8ec888005c80)
+<4>[ 1997.668490] 00000000c18a211c: ffffffffc24d07dc (_nv041598rm+0x9c/0x140 [nvidia])
+<4>[ 1997.668645] 00000000e4a1aefe: ffff8ec8ebe0e810 (0xffff8ec8ebe0e810)
+<4>[ 1997.668645] 00000000bae7c0f9: ffffb46d644b1008 (0xffffb46d644b1008)
+<4>[ 1997.668646] 00000000a0d4430d: 00000000c1d0004d (0xc1d0004d)
+<4>[ 1997.668646] 0000000011b099a4: 000000005c0000ec (0x5c0000ec)
+<4>[ 1997.668647] 00000000a8896a82: 000000005c000002 (0x5c000002)
+<4>[ 1997.668647] 00000000af60b29b: ffffffffc1ec6a5a (_nv036791rm+0xca/0x430 [nvidia])
+<4>[ 1997.668913] 00000000e0df6167: ffff8ec8cdf6f010 (0xffff8ec8cdf6f010)
+<4>[ 1997.668913] 00000000ca9e0b89: ffff8ec8be380008 (0xffff8ec8be380008)
+<4>[ 1997.668914] 0000000099f0ed1a: 00000000c1d0004d (0xc1d0004d)
+<4>[ 1997.668914] 00000000da4e3ff3: ffffffffc1a2eadb (_nv036756rm+0x6b/0x130 [nvidia])
+<4>[ 1997.669072] 00000000217e4db1: ffff8ec8cdf6f010 (0xffff8ec8cdf6f010)
+<4>[ 1997.669073] 0000000085e0b743: 0000000000000000 ...
+<4>[ 1997.669073] 00000000e652db3c: ffff8ec8ebe0e810 (0xffff8ec8ebe0e810)
+<4>[ 1997.669073] 000000005af94945: ffff8ec888005fc0 (0xffff8ec888005fc0)
+<4>[ 1997.669074] 000000003764b587: 0000000000000000 ...
+<4>[ 1997.669074] 00000000ff5d0a68: ffffffffc22fe37d (_nv002835rm+0xd/0x20 [nvidia])
+<4>[ 1997.669271] 000000005d890bd0: ffff8ec8cdf6f020 (0xffff8ec8cdf6f020)
+<4>[ 1997.669271] 00000000d993939c: ffffffffc22f910e (_nv004578rm+0x1e/0xb0 [nvidia])
+<4>[ 1997.669469] 0000000029b91c46: 0000000000000000 ...
+Oops#1 Part14
+<4>[ 1997.669469] 00000000200f0906: ffffffffc22f4c3c (_nv017141rm+0x59c/0x680 [nvidia])
+<4>[ 1997.669669] 000000009d9f5f20: ffff8ec8ebe0e808 (0xffff8ec8ebe0e808)
+<4>[ 1997.669669] 0000000031033f8f: ffff8ec888005ef0 (0xffff8ec888005ef0)
+<4>[ 1997.669670] 00000000ac6c4410: 0000000000000000 ...
+<4>[ 1997.669670] 00000000c7c5960c: ffffffffc26bd7e0 (_nv000453rm+0xaf4/0xfffffffffff15314 [nvidia])
+<4>[ 1997.669827] 0000000031a9fe62: ffffffffc26bd7e0 (_nv000453rm+0xaf4/0xfffffffffff15314 [nvidia])
+<4>[ 1997.669983] 00000000b0027faf: ffffffffc1a68bcb (_nv045585rm+0xab/0xe0 [nvidia])
+<4>[ 1997.670142] 000000006678f5c2: ffff8ec8ee96f030 (0xffff8ec8ee96f030)
+<4>[ 1997.670143] 00000000d0a823fc: ffff8ec8ee96f030 (0xffff8ec8ee96f030)
+<4>[ 1997.670143] 000000003ad054a7: 0000000000000000 ...
+<4>[ 1997.670143] 00000000e0fb9377: ffff8ec888005fc0 (0xffff8ec888005fc0)
+<4>[ 1997.670144] 00000000a86bf987: ffff8ec888005ef0 (0xffff8ec888005ef0)
+<4>[ 1997.670144] 00000000451687bc: ffffffffc22f26b7 (_nv047302rm+0xb7/0x180 [nvidia])
+<4>[ 1997.670342] 000000006e449257: ffff8ec888005f80 (0xffff8ec888005f80)
+<4>[ 1997.670343] 00000000b7bfe385: ffffffffc26bd7e0 (_nv000453rm+0xaf4/0xfffffffffff15314 [nvidia])
+<4>[ 1997.670499] 00000000948088b1: ffff8ec888005fc0 (0xffff8ec888005fc0)
+<4>[ 1997.670499] 00000000efa5fbba: ffff8ec888005e80 (0xffff8ec888005e80)
+<4>[ 1997.670500] 0000000044feb7e5: ffff8ec8ee96f030 (0xffff8ec8ee96f030)
+<4>[ 1997.670500] 000000007197a8e8: ffffffffc22f2a6f (_nv047301rm+0x2ef/0x690 [nvidia])
+<4>[ 1997.670696] 00000000df8d4e15: ffff8ec8ebe0e810 (0xffff8ec8ebe0e810)
+<4>[ 1997.670697] 00000000020478fc: ffffffffc26bd7e0 (_nv000453rm+0xaf4/0xfffffffffff15314 [nvidia])
+Oops#1 Part13
+<4>[ 1997.670853] 0000000087d9a1ac: 00000000ffffffff (0xffffffff)
+<4>[ 1997.670853] 00000000f103ef63: ffffffffc26bd890 (_nv025025rm+0xb0/0xfffffffffff14820 [nvidia])
+<4>[ 1997.671009] 0000000056d8780e: ffff8ec899fcbc08 (0xffff8ec899fcbc08)
+<4>[ 1997.671010] 000000001e91f370: ffffffffc22f2fb7 (_nv047297rm+0xa7/0x1a0 [nvidia])
+<4>[ 1997.671205] 00000000a0562137: ffff8ec888005ff0 (0xffff8ec888005ff0)
+<4>[ 1997.671206] 000000006075453d: ffff8ec888003000 (0xffff8ec888003000)
+<4>[ 1997.671206] 00000000863d5463: ffffffffc26bd260 (_nv000453rm+0x574/0xfffffffffff15314 [nvidia])
+<4>[ 1997.671362] 00000000d21cba5b: ffff8ec886e54000 (0xffff8ec886e54000)
+<4>[ 1997.671363] 00000000bd6dea0f: ffffb46d4f12f960 (0xffffb46d4f12f960)
+<4>[ 1997.671363] 000000008063ef5e: ffffffffc24c6d2b (rm_cleanup_file_private+0x1db/0x200 [nvidia])
+<4>[ 1997.671518] 00000000d7ae34b0: ffffe69704230400 (0xffffe69704230400)
+<4>[ 1997.671519] 00000000d60fcaa5: ffffffffc26b4ba0 (nv_kthread_q+0x40/0xfffffffffff1d4a0 [nvidia])
+<4>[ 1997.671675] 00000000d1cf1638: ffff8ec888c112c0 (0xffff8ec888c112c0)
+<4>[ 1997.671675] 0000000082e83a4d: 000000004f12f900 (0x4f12f900)
+<4>[ 1997.671676] 00000000025c95a3: 0000000000001df4 (0x1df4)
+<4>[ 1997.671676] 00000000f02593df: 00000001002ddf7c (0x1002ddf7c)
+<4>[ 1997.671677] 00000000a835cc8c: 000f43cb38eae4c0 (0xf43cb38eae4c0)
+<4>[ 1997.671677] 00000000bdc450c2: 000f43cd8d619880 (0xf43cd8d619880)
+<4>[ 1997.671678] 00000000982cd1db: 000f43cd8d619880 (0xf43cd8d619880)
+<4>[ 1997.671678] 0000000005af5420: 000f43cbb08b4880 (0xf43cbb08b4880)
+<4>[ 1997.671678] 000000004fbc5143: 0000000000002710 (0x2710)
+Oops#1 Part12
+<4>[ 1997.671679] 00000000c8729ff9: 0000000000000000 ...
+<4>[ 1997.671679] 0000000037a582a3: 0000000100000000 (0x100000000)
+<4>[ 1997.671680] 0000000084b63fd2: 0000012000000000 (0x12000000000)
+<4>[ 1997.671680] 0000000010c00150: 0000000000001df4 (0x1df4)
+<4>[ 1997.671680] 000000001dadcf23: ffffb46d4d837b18 (0xffffb46d4d837b18)
+<4>[ 1997.671681] 00000000d1af9782: 0000000000000000 ...
+<4>[ 1997.671681] 00000000728a0518: 0000000000000001 (0x1)
+<4>[ 1997.671682] 00000000db25f957: 0000000000000000 ...
+<4>[ 1997.671682] 0000000062c8e5a1: fffffff000000000 (0xfffffff000000000)
+<4>[ 1997.671682] 000000001bef7671: ffffffffc26f0ab0 (_nv044186rm+0x90/0xffffffffffee15e0 [nvidia])
+<4>[ 1997.671838] 00000000423cf0e1: 0000000000000010 (0x10)
+<4>[ 1997.671839] 00000000929c1ace: ffff8ec886e54000 (0xffff8ec886e54000)
+<4>[ 1997.671839] 000000008204bb77: ffff8ec88285ccc0 (0xffff8ec88285ccc0)
+<4>[ 1997.671839] 00000000320874ad: ffffffffc26b51e8 (nv_ctl_device+0x648/0xfffffffffff1d460 [nvidia])
+<4>[ 1997.671995] 00000000eead5f95: ffff8ec890f2aba0 (0xffff8ec890f2aba0)
+<4>[ 1997.671996] 000000005b0675c4: ffffffffc26b4ba0 (nv_kthread_q+0x40/0xfffffffffff1d4a0 [nvidia])
+<4>[ 1997.672152] 00000000b24f2425: ffffffffc19c1218 (nvidia_close+0x158/0x2c0 [nvidia])
+<4>[ 1997.672305] 000000003c5de278: ffff8ec888003000 (0xffff8ec888003000)
+<4>[ 1997.672305] 0000000004a6a391: ffffffffc26b4ba0 (nv_kthread_q+0x40/0xfffffffffff1d4a0 [nvidia])
+<4>[ 1997.672461] 000000004c4e99fb: ffff8ec88285ccc0 (0xffff8ec88285ccc0)
+<4>[ 1997.672462] 00000000b44c7723: 000000000408001b (0x408001b)
+<4>[ 1997.672462] 000000008b66a014: ffff8ec89a294708 (0xffff8ec89a294708)
+Oops#1 Part11
+<4>[ 1997.672462] 00000000cba11324: ffff8ec890f2aba0 (0xffff8ec890f2aba0)
+<4>[ 1997.672463] 00000000023eecf7: ffff8ec8c07375c0 (0xffff8ec8c07375c0)
+<4>[ 1997.672463] 000000006095206f: ffffb46d4f12f998 (0xffffb46d4f12f998)
+<4>[ 1997.672464] 0000000095934a60: ffffffffb67c162a (__fput+0xea/0x2d0)
+<4>[ 1997.672466] 00000000f9b6222e: ffff8ec88285db98 (0xffff8ec88285db98)
+<4>[ 1997.672466] 00000000c2341d28: ffff8ec926d62a40 (0xffff8ec926d62a40)
+<4>[ 1997.672467] 0000000092d1407a: ffff8ec926d63844 (0xffff8ec926d63844)
+<4>[ 1997.672467] 000000000f66112f: 0000000000000001 (0x1)
+<4>[ 1997.672467] 00000000603f52b2: ffff8ec926d62a40 (0xffff8ec926d62a40)
+<4>[ 1997.672468] 00000000d89a1f5f: ffffb46d4f12f9a8 (0xffffb46d4f12f9a8)
+<4>[ 1997.672468] 00000000dfffd9c6: ffffffffb67c18a5 (____fput+0x15/0x20)
+<4>[ 1997.672469] 00000000ceb37a3a: ffffb46d4f12f9d0 (0xffffb46d4f12f9d0)
+<4>[ 1997.672470] 00000000b6e44a5b: ffffffffb63bbe3d (task_work_run+0x5d/0xa0)
+<4>[ 1997.672472] 00000000a5f89332: ffff8ec926d62a40 (0xffff8ec926d62a40)
+<4>[ 1997.672472] 00000000bc7c0ba9: 0000000000000001 (0x1)
+<4>[ 1997.672473] 000000009faa41e1: 000000000000000f (0xf)
+<4>[ 1997.672473] 0000000060635c95: ffffb46d4f12fa20 (0xffffb46d4f12fa20)
+<4>[ 1997.672474] 000000005579ca7b: ffffffffb638e0ac (do_exit+0x26c/0x4e0)
+<4>[ 1997.672475] 0000000028e38a20: 0000000000000000 ...
+<4>[ 1997.672475] 00000000fc684d67: 85bd2842d5081100 (0x85bd2842d5081100)
+<4>[ 1997.672476] 000000002db881fd: 000000000000000f (0xf)
+<4>[ 1997.672476] 00000000f227226b: ffff8ec8a395f500 (0xffff8ec8a395f500)
+<4>[ 1997.672477] 00000000412d655d: ffff8ec926d62a40 (0xffff8ec926d62a40)
+Oops#1 Part10
+<4>[ 1997.672477] 0000000025b377e3: 0000000000000000 ...
+<4>[ 1997.672477] 00000000b8df2227: ffffb46d4f12fa50 (0xffffb46d4f12fa50)
+<4>[ 1997.672478] 0000000078a1c5c9: ffffffffb638e514 (do_group_exit+0x34/0x90)
+<4>[ 1997.672479] 00000000582fbf8d: ffff8ec926d62a40 (0xffff8ec926d62a40)
+<4>[ 1997.672479] 0000000031584f78: ffff8ec8a395f500 (0xffff8ec8a395f500)
+<4>[ 1997.672480] 000000008745d04b: ffff8ec8c0e8f380 (0xffff8ec8c0e8f380)
+<4>[ 1997.672480] 00000000e009dca3: 0000000000000000 ...
+<4>[ 1997.672480] 0000000005d8f417: ffffb46d4f12fac0 (0xffffb46d4f12fac0)
+<4>[ 1997.672481] 00000000bf36ff92: ffffffffb63a3adb (get_signal+0x8cb/0x8d0)
+<4>[ 1997.672482] 0000000007992b16: 0000000000000000 ...
+<4>[ 1997.672482] 0000000012264a5c: ffffb46d4f12faf0 (0xffffb46d4f12faf0)
+<4>[ 1997.672483] 00000000597f3ae0: ffffb46d4f12fad0 (0xffffb46d4f12fad0)
+<4>[ 1997.672483] 000000004d1299a1: 0000000000000000 ...
+<4>[ 1997.672484] 00000000fcaca600: 85bd2842d5081100 (0x85bd2842d5081100)
+<4>[ 1997.672484] 00000000b82f6a3f: ffffb46d4f12ff48 (0xffffb46d4f12ff48)
+<4>[ 1997.672485] 00000000822e269f: ffffb46d4f12fad0 (0xffffb46d4f12fad0)
+<4>[ 1997.672485] 000000008ee8df6b: ffff8ec926d62a40 (0xffff8ec926d62a40)
+<4>[ 1997.672485] 00000000a0e52a71: 0000000000000000 ...
+<4>[ 1997.672486] 00000000e3d90fb6: ffffb46d4f12fb40 (0xffffb46d4f12fb40)
+<4>[ 1997.672486] 000000004472462c: ffffffffb62d5dd9 (arch_do_signal_or_restart+0x39/0x110)
+<4>[ 1997.672489] 000000003c4f2302: 0000000000000000 ...
+<4>[ 1997.672489] 000000003176c526: 85bd2842d5081100 (0x85bd2842d5081100)
+<4>[ 1997.672489] 0000000073eef201: 0000000000004006 (0x4006)
+<4>[ 1997.672490] 00000000f357b8ac: ffffb46d4f12ff48 (0xffffb46d4f12ff48)
+Oops#1 Part9
+<4>[ 1997.672490] 000000003f78ad71: ffffb46d4f12fb68 (0xffffb46d4f12fb68)
+<4>[ 1997.672491] 00000000255b58f9: ffffffffb74db7f6 (syscall_exit_to_user_mode+0x146/0x1d0)
+<4>[ 1997.672493] 000000003e52a170: ffffb46d4f12ff48 (0xffffb46d4f12ff48)
+<4>[ 1997.672493] 000000001771fa44: 00000000000000db (0xdb)
+<4>[ 1997.672494] 00000000d8a640f0: 00000000000000db (0xdb)
+<4>[ 1997.672494] 0000000045a808ac: ffffb46d4f12ff38 (0xffffb46d4f12ff38)
+<4>[ 1997.672495] 000000007e94f574: ffffffffb74d47aa (do_syscall_64+0x8a/0x170)
+<4>[ 1997.672496] 0000000037614c4a: 0000000100000000 (0x100000000)
+<4>[ 1997.672497] 000000002de94438: ffff8ec8cdff3a40 (0xffff8ec8cdff3a40)
+<4>[ 1997.672497] 00000000ab663771: ffffffffb7d0687b (kallsyms_seqs_of_names+0x1cd213/0x218348)
+<4>[ 1997.672499] 00000000510bf063: ffff8ec893d96b28 (0xffff8ec893d96b28)
+<4>[ 1997.672500] 00000000370989bd: ffff8ec926d62a40 (0xffff8ec926d62a40)
+<4>[ 1997.672500] 00000000c8287c1c: ffff8ec8f7421c01 (0xffff8ec8f7421c01)
+<4>[ 1997.672501] 00000000faa0d271: ffff8ec8f7421c80 (0xffff8ec8f7421c80)
+<4>[ 1997.672501] 000000005eba2dce: 0000000000000004 (0x4)
+<4>[ 1997.672501] 000000007f4034b6: 85bd2842d5081100 (0x85bd2842d5081100)
+<4>[ 1997.672502] 000000003b4002e6: ffff8ec881ecfd90 (0xffff8ec881ecfd90)
+<4>[ 1997.672502] 0000000077c30540: ffff8ec881ecfd88 (0xffff8ec881ecfd88)
+<4>[ 1997.672503] 00000000df11dad7: ffff8ec926d62a40 (0xffff8ec926d62a40)
+<4>[ 1997.672503] 000000008c37f5fc: ffffb46d4f12fc70 (0xffffb46d4f12fc70)
+<4>[ 1997.672504] 0000000072388e18: ffff8ec8f7421c80 (0xffff8ec8f7421c80)
+<4>[ 1997.672504] 000000004986207c: ffffb46d4f12fc58 (0xffffb46d4f12fc58)
+Oops#1 Part8
+<4>[ 1997.672505] 000000004fb0debc: ffffffffb683e78c (eventfd_read+0xdc/0x200)
+<4>[ 1997.672507] 00000000294ba494: 0000000000000001 (0x1)
+<4>[ 1997.672507] 00000000364de84d: ffffffffb69c95d6 (security_file_permission+0x36/0x60)
+<4>[ 1997.672510] 00000000fa9f0822: 0000000000000004 (0x4)
+<4>[ 1997.672510] 00000000f864de8f: 0000000000000008 (0x8)
+<4>[ 1997.672510] 00000000923c1f14: ffff8ec8f7421c80 (0xffff8ec8f7421c80)
+<4>[ 1997.672511] 00000000402ee008: ffffb46d4f12fc58 (0xffffb46d4f12fc58)
+<4>[ 1997.672511] 000000006e1be590: 85bd2842d5081100 (0x85bd2842d5081100)
+<4>[ 1997.672512] 00000000517144b8: ffff8ec926d62a40 (0xffff8ec926d62a40)
+<4>[ 1997.672512] 00000000765ab3c0: 0000000000000000 ...
+<4>[ 1997.672512] 000000006d9eb403: ffff8ec8f7421c80 (0xffff8ec8f7421c80)
+<4>[ 1997.672513] 00000000cf4c7ec3: ffffb46d4f12fd08 (0xffffb46d4f12fd08)
+<4>[ 1997.672513] 00000000420f7743: 00007e20dddfedb8 (0x7e20dddfedb8)
+<4>[ 1997.672514] 000000001bc8a335: ffffb46d4f12fcf8 (0xffffb46d4f12fcf8)
+<4>[ 1997.672514] 00000000c26ac5ad: ffffffffb67bf3f8 (vfs_read+0x2a8/0x390)
+<4>[ 1997.672515] 00000000febb774e: 0000000100000000 (0x100000000)
+<4>[ 1997.672515] 000000009f554e9c: 0000000000000000 ...
+<4>[ 1997.672516] 000000006d74803b: 0000000000000008 (0x8)
+<4>[ 1997.672516] 00000000f2b8b4a0: 00007e20dddfedb8 (0x7e20dddfedb8)
+<4>[ 1997.672517] 000000006c87497c: 0000000000000000 ...
+<4>[ 1997.672517] 00000000e82178af: 0000000000000001 (0x1)
+<4>[ 1997.672517] 0000000092ed3675: ffff8ec8f7421c80 (0xffff8ec8f7421c80)
+<4>[ 1997.672518] 00000000749bdfaa: 0000000000000000 ...
+<4>[ 1997.672518] 000000002b8a93e4: 85bd2842d5081100 (0x85bd2842d5081100)
+Oops#1 Part7
+<4>[ 1997.672518] 0000000054fe1479: ffff8ec8f7421c81 (0xffff8ec8f7421c81)
+<4>[ 1997.672519] 00000000e9d73647: ffff8ec8f7421c80 (0xffff8ec8f7421c80)
+<4>[ 1997.672519] 000000003a719f6a: 00007e20dddfedb8 (0x7e20dddfedb8)
+<4>[ 1997.672520] 000000008c591294: 0000000000000008 (0x8)
+<4>[ 1997.672520] 0000000025f93d3d: 0000000000000001 (0x1)
+<4>[ 1997.672520] 0000000079f76ba1: ffffb46d4f12fd38 (0xffffb46d4f12fd38)
+<4>[ 1997.672521] 000000005003f9e2: ffffffffb67c02dd (ksys_read+0x9d/0xf0)
+<4>[ 1997.672522] 00000000f733674a: 0000000000000000 ...
+<4>[ 1997.672522] 0000000095702003: 85bd2842d5081100 (0x85bd2842d5081100)
+<4>[ 1997.672522] 000000003ffb9e06: ffffb46d4f12fd30 (0xffffb46d4f12fd30)
+<4>[ 1997.672523] 000000009b010bf0: ffffffffb64953e2 (arch_exit_to_user_mode_prepare.isra.0+0x22/0xd0)
+<4>[ 1997.672525] 00000000a0f462f0: 0000000000000000 ...
+<4>[ 1997.672525] 000000005541f64f: ffffb46d4f12fd58 (0xffffb46d4f12fd58)
+<4>[ 1997.672525] 00000000c18076b0: ffffffffb74db6e8 (syscall_exit_to_user_mode+0x38/0x1d0)
+<4>[ 1997.672526] 000000005d2542c7: ffffb46d4f12ff48 (0xffffb46d4f12ff48)
+<4>[ 1997.672526] 00000000e12ddd48: 0000000000000000 ...
+<4>[ 1997.672527] 00000000a9b33a5a: ffffb46d4f12ff38 (0xffffb46d4f12ff38)
+<4>[ 1997.672527] 00000000ba870586: ffffffffb74d47aa (do_syscall_64+0x8a/0x170)
+<4>[ 1997.672528] 000000003c68c089: ffffb46d4f12ff48 (0xffffb46d4f12ff48)
+<4>[ 1997.672528] 000000005482c9ed: ffff8ec926d62a40 (0xffff8ec926d62a40)
+<4>[ 1997.672529] 000000008024a2b7: ffffb46d4f12fd90 (0xffffb46d4f12fd90)
+<4>[ 1997.672529] 000000004a114d1c: ffffffffb6495488 (arch_exit_to_user_mode_prepare.isra.0+0xc8/0xd0)
+Oops#1 Part6
+<4>[ 1997.672530] 000000007903a800: 0000000000004000 (0x4000)
+<4>[ 1997.672530] 00000000ae457120: ffffb46d4f12fdb8 (0xffffb46d4f12fdb8)
+<4>[ 1997.672531] 00000000da4cb906: ffffffffb74db6e8 (syscall_exit_to_user_mode+0x38/0x1d0)
+<4>[ 1997.672531] 000000000294ca94: ffffb46d4f12ff48 (0xffffb46d4f12ff48)
+<4>[ 1997.672532] 00000000ac3cbe8e: 0000000000000007 (0x7)
+<4>[ 1997.672532] 00000000b0f08612: 0000000000000007 (0x7)
+<4>[ 1997.672533] 00000000d092fef7: ffffb46d4f12ff38 (0xffffb46d4f12ff38)
+<4>[ 1997.672533] 00000000f9bbd60d: ffffffffb74d47aa (do_syscall_64+0x8a/0x170)
+<4>[ 1997.672534] 00000000c1c40ad6: 0000000000000cc0 (0xcc0)
+<4>[ 1997.672534] 000000002098a003: 00000007e20d8000 (0x7e20d8000)
+<4>[ 1997.672535] 00000000cb20edd5: 00007e20d8000000 (0x7e20d8000000)
+<4>[ 1997.672535] 0000000034cfe9ec: 00007e20d8000020 (0x7e20d8000020)
+<4>[ 1997.672535] 00000000648fe0f9: 0000000000000017 (0x17)
+<4>[ 1997.672536] 0000000051321066: 0000000000000008 (0x8)
+<4>[ 1997.672536] 00000000f013ad34: ffff8ec8cc5de800 (0xffff8ec8cc5de800)
+<4>[ 1997.672537] 00000000d379b5ab: 0000000000000001 (0x1)
+<4>[ 1997.672537] 000000007632ff87: 000045957ee12500 (0x45957ee12500)
+<4>[ 1997.672537] 00000000bbfbcdbf: ffffb46d4f12fe48 (0xffffb46d4f12fe48)
+<4>[ 1997.672538] 000000006b6f323d: ffffffffb6799dd3 (__count_memcg_events+0xd3/0x1a0)
+<4>[ 1997.672539] 00000000c96ba2bf: 0000000000000286 (0x286)
+<4>[ 1997.672539] 0000000054a927f3: 0000000000000000 ...
+<4>[ 1997.672540] 0000000058f47a46: 00007e20d8000020 (0x7e20d8000020)
+<4>[ 1997.672540] 00000000105c67f4: ffffb46d4f12ff48 (0xffffb46d4f12ff48)
+<4>[ 1997.672541] 00000000423c1d4c: ffff8ec926d62a40 (0xffff8ec926d62a40)
+Oops#1 Part5
+<4>[ 1997.672541] 000000000fe4a860: ffffb46d4f12fe60 (0xffffb46d4f12fe60)
+<4>[ 1997.672542] 00000000fa579333: ffffffffb66e28ea (count_memcg_events.constprop.0+0x2a/0x50)
+<4>[ 1997.672543] 00000000af7c7a93: 0000000000001255 (0x1255)
+<4>[ 1997.672543] 0000000055f38db7: ffffb46d4f12fea8 (0xffffb46d4f12fea8)
+<4>[ 1997.672544] 00000000ba889a04: ffffffffb66f2e5f (handle_mm_fault+0x1df/0x2d0)
+<4>[ 1997.672545] 00000000635cd93f: 0000000000000000 ...
+<4>[ 1997.672545] 00000000a5dd4573: ffff8ec88c236300 (0xffff8ec88c236300)
+<4>[ 1997.672545] 0000000023270e5e: 00007e20d8000020 (0x7e20d8000020)
+<4>[ 1997.672546] 00000000c5161cf4: ffff8ec88c236300 (0xffff8ec88c236300)
+<4>[ 1997.672546] 000000008ff041ad: ffffb46d4f12ff48 (0xffffb46d4f12ff48)
+<4>[ 1997.672547] 0000000054b8f66e: 0000000000000006 (0x6)
+<4>[ 1997.672547] 00000000f891e5f5: 0000000000000215 (0x215)
+<4>[ 1997.672548] 000000008bbf2d86: ffffb46d4f12ff08 (0xffffb46d4f12ff08)
+<4>[ 1997.672548] 000000005824400f: ffffffffb63569e5 (do_user_addr_fault+0x5d5/0x870)
+<4>[ 1997.672550] 000000009a3fb7ad: ffffb46d4f12fed0 (0xffffb46d4f12fed0)
+<4>[ 1997.672550] 00000000ec858349: ffffffffb64953e2 (arch_exit_to_user_mode_prepare.isra.0+0x22/0xd0)
+<4>[ 1997.672551] 000000004ed42d2b: 0000000000000000 ...
+<4>[ 1997.672551] 00000000c75fd2fb: ffffb46d4f12fef8 (0xffffb46d4f12fef8)
+<4>[ 1997.672552] 000000000b71fe02: ffffffffb74db96d (irqentry_exit_to_user_mode+0x2d/0x1d0)
+<4>[ 1997.672553] 0000000015be111a: ffffb46d4f12ff48 (0xffffb46d4f12ff48)
+<4>[ 1997.672553] 000000003faa17f2: 00007e20d8000020 (0x7e20d8000020)
+<4>[ 1997.672554] 00000000a586c85e: 0000000000000006 (0x6)
+Oops#1 Part4
+<4>[ 1997.672554] 000000001ac82f57: ffffb46d4f12ff08 (0xffffb46d4f12ff08)
+<4>[ 1997.672554] 000000009e9533cb: ffffffffb74dbb63 (irqentry_exit+0x43/0x50)
+<4>[ 1997.672555] 00000000878d98e5: ffffb46d4f12ff38 (0xffffb46d4f12ff38)
+<4>[ 1997.672556] 000000006d94ee19: ffffffffb74db286 (exc_page_fault+0x96/0x1e0)
+<4>[ 1997.672556] 0000000025c73f1b: 0000000000000000 ...
+<4>[ 1997.672556] 000000007c1ab3c7: ffffffffb600012b (entry_SYSCALL_64_after_hwframe+0x76/0x7e)
+<4>[ 1997.672558] 00000000246afa18: 00005f352c8791b0 (0x5f352c8791b0)
+<4>[ 1997.672559] 00000000d2b92cb6: 00005f352c9e2fb0 (0x5f352c9e2fb0)
+<4>[ 1997.672559] 000000009bdc0bd9: 00000000ffffffff (0xffffffff)
+<4>[ 1997.672560] 00000000193f75a7: 0000000000000000 ...
+<4>[ 1997.672560] 00000000975f85ff: 00007e20dddfed50 (0x7e20dddfed50)
+<4>[ 1997.672560] 000000007c4f3545: 00000000ffffffff (0xffffffff)
+<4>[ 1997.672561] 00000000d7e24e9b: 0000000000000293 (0x293)
+<4>[ 1997.672561] 0000000040b3b884: 00005f352c9e3000 (0x5f352c9e3000)
+<4>[ 1997.672562] 0000000066baf898: 0000000000000007 (0x7)
+<4>[ 1997.672562] 00000000b3fd9eb6: 0000000000000000 ...
+<4>[ 1997.672562] 000000002eddf28e: fffffffffffffdfc (0xfffffffffffffdfc)
+<4>[ 1997.672564] 00000000c7cc97df: 00007e21af31b4cd (0x7e21af31b4cd)
+<4>[ 1997.672564] 00000000a79702f5: 00000000ffffffff (0xffffffff)
+<4>[ 1997.672564] 0000000095233a22: 0000000000000003 (0x3)
+<4>[ 1997.672565] 00000000a89b5aed: 00005f352c9e2fb0 (0x5f352c9e2fb0)
+<4>[ 1997.672565] 00000000907bb1c3: 00000000000000db (0xdb)
+<4>[ 1997.672566] 00000000937a24ff: 00007e21af31b4cd (0x7e21af31b4cd)
+<4>[ 1997.672566] 000000003c6a4ecd: 0000000000000033 (0x33)
+Oops#1 Part3
+<4>[ 1997.672566] 00000000bf5a296d: 0000000000000293 (0x293)
+<4>[ 1997.672567] 00000000099b013f: 00007e20dddfed30 (0x7e20dddfed30)
+<4>[ 1997.672567] 000000008e739872: 000000000000002b (0x2b)
+<4>[ 1997.672568] 00000000babc5c6a: 0000000000000000 ...
+<4>[ 1997.672568]  ? _nv036791rm+0xca/0x430 [nvidia]
+<4>[ 1997.672883]  ? _nv036756rm+0x6b/0x130 [nvidia]
+<4>[ 1997.673041]  ? _nv002835rm+0xd/0x20 [nvidia]
+<4>[ 1997.673238]  ? _nv004578rm+0x1e/0xb0 [nvidia]
+<4>[ 1997.673435]  ? _nv017141rm+0x59c/0x680 [nvidia]
+<4>[ 1997.673634]  ? _nv045585rm+0xab/0xe0 [nvidia]
+<4>[ 1997.673793]  ? _nv047302rm+0xb7/0x180 [nvidia]
+<4>[ 1997.673992]  ? _nv047301rm+0x2ef/0x690 [nvidia]
+<4>[ 1997.674190]  ? _nv047297rm+0xa7/0x1a0 [nvidia]
+<4>[ 1997.674387]  ? rm_cleanup_file_private+0x1db/0x200 [nvidia]
+<4>[ 1997.674542]  ? nvidia_close+0x158/0x2c0 [nvidia]
+<4>[ 1997.674695]  ? __fput+0xea/0x2d0
+<4>[ 1997.674697]  ? ____fput+0x15/0x20
+<4>[ 1997.674698]  ? task_work_run+0x5d/0xa0
+<4>[ 1997.674699]  ? do_exit+0x26c/0x4e0
+<4>[ 1997.674700]  ? do_group_exit+0x34/0x90
+<4>[ 1997.674701]  ? get_signal+0x8cb/0x8d0
+<4>[ 1997.674703]  ? arch_do_signal_or_restart+0x39/0x110
+<4>[ 1997.674704]  ? syscall_exit_to_user_mode+0x146/0x1d0
+<4>[ 1997.674705]  ? do_syscall_64+0x8a/0x170
+<4>[ 1997.674707]  ? eventfd_read+0xdc/0x200
+<4>[ 1997.674708]  ? security_file_permission+0x36/0x60
+<4>[ 1997.674709]  ? vfs_read+0x2a8/0x390
+<4>[ 1997.674710]  ? ksys_read+0x9d/0xf0
+<4>[ 1997.674711]  ? arch_exit_to_user_mode_prepare.isra.0+0x22/0xd0
+<4>[ 1997.674712]  ? syscall_exit_to_user_mode+0x38/0x1d0
+<4>[ 1997.674713]  ? do_syscall_64+0x8a/0x170
+<4>[ 1997.674714]  ? arch_exit_to_user_mode_prepare.isra.0+0xc8/0xd0
+Oops#1 Part2
+<4>[ 1997.674715]  ? syscall_exit_to_user_mode+0x38/0x1d0
+<4>[ 1997.674716]  ? do_syscall_64+0x8a/0x170
+<4>[ 1997.674717]  ? __count_memcg_events+0xd3/0x1a0
+<4>[ 1997.674718]  ? count_memcg_events.constprop.0+0x2a/0x50
+<4>[ 1997.674719]  ? handle_mm_fault+0x1df/0x2d0
+<4>[ 1997.674720]  ? do_user_addr_fault+0x5d5/0x870
+<4>[ 1997.674721]  ? arch_exit_to_user_mode_prepare.isra.0+0x22/0xd0
+<4>[ 1997.674722]  ? irqentry_exit_to_user_mode+0x2d/0x1d0
+<4>[ 1997.674723]  ? irqentry_exit+0x43/0x50
+<4>[ 1997.674724]  ? exc_page_fault+0x96/0x1e0
+<4>[ 1997.674725]  ? entry_SYSCALL_64_after_hwframe+0x76/0x7e
+<4>[ 1997.674726]  </TASK>
+<4>[ 1997.674727] Modules linked in: exfat snd_seq_dummy rfcomm snd_hrtimer qrtr cmac algif_hash algif_skcipher af_alg bnep nvidia_uvm(PO) binfmt_misc nls_iso8859_1 snd_hda_codec_realtek snd_hda_codec_generic snd_hda_scodec_component xe drm_gpuvm gpu_sched drm_ttm_helper drm_exec drm_suballoc_helper nvidia_drm(PO) snd_sof_pci_intel_mtl snd_sof_intel_hda_generic soundwire_intel soundwire_cadence snd_sof_intel_hda_common nvidia_modeset(PO) snd_soc_hdac_hda snd_sof_intel_hda_mlink snd_sof_intel_hda snd_sof_pci snd_sof_xtensa_dsp snd_sof snd_sof_utils snd_hda_ext_core snd_soc_acpi_intel_match snd_soc_acpi_intel_sdca_quirks soundwire_generic_allocation snd_soc_acpi soundwire_bus snd_soc_sdca snd_soc_core intel_uncore_frequency snd_compress intel_uncore_frequency_common ac97_bus intel_pmc_core snd_hda_codec_hdmi snd_pcm_dmaengine x86_pkg_temp_thermal btusb intel_powerclamp btrtl snd_hda_intel btintel snd_intel_dspcfg coretemp btbcm snd_intel_sdw_acpi iwlmvm nvidia(PO) kvm_intel snd_hda_codec btmtk i915 mac80211 snd_hda_core
+Oops#1 Part1
+<4>[ 1997.674758]  snd_hwdep kvm libarc4 snd_pcm snd_seq_midi irqbypass snd_seq_midi_event polyval_clmulni polyval_generic snd_rawmidi drm_buddy ghash_clmulni_intel sha256_ssse3 iwlwifi ttm sha1_ssse3 cmdlinepart aesni_intel snd_seq drm_display_helper crypto_simd spi_nor cryptd pmt_telemetry processor_thermal_device_pci spd5118 snd_seq_device rapl processor_thermal_device mtd mei_gsc_proxy pmt_class intel_rapl_msr cec processor_thermal_wt_hint intel_cstate cfg80211 snd_timer wmi_bmof i2c_i801 spi_intel_pci bluetooth processor_thermal_rfim i2c_smbus mei_me spi_intel i2c_mux processor_thermal_rapl snd mxm_wmi mei intel_rapl_common soundcore processor_thermal_wt_req rc_core intel_vpu processor_thermal_power_floor i2c_algo_bit intel_vsec processor_thermal_mbox int3403_thermal int340x_thermal_zone acpi_tad int3400_thermal acpi_thermal_rel acpi_pad joydev input_leds mac_hid sch_fq_codel msr parport_pc ppdev lp parport efi_pstore nfnetlink dmi_sysfs ip_tables x_tables autofs4 hid_generic usbhid hid uas usb_storage nvme r8169 ahci
+<4>[ 1997.674793]  thunderbolt intel_lpss_pci nvme_core realtek intel_lpss libahci video idma64 nvme_auth wmi
+<4>[ 1997.674798] CR2: 000045957ee10d90
+<4>[ 1997.674800] ---[ end trace 0000000000000000 ]---
