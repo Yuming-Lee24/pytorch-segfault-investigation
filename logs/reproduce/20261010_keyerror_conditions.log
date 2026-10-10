@@ -1,0 +1,5 @@
+CPU 0, method keyerror, up to 60 runs, CPUs 2,3 kept busy
+
+No crash in 60 runs (66 s), CPU 0 at about 5399 MHz
+That is below 5600 MHz, so this pass proves nothing. Close other programs and run it again.
+CPU 4, method keyerror, up to 60 runs

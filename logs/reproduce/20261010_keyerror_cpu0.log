@@ -1,0 +1,68 @@
+CPU 0, method keyerror, up to 30 runs
+
+CRASH on run 1 after 1 s: killed by SIGSEGV (CPU 0 averaging 800 MHz)
+  stderr:   File "/home/yuming/pytorch-segfault-investigation/.pixi/envs/default/lib/python3.11/inspect.py", line 1816, in getattr_static
+  stderr:     if not _is_type(obj):
+  stderr:            ^^^^^^^^^^^^^
+  stderr:   File "/home/yuming/pytorch-segfault-investigation/.pixi/envs/default/lib/python3.11/inspect.py", line 1785, in _is_type
+  stderr:     _static_getmro(obj)
+  stderr: SystemError: <class 'SystemError'> returned a result with an exception set
+  kernel: python[8449]: segfault at 7 ip 00005d8a11acfd81 sp 00007fff89ba91d0 error 6 in python3.11[13bd81,5d8a11a85000+240000] likely on CPU 0 (core 0, socket 0)
+  kernel: Code: 45 d0 31 c0 e8 30 8e 0d 00 48 8b 7c 24 10 48 85 ff 0f 85 54 fe ff ff e9 bb fe ff ff e8 b8 fa 08 00 e9 5d fe ff ff 48 8b 53 08 <48> 89 50 08 e9 7e 62 19 00 4c 89 e7 49 8b 5c 24 08 e8 b9 67 19 00
+CPU 0, method keyerror, up to 10 runs
+
+CRASH on run 1 after 1 s: killed by SIGSEGV (CPU 0 averaging 635 MHz)
+  kernel: python[8502]: segfault at 0 ip 00006417819e44a8 sp 00007fff7d1a2600 error 6 in python3.11[1044a8,6417819d1000+240000] likely on CPU 0 (core 0, socket 0)
+  kernel: Code: 50 30 48 8b bc 24 c8 00 00 00 4c 8b 54 24 10 48 85 ff 0f 85 79 18 0f 00 4c 89 d0 48 8b 94 24 c0 00 00 00 48 63 ed 49 83 c2 08 <48> 89 10 48 8b 44 24 40 4c 8d 24 68 48 8d 05 45 4b 34 00 41 0f b7
+
+CRASH on run 2 after 3 s: killed by SIGSEGV (CPU 0 averaging 717 MHz)
+  kernel: python[8510]: segfault at 64 ip 0000639e7ab9e29b sp 00007ffe545cc220 error 4 in python3.11[1ee29b,639e7aaa1000+240000] likely on CPU 0 (core 0, socket 0)
+  kernel: Code: 00 00 0f b6 c2 66 c1 ed 08 48 8b 04 c1 0f b7 ed ff e0 48 8b 44 24 08 f7 dd 48 63 ed 4c 89 60 38 48 8b 44 24 20 4d 8d 64 6c 02 <8b> 40 64 85 c0 0f 85 69 5b f1 ff 41 0f b7 14 24 48 8b 5c 24 10 4c
+
+CRASH on run 3 after 5 s: killed by SIGSEGV (CPU 0 averaging 745 MHz)
+  kernel: traps: python[8519] general protection fault ip:60b68c092228 sp:7ffe77a96e00 error:0 in python3.11[218228,60b68bf6b000+240000]
+
+CRASH on run 4 after 8 s: killed by SIGSEGV (CPU 0 averaging 825 MHz)
+  kernel: python[8527]: segfault at 3c ip 0000586816a0d228 sp 00007ffc22f25420 error 4 in python3.11[218228,5868168e6000+240000] likely on CPU 0 (core 0, socket 0)
+  kernel: Code: 67 ff ff ff 66 0f 1f 44 00 00 49 ff 4d 00 0f 85 57 ff ff ff 49 8b 45 08 4c 89 ef ff 50 30 e9 48 ff ff ff 48 8d 05 98 c0 31 00 <49> 39 44 24 08 0f 85 f1 29 f0 ff 48 8d 05 06 ce 32 00 48 39 47 08
+
+CRASH on run 5 after 10 s: killed by SIGSEGV (CPU 0 averaging 903 MHz)
+  kernel: traps: python[8535] general protection fault ip:5e83aa9606c6 sp:7ffe859cc900 error:0 in python3.11[1e06c6,5e83aa871000+240000]
+
+CRASH on run 6 after 12 s: killed by SIGSEGV (CPU 0 averaging 1313 MHz)
+  kernel: python[8544]: segfault at 8 ip 00005f6007990235 sp 00007ffee98d5050 error 4 in python3.11[1ee235,5f6007893000+240000] likely on CPU 0 (core 0, socket 0)
+  kernel: Code: 00 00 00 0f b6 c2 66 c1 ed 08 48 8b 04 c1 0f b7 ed ff e0 4d 8b 72 f8 48 8b 44 24 08 4c 89 54 24 48 4d 8d 7c 24 02 4c 89 60 38 <49> 8b 46 08 4c 89 f7 ff 90 e0 00 00 00 4c 8b 54 24 48 48 85 c0 0f
+
+CRASH on run 7 after 14 s: killed by SIGSEGV (CPU 0 averaging 1240 MHz)
+  stderr: Traceback (most recent call last):
+  stderr:   File "<string>", line 9, in <module>
+  stderr:   File "/home/yuming/pytorch-segfault-investigation/.pixi/envs/default/lib/python3.11/inspect.py", line 1825, in getattr_static
+  kernel: python[8552]: segfault at 7b000060cc8c ip 000060cc8449d365 sp 00007ffce6f7c248 error 4 in python3.11[250365,60cc8433e000+240000] likely on CPU 0 (core 0, socket 0)
+  kernel: Code: ff ff 0f 1f 00 48 ff 4f 30 c3 66 66 2e 0f 1f 84 00 00 00 00 00 8b 47 10 a8 01 75 37 48 8b 4f f0 83 c8 01 48 8b 57 f8 89 47 10 <48> 8b 41 08 48 83 e2 fc 48 89 0a 83 e0 03 48 09 d0 48 89 41 08 31
+
+CRASH on run 8 after 16 s: killed by SIGSEGV (CPU 0 averaging 1251 MHz)
+  kernel: python[8560]: segfault at 727900000009 ip 00005a80ae7cc228 sp 00007fff9671ade0 error 4 in python3.11[218228,5a80ae6a5000+240000] likely on CPU 0 (core 0, socket 0)
+  kernel: Code: 67 ff ff ff 66 0f 1f 44 00 00 49 ff 4d 00 0f 85 57 ff ff ff 49 8b 45 08 4c 89 ef ff 50 30 e9 48 ff ff ff 48 8d 05 98 c0 31 00 <49> 39 44 24 08 0f 85 f1 29 f0 ff 48 8d 05 06 ce 32 00 48 39 47 08
+
+CRASH on run 9 after 18 s: killed by SIGSEGV (CPU 0 averaging 1201 MHz)
+  stderr:     if _shadowed_dict(type(entry)) is _sentinel:
+  stderr:        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  stderr:   File "/home/yuming/pytorch-segfault-investigation/.pixi/envs/default/lib/python3.11/inspect.py", line 1794, in _shadowed_dict
+  stderr:     class_dict = dict_attr.__get__(entry)["__dict__"]
+  stderr:                  ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  stderr: KeyError: ((...),)
+  kernel: python[8568]: segfault at 0 ip 000063f906500fa6 sp 00007ffd2915e1c0 error 6 in python3.11[13cfa6,63f9064b5000+240000] likely on CPU 0 (core 0, socket 0)
+  kernel: Code: f7 3d 12 00 e8 ab e8 08 00 e9 0a 3e 12 00 e8 a1 e8 08 00 e9 1b 3e 12 00 48 8b 7e 08 4c 8b 48 f8 83 e7 03 49 83 e1 fc 4c 09 cf <49> 89 31 48 89 7e 08 31 f6 48 89 70 f0 48 8b 35 66 72 41 00 48 8b
+
+CRASH on run 10 after 21 s: killed by SIGSEGV (CPU 0 averaging 1303 MHz)
+  kernel: python[8578]: segfault at 8 ip 00005564175de235 sp 00007ffdc4edec10 error 4 in python3.11[1ee235,5564174e1000+240000] likely on CPU 0 (core 0, socket 0)
+  kernel: Code: 00 00 00 0f b6 c2 66 c1 ed 08 48 8b 04 c1 0f b7 ed ff e0 4d 8b 72 f8 48 8b 44 24 08 4c 89 54 24 48 4d 8d 7c 24 02 4c 89 60 38 <49> 8b 46 08 4c 89 f7 ff 90 e0 00 00 00 4c 8b 54 24 48 48 85 c0 0f
+  10 runs clean, 1303 MHz
+
+10 crashes in 10 runs (22 s), CPU 0 averaging 1303 MHz
+== CPU 0 with P-cores 2 and 3 busy (turbo limit 54x)
+CPU 0, method keyerror, up to 10 runs
+  10 runs clean, 5397 MHz
+
+No crash in 10 runs (11 s), CPU 0 averaging 5397 MHz
+That is below 5600 MHz, so this pass proves nothing. Close other programs and run it again.

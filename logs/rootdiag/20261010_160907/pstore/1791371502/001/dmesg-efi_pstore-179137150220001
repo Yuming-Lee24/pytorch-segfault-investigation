@@ -1,0 +1,14 @@
+Oops#1 Part20
+<6>[    5.862851] iwlwifi 0000:81:00.0: Registered PHC clock: iwlwifi-PTP, with index: 0
+<4>[    5.966956] kauditd_printk_skb: 146 callbacks suppressed
+<5>[    5.966961] audit: type=1400 audit(1791369510.014:157): apparmor="DENIED" operation="capable" class="cap" profile="/usr/sbin/cupsd" pid=1733 comm="cupsd" capability=12  capname="net_admin"
+<44>[    6.112745] systemd-journald[528]: File /var/log/journal/83cf717c923a4c0f975ed92c6f9599d2/user-1000.journal corrupted or uncleanly shut down, renaming and replacing.
+<6>[    6.549175] Bluetooth: RFCOMM TTY layer initialized
+<6>[    6.549185] Bluetooth: RFCOMM socket layer initialized
+<6>[    6.549188] Bluetooth: RFCOMM ver 1.11
+<7>[    8.471071] rfkill: input handler disabled
+<6>[    8.485156] r8169 0000:82:00.0 enp130s0: Link is Up - 1Gbps/Full - flow control rx/tx
+<4>[    8.567521] exFAT-fs (sda1): Volume was not properly unmounted. Some data may be corrupt. Please run fsck.
+<4>[    8.584416] FAT-fs (sda2): Volume was not properly unmounted. Some data may be corrupt. Please run fsck.
+<5>[    9.049011] audit: type=1400 audit(1791369513.096:158): apparmor="DENIED" operation="symlink" class="file" profile="snap.snapd-desktop-integration.snapd-desktop-integration" name="/dev/char/195:255" pid=2725 comm="snapd-desktop-i" requested_mask="c" denied_mask="c" fsuid=1000 ouid=1000
+<5>[    9.049995] audit: type=1400 audit(1791369513.097:159): apparmor="DENIED" operation="symlink" class="file" profile="snap.snapd-desktop-integration.snapd-desktop-integration" name="/dev/char/195:0" pid=2725 comm="snapd-desktop-i" requested_mask="c" denied_mask="c" fsuid=1000 ouid=1000
