@@ -1,0 +1,30 @@
+CPU 4, method keyerror, up to 60 runs
+
+CRASH on run 30 after 34 s: killed by SIGSEGV (CPU 4 averaging 5412 MHz)
+  kernel: python[6223]: segfault at 3c ip 000064901b5b1228 sp 00007ffc93d0f1e0 error 4 in python3.11[218228,64901b48a000+240000] likely on CPU 4 (core 24, socket 0)
+  kernel: Code: 67 ff ff ff 66 0f 1f 44 00 00 49 ff 4d 00 0f 85 57 ff ff ff 49 8b 45 08 4c 89 ef ff 50 30 e9 48 ff ff ff 48 8d 05 98 c0 31 00 <49> 39 44 24 08 0f 85 f1 29 f0 ff 48 8d 05 06 ce 32 00 48 39 47 08
+
+CRASH on run 34 after 39 s: killed by SIGSEGV (CPU 4 averaging 5425 MHz)
+  kernel: python[6258]: segfault at 752348548240 ip 000062160488fb22 sp 00007fffac252a10 error 6 in python3.11[217b22,621604769000+240000] likely on CPU 4 (core 24, socket 0)
+  kernel: Code: 31 c0 e9 61 fe ff ff 90 41 57 66 0f ef c0 41 56 41 55 41 54 55 53 48 83 ec 28 48 8b 05 07 c7 33 00 f3 0f 6f 48 60 4c 8b 60 70 <0f> 11 40 60 48 c7 40 70 00 00 00 00 48 8b 47 20 8b 58 4c 03 58 44
+
+CRASH on run 51 after 60 s: killed by SIGSEGV (CPU 4 averaging 5376 MHz)
+  kernel: python[6295]: segfault at 0 ip 000057fd0df23fa6 sp 00007ffdb62dd710 error 6 in python3.11[13cfa6,57fd0ded8000+240000] likely on CPU 4 (core 24, socket 0)
+  kernel: Code: f7 3d 12 00 e8 ab e8 08 00 e9 0a 3e 12 00 e8 a1 e8 08 00 e9 1b 3e 12 00 48 8b 7e 08 4c 8b 48 f8 83 e7 03 49 83 e1 fc 4c 09 cf <49> 89 31 48 89 7e 08 31 f6 48 89 70 f0 48 8b 35 66 72 41 00 48 8b
+
+3 crashes in 60 runs (71 s), CPU 4 averaging 5407 MHz
+CPU 1, method keyerror, up to 60 runs
+
+No crash in 60 runs (66 s), CPU 1 averaging 5484 MHz
+CPU 2, method keyerror, up to 60 runs
+
+No crash in 60 runs (66 s), CPU 2 averaging 5491 MHz
+CPU 5, method keyerror, up to 60 runs
+
+No crash in 60 runs (66 s), CPU 5 averaging 5487 MHz
+CPU 8, method keyerror, up to 60 runs
+
+No crash in 60 runs (66 s), CPU 8 averaging 4600 MHz
+CPU 16, method keyerror, up to 60 runs
+
+No crash in 60 runs (66 s), CPU 16 averaging 4594 MHz
