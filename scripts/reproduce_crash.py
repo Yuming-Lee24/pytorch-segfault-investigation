@@ -4,8 +4,9 @@
 Runs a short child process pinned to one CPU, over and over, until one of
 them dies, then reports how it died. CPU only: no GPU, no root.
 
-    python scripts/reproduce_crash.py             # CPU 0: expected to crash
-    python scripts/reproduce_crash.py --cpu 4     # control: expected to pass
+    python scripts/reproduce_crash.py                  # CPU 0: crashes within a second
+    python scripts/reproduce_crash.py --busy 2,3       # CPU 0 held to 54x: expected to pass
+    python scripts/reproduce_crash.py --cpu 1          # another core: expected to pass
 
 WARNING: on CPU 0 this can also reset the whole machine. After a reset, run
 `sudo scripts/collect_root_diag.sh` before anything else.
@@ -79,6 +80,9 @@ def main():
     ap.add_argument("--max", type=int, default=300, help="give up after this many runs")
     ap.add_argument("--seconds", type=float, default=1.0,
                     help="length of each keyerror run (default 1)")
+    ap.add_argument("--busy", default="",
+                    help="CPUs to keep busy meanwhile, e.g. 2,3 (two busy P-cores lower "
+                         "the turbo limit from 57x to 54x)")
     ap.add_argument("--keep-going", action="store_true",
                     help="count crashes over all runs instead of stopping at the first")
     ap.add_argument("--min-mhz", type=int, default=5600,
@@ -89,7 +93,22 @@ def main():
     env = dict(os.environ, PYTHONHASHSEED="0")
     env.pop("PYTHONFAULTHANDLER", None)   # let the kernel log the fault address and CPU
 
-    print("CPU %d, method %s, up to %d runs" % (args.cpu, args.method, args.max), flush=True)
+    busy = [c for c in args.busy.split(",") if c]
+    spinners = [subprocess.Popen(["taskset", "-c", c, sys.executable, "-c", "while True: pass"])
+                for c in busy]
+    if spinners:
+        time.sleep(2)
+    try:
+        return run(args, code, env, busy)
+    finally:
+        for p in spinners:
+            p.kill()
+
+
+def run(args, code, env, busy):
+    print("CPU %d, method %s, up to %d runs%s"
+          % (args.cpu, args.method, args.max,
+             ", CPUs %s kept busy" % ",".join(busy) if busy else ""), flush=True)
     speeds, t0, failures = [], time.time(), 0
     for n in range(1, args.max + 1):
         started = time.time()
@@ -99,13 +118,13 @@ def main():
         while p.poll() is None:
             last = mhz(args.cpu) or last
             time.sleep(0.1)
-        speeds.append(last)                 # speed near the end of the run, once settled
         out, err = p.communicate()
+        if p.returncode == 0:
+            speeds.append(last)             # speed near the end of a full-length run
         if p.returncode != 0:
             failures += 1
-            avg = sum(speeds) // max(len(speeds), 1)
-            print("\nCRASH on run %d after %.0f s: %s (CPU %d averaging %d MHz)"
-                  % (n, time.time() - t0, describe(p.returncode), args.cpu, avg))
+            print("\nCRASH on run %d, %.2f s into it: %s"
+                  % (n, time.time() - started, describe(p.returncode)))
             for line in err.strip().splitlines()[-6:]:
                 print("  stderr: " + line[:200])
             time.sleep(1)                   # give the kernel log a moment
@@ -118,8 +137,10 @@ def main():
             print("  %d runs clean, %d MHz" % (n, sum(speeds[-10:]) // 10),
                   flush=True)
 
+    # Runs that crash at once end before the frequency reading settles, so the
+    # average only means something for runs that lasted.
     avg = sum(speeds) // max(len(speeds), 1)
-    print("\n%s in %d runs (%.0f s), CPU %d averaging %d MHz"
+    print("\n%s in %d runs (%.0f s), CPU %d at about %d MHz"
           % ("%d crashes" % failures if failures else "No crash",
              args.max, time.time() - t0, args.cpu, avg))
     if not failures and avg < args.min_mhz:
