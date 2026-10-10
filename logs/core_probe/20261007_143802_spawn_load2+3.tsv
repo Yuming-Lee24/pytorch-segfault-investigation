@@ -1,0 +1,3 @@
+time	round	cpu	type	mode	work	iterations	bad	exit	avg_mhz	max_mhz	max_temp_c	kernel_events	detail
+14:39:26	0	0	P	spawn_load2+3	75 spawns	75	0	0	5396	5400	48	0	
+14:40:49	1	0	P	spawn_load2+3	75 spawns	75	0	0	5398	5400	48	0	

@@ -1,0 +1,26 @@
+Oops#2 Part4
+<4>[ 1997.789938]  __schedule_bug+0x64/0x80
+<4>[ 1997.789943]  schedule_debug.isra.0+0xd1/0x120
+<4>[ 1997.789944]  __schedule+0x70/0x640
+<4>[ 1997.789948]  ? vprintk+0x18/0x50
+<4>[ 1997.789951]  ? _printk+0x60/0x90
+<4>[ 1997.789954]  do_task_dead+0x43/0x50
+<4>[ 1997.789957]  make_task_dead+0x136/0x140
+<4>[ 1997.789959]  rewind_stack_and_make_dead+0x16/0x20
+<4>[ 1997.789962] RIP: 0033:0x7e21af31b4cd
+<4>[ 1997.789963] Code: Unable to access opcode bytes at 0x7e21af31b4a3.
+<4>[ 1997.789964] RSP: 002b:00007e20dddfed30 EFLAGS: 00000293 ORIG_RAX: 00000000000000db
+<4>[ 1997.789964] RAX: fffffffffffffdfc RBX: 00000000ffffffff RCX: 00007e21af31b4cd
+<4>[ 1997.789965] RDX: 00000000ffffffff RSI: 0000000000000003 RDI: 00005f352c9e2fb0
+<4>[ 1997.789965] RBP: 00007e20dddfed50 R08: 0000000000000000 R09: 0000000000000007
+<4>[ 1997.789965] R10: 00005f352c9e3000 R11: 0000000000000293 R12: 0000000000000000
+<4>[ 1997.789966] R13: 00000000ffffffff R14: 00005f352c9e2fb0 R15: 00005f352c8791b0
+<4>[ 1997.789967]  </TASK>
+<1>[ 2432.671925] BUG: unable to handle page fault for address: ffffb46d4f12f8a8
+<1>[ 2432.671931] #PF: supervisor read access in kernel mode
+<1>[ 2432.671933] #PF: error_code(0x0000) - not-present page
+<6>[ 2432.671934] PGD 100000067 P4D 100000067 PUD 100301067 PMD 1ceab1067 PTE 0
+<4>[ 2432.671937] Oops: Oops: 0000 [#2] PREEMPT SMP NOPTI
+<4>[ 2432.671939] CPU: 15 UID: 1000 PID: 9848 Comm: nvidia-smi Tainted: P      D W  O       6.14.0-27-generic #27~24.04.1-Ubuntu
+<4>[ 2432.671942] Tainted: [P]=PROPRIETARY_MODULE, [D]=DIE, [W]=WARN, [O]=OOT_MODULE
+<4>[ 2432.671943] Hardware name: Micro-Star International Co., Ltd. MS-7E54/PRO Z890-S WIFI (MS-7E54), BIOS 1.A70 04/27/2025

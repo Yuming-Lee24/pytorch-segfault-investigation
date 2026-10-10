@@ -1,0 +1,31 @@
+CPUidle driver: intel_idle
+CPUidle governor: menu
+analyzing CPU 23:
+
+Number of idle states: 4
+Available idle states: POLL C1_ACPI C2_ACPI C3_ACPI
+POLL:
+Flags/Description: CPUIDLE CORE POLL IDLE
+Latency: 0
+Residency: 0
+Usage: 530
+Duration: 21761
+C1_ACPI:
+Flags/Description: ACPI FFH MWAIT 0x0
+Latency: 1
+Residency: 1
+Usage: 19021
+Duration: 1982683
+C2_ACPI:
+Flags/Description: ACPI FFH MWAIT 0x21
+Latency: 127
+Residency: 381
+Usage: 9327
+Duration: 5388607
+C3_ACPI:
+Flags/Description: ACPI FFH MWAIT 0x60
+Latency: 1048
+Residency: 3144
+Usage: 11643
+Duration: 57292517
+

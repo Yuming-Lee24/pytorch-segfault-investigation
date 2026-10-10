@@ -1,38 +1,57 @@
 # PyTorch Segfault Investigation
 
-Investigation of an intermittent segmentation fault during PyTorch training on an
-RTX 4090 / Ubuntu 22.04 workstation.
+Investigation of intermittent segmentation faults during PyTorch training, crashes in
+unrelated programs and spontaneous resets on an RTX 4090 / Core Ultra 9 285K workstation.
+
+## Current status (2026-10-07)
+
+**The fault is in the CPU.** Its first performance core (Linux CPU 0) executes code
+incorrectly when it runs at top turbo speed (about 5.7 GHz). The NVIDIA driver, the OS,
+PyTorch and the RAM are cleared.
+
+- Pinned to CPU 0, `import torch` fails about 5 % of the time. On every other CPU it has
+  never failed in 1,185 runs.
+- Not yet settled: whether the core is defective or the 17-month-old BIOS is to blame.
+  Update the BIOS, re-run the reproducer, and replace the CPU if CPU 0 still fails.
+
+Full evidence and the step-by-step plan are in [DEBUG_REPORT.md](DEBUG_REPORT.md), §4.8, §5 and §6.
+
+## Reproduce it
+
+No GPU and no root are needed. This runs 300 pinned imports on each of CPUs 0 and 4 and
+takes about 10 minutes. **It can reset the machine**, because CPU 0 also raises fatal
+machine checks.
+
+```bash
+.pixi/envs/default/bin/python scripts/core_probe.py sweep --mode spawn --cpus 0,4 --count 50 --rounds 6 --require-mhz 5600
+```
+
+- Expected while the fault is present: CPU 0 rows show failures, CPU 4 rows show none.
+- Rows marked `too_slow` did not reach top speed and prove nothing; close other programs and repeat.
+- After any spontaneous reset, run `sudo scripts/collect_root_diag.sh` first. The
+  machine-check record is lost at the next reboot.
+
+To run a job while the fault is present, keep it off CPU 0:
+
+```bash
+taskset -c 1-23 pixi run python torture.py
+```
 
 ## Contents
 
 | File | Purpose |
 |---|---|
-| [DEBUG_REPORT.md](DEBUG_REPORT.md) | Full investigation report — methodology, evidence, conclusions |
-| [torture.py](torture.py) | Reproducer: ResNet-152 + AMP training loop that triggers the segfault |
-| [logs/gpu_burn/](logs/gpu_burn/) | 8-hour `gpu-burn` stress-test logs |
-| [logs/memtester/](logs/memtester/) | 32 GB × 2-pass `memtester` log |
-| [logs/torture/](logs/torture/) | Reproducer runs, including successful segfaults |
-
-## Current status
-
-**Leading hypothesis:** hardware fault (RAM / CPU cache / memory overclock instability).
-Earlier NVIDIA-driver-regression theory was ruled out by `pip` and `localedef`
-segfaults that have no GPU involvement. See [DEBUG_REPORT.md](DEBUG_REPORT.md) §4.4.
-
-**Next step:** run MemTest86+ from USB for ≥ 4–8 hours before doing anything else.
-
-## How to reproduce (once hardware is cleared)
-
-```bash
-# 1. Install PyTorch (matching your driver's CUDA version)
-pip3 install torch torchvision --index-url https://download.pytorch.org/whl/cu124
-
-# 2. Run the reproducer
-cd ~/test
-ulimit -c unlimited
-export TORCH_SHOW_CPP_STACKTRACES=1 PYTHONFAULTHANDLER=1
-python3 -X faulthandler torture.py 2>&1 | tee logs/torture/torture_$(date +%Y%m%d_%H%M%S).log
-```
-
-Expected crash within a few minutes while the fault is present. Clean 8-hour run
-once the underlying fault is fixed.
+| [DEBUG_REPORT.md](DEBUG_REPORT.md) | Full investigation report: methodology, evidence, conclusions |
+| [torture.py](torture.py) | Original reproducer: ResNet-152 + AMP training loop |
+| [scripts/core_probe.py](scripts/core_probe.py) | Per-CPU reproducer and self-check |
+| [scripts/cpu_conditions.sh](scripts/cpu_conditions.sh) | Compares conditions on one CPU in interleaved blocks |
+| [scripts/run_torture_loop.sh](scripts/run_torture_loop.sh) | Runs `torture.py` repeatedly, optionally confined to a CPU list |
+| [scripts/collect_root_diag.sh](scripts/collect_root_diag.sh) | Root-only capture of machine-check records, BERT, MSRs |
+| [scripts/decode_mcelog.py](scripts/decode_mcelog.py), [scripts/decode_bert.py](scripts/decode_bert.py) | Decoders for those captures |
+| [logs/core_probe/](logs/core_probe/) | Per-CPU test results |
+| [logs/forensics/](logs/forensics/) | `gdb` summaries of crash cores |
+| [logs/rootdiag/](logs/rootdiag/) | Root captures, including the decoded machine-check records |
+| [logs/kernel/](logs/kernel/) | Kernel logs of 2026-10-07 |
+| [logs/agent_reports/](logs/agent_reports/) | Supporting analyses and firmware research, with sources |
+| [logs/torture/](logs/torture/) | `torture.py` runs |
+| [logs/gpu_burn/](logs/gpu_burn/), [logs/memtester/](logs/memtester/), [0510-test-result/](0510-test-result/) | Stress and memory tests that passed |
