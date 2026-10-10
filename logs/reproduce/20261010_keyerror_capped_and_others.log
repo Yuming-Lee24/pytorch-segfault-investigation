@@ -1,0 +1,21 @@
+CPU 4, method keyerror, up to 60 runs, CPUs 2,3 kept busy
+
+No crash in 60 runs (66 s), CPU 4 at about 5399 MHz
+CPU 3, method keyerror, up to 120 runs
+
+No crash in 120 runs (132 s), CPU 3 at about 5498 MHz
+CPU 6, method keyerror, up to 120 runs
+
+No crash in 120 runs (132 s), CPU 6 at about 5497 MHz
+CPU 7, method keyerror, up to 120 runs
+
+No crash in 120 runs (132 s), CPU 7 at about 5494 MHz
+CPU 1, method keyerror, up to 120 runs
+
+No crash in 120 runs (132 s), CPU 1 at about 5496 MHz
+CPU 2, method keyerror, up to 120 runs
+
+No crash in 120 runs (132 s), CPU 2 at about 5495 MHz
+CPU 5, method keyerror, up to 120 runs
+
+No crash in 120 runs (132 s), CPU 5 at about 5497 MHz
