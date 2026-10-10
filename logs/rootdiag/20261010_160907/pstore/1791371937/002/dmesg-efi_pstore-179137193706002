@@ -1,0 +1,10 @@
+Oops#2 Part6
+<4>[ 1997.789855] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+<4>[ 1997.789856] CR2: 000045957ee10d90 CR3: 0000000177935001 CR4: 0000000000f72ef0
+<4>[ 1997.789857] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+<4>[ 1997.789858] DR3: 0000000000000000 DR6: 00000000ffff07f0 DR7: 0000000000000400
+<4>[ 1997.789859] PKRU: 55555554
+<6>[ 1997.789859] note: cuda00001800007[7668] exited with irqs disabled
+<1>[ 1997.789880] Fixing recursive fault but reboot is needed!
+<3>[ 1997.789881] BUG: scheduling while atomic: cuda00001800007/7668/0x00000000
+<4>[ 1997.789882] Modules linked in: exfat snd_seq_dummy rfcomm snd_hrtimer qrtr cmac algif_hash algif_skcipher af_alg bnep nvidia_uvm(PO) binfmt_misc nls_iso8859_1 snd_hda_codec_realtek snd_hda_codec_generic snd_hda_scodec_component xe drm_gpuvm gpu_sched drm_ttm_helper drm_exec drm_suballoc_helper nvidia_drm(PO) snd_sof_pci_intel_mtl snd_sof_intel_hda_generic soundwire_intel soundwire_cadence snd_sof_intel_hda_common nvidia_modeset(PO) snd_soc_hdac_hda snd_sof_intel_hda_mlink snd_sof_intel_hda snd_sof_pci snd_sof_xtensa_dsp snd_sof snd_sof_utils snd_hda_ext_core snd_soc_acpi_intel_match snd_soc_acpi_intel_sdca_quirks soundwire_generic_allocation snd_soc_acpi soundwire_bus snd_soc_sdca snd_soc_core intel_uncore_frequency snd_compress intel_uncore_frequency_common ac97_bus intel_pmc_core snd_hda_codec_hdmi snd_pcm_dmaengine x86_pkg_temp_thermal btusb intel_powerclamp btrtl snd_hda_intel btintel snd_intel_dspcfg coretemp btbcm snd_intel_sdw_acpi iwlmvm nvidia(PO) kvm_intel snd_hda_codec btmtk i915 mac80211 snd_hda_core

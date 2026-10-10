@@ -1,0 +1,8 @@
+/sys/class/intel_pmt:
+total 0
+drwxr-xr-x  2 root root 0 Oct 10 16:09 .
+drwxr-xr-x 82 root root 0 Oct 10 16:06 ..
+lrwxrwxrwx  1 root root 0 Oct 10 16:07 telem1 -> ../../devices/pci0000:00/0000:00:0a.0/intel_vsec.telemetry.0/intel_pmt/telem1
+lrwxrwxrwx  1 root root 0 Oct 10 16:07 telem2 -> ../../devices/pci0000:00/0000:00:0a.0/intel_vsec.telemetry.0/intel_pmt/telem2
+lrwxrwxrwx  1 root root 0 Oct 10 16:07 telem3 -> ../../devices/pci0000:00/0000:00:0a.0/intel_vsec.telemetry.0/intel_pmt/telem3
+lrwxrwxrwx  1 root root 0 Oct 10 16:07 telem4 -> ../../devices/pci0000:00/0000:00:0a.0/intel_vsec.telemetry.0/intel_pmt/telem4
