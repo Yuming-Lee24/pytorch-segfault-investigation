@@ -1,0 +1,33 @@
+file: logs/rootdiag/20261017_152727/mcelog.bin  size: 128 bytes  record length: 128
+records in file: 1
+
+=== record 0 (file offset 0x0) ===
+cpu        : 0  (legacy 8-bit cpu field=0)
+apicid     : 0x0 (0)   socket: 0
+bank       : 3  -> hint: MLC: mid-level cache / L2 (Core convention; core scope, L2 is shared by 4 E-cores)
+status     : 0xbe000000e1c40400
+  flags      : VAL=1 OVER=0 UC=1 EN=1 MISCV=1 ADDRV=1 PCC=1 S=0 AR=0
+  class      : UC  - uncorrected, processor context corrupt (fatal; a reset is the only way out)
+  other info : corrected_error_count[52:38]=0  threshold_status[54:53]=0  fw_updated[37]=0  other[36:32]=0x0
+  MSCOD      : 0xe1c4 (model specific error code, bits 31:16)
+  MCACOD     : 0x0400  Internal timer error
+addr       : 0x00005b872c2bc228
+misc       : 0x00005b872c2bc228
+  addr_lsb[5:0]=40  addr_mode[8:6]=0 (segment offset)  [valid only if MCG_CAP.SER_P and MISCV]
+mcgstatus  : 0x0  RIPV=0 EIPV=0 MCIP=0 LMCES=0
+  MCIP=0: record was not taken inside a #MC handler (polled / left over from before reset / CMCI)
+mcgcap     : 0xc20  banks=32 CTL_P=0 EXT_P=0 CMCI_P=1 TES_P=1 EXT_CNT=0 SER_P=0 EMC_P=0 ELOG_P=0 LMCE_P=0
+ip         : 0x0000000000000000  (0: not captured - normal for polled/boot-time records)
+cs         : 0x00  (ring 0)
+tsc        : 0x0 (0)  (0: not recorded - boot-time poll)
+time       : 1792243411 = 2026-10-17 13:23:31 UTC = 2026-10-17 15:23:31 CEST local
+             (time = when the kernel logged the record, NOT when the error happened;
+              for boot-time leftovers it is the boot time)
+cpuid      : 0x000c0662  family 0x6 model 0xc6 stepping 2 (Arrow Lake-S)   vendor=0 (Intel)
+microcode  : 0x0
+ppin       : 0x0  (0: PPIN not available/enabled)
+severity   : 7 (PANIC)   inject_flags: 0x0   finished: 1
+kflags     : 0x0 (dev-mcelog.c always stores 0 here)
+
+--- summary (1 decoded) ---
+#0 cpu=0 apic=0x0 bank=3 status=0xbe000000e1c40400 UC PCC  mscod=0xe1c4 mcacod=0x0400 [Internal timer error]

@@ -1,0 +1,4 @@
+/sys/fs/pstore:
+total 0
+drwxr-x--- 2 root root 0 Oct 17 15:23 .
+drwxr-xr-x 9 root root 0 Oct 17 15:23 ..
