@@ -1,0 +1,134 @@
+BIOS 1.AE0, microcode 0x121, 2026-10-17T15:21:31+02:00
+CPU 0, method keyerror, up to 60 runs
+
+CRASH on run 1, 1.21 s into it: killed by SIGSEGV
+  kernel: python[3868]: segfault at 8 ip 0000619566355235 sp 00007ffc93f68210 error 4 in python3.11[1ee235,619566258000+240000] likely on CPU 0 (core 0, socket 0)
+  kernel: Code: 00 00 00 0f b6 c2 66 c1 ed 08 48 8b 04 c1 0f b7 ed ff e0 4d 8b 72 f8 48 8b 44 24 08 4c 89 54 24 48 4d 8d 7c 24 02 4c 89 60 38 <49> 8b 46 08 4c 89 f7 ff 90 e0 00 00 00 4c 8b 54 24 48 48 85 c0 0f
+
+CRASH on run 2, 1.20 s into it: killed by SIGSEGV
+  kernel: python[3881]: segfault at 8 ip 000056a1f8d44235 sp 00007ffd81528d90 error 4 in python3.11[1ee235,56a1f8c47000+240000] likely on CPU 0 (core 0, socket 0)
+  kernel: Code: 00 00 00 0f b6 c2 66 c1 ed 08 48 8b 04 c1 0f b7 ed ff e0 4d 8b 72 f8 48 8b 44 24 08 4c 89 54 24 48 4d 8d 7c 24 02 4c 89 60 38 <49> 8b 46 08 4c 89 f7 ff 90 e0 00 00 00 4c 8b 54 24 48 48 85 c0 0f
+
+CRASH on run 3, 1.10 s into it: killed by SIGSEGV
+  kernel: python[3893]: segfault at 8 ip 0000622b3efec235 sp 00007ffc0c8dfb30 error 4 in python3.11[1ee235,622b3eeef000+240000] likely on CPU 0 (core 0, socket 0)
+  kernel: Code: 00 00 00 0f b6 c2 66 c1 ed 08 48 8b 04 c1 0f b7 ed ff e0 4d 8b 72 f8 48 8b 44 24 08 4c 89 54 24 48 4d 8d 7c 24 02 4c 89 60 38 <49> 8b 46 08 4c 89 f7 ff 90 e0 00 00 00 4c 8b 54 24 48 48 85 c0 0f
+
+CRASH on run 4, 1.10 s into it: killed by SIGSEGV
+  kernel: python[3905]: segfault at 64 ip 00005b68d1f3729b sp 00007ffc214c04c0 error 4 in python3.11[1ee29b,5b68d1e3a000+240000] likely on CPU 0 (core 0, socket 0)
+  kernel: Code: 00 00 0f b6 c2 66 c1 ed 08 48 8b 04 c1 0f b7 ed ff e0 48 8b 44 24 08 f7 dd 48 63 ed 4c 89 60 38 48 8b 44 24 20 4d 8d 64 6c 02 <8b> 40 64 85 c0 0f 85 69 5b f1 ff 41 0f b7 14 24 48 8b 5c 24 10 4c
+
+CRASH on run 5, 1.10 s into it: killed by SIGSEGV
+  kernel: python[3926]: segfault at 10000002f ip 000064d1925cdb22 sp 00007ffc3189cf40 error 6 in python3.11[217b22,64d1924a7000+240000] likely on CPU 0 (core 0, socket 0)
+  kernel: Code: 31 c0 e9 61 fe ff ff 90 41 57 66 0f ef c0 41 56 41 55 41 54 55 53 48 83 ec 28 48 8b 05 07 c7 33 00 f3 0f 6f 48 60 4c 8b 60 70 <0f> 11 40 60 48 c7 40 70 00 00 00 00 48 8b 47 20 8b 58 4c 03 58 44
+
+CRASH on run 6, 1.10 s into it: killed by SIGSEGV
+  stderr:     if _shadowed_dict(type(entry)) is _sentinel:
+  stderr:        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  stderr:   File "/home/yuming/pytorch-segfault-investigation/.pixi/envs/default/lib/python3.11/inspect.py", line 1794, in _shadowed_dict
+  stderr:     class_dict = dict_attr.__get__(entry)["__dict__"]
+  stderr:                  ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  stderr: KeyError: ((...),)
+  kernel: python[3940]: segfault at 0 ip 00005ab58ba54fa6 sp 00007ffd9a6811c0 error 6 in python3.11[13cfa6,5ab58ba09000+240000] likely on CPU 0 (core 0, socket 0)
+  kernel: Code: f7 3d 12 00 e8 ab e8 08 00 e9 0a 3e 12 00 e8 a1 e8 08 00 e9 1b 3e 12 00 48 8b 7e 08 4c 8b 48 f8 83 e7 03 49 83 e1 fc 4c 09 cf <49> 89 31 48 89 7e 08 31 f6 48 89 70 f0 48 8b 35 66 72 41 00 48 8b
+
+CRASH on run 7, 1.10 s into it: killed by SIGSEGV
+  stderr:     if _shadowed_dict(type(entry)) is _sentinel:
+  stderr:        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  stderr:   File "/home/yuming/pytorch-segfault-investigation/.pixi/envs/default/lib/python3.11/inspect.py", line 1794, in _shadowed_dict
+  stderr:     class_dict = dict_attr.__get__(entry)["__dict__"]
+  stderr:                  ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  stderr: KeyError: ((...),)
+  kernel: python[3958]: segfault at 0 ip 00005bc45e27afa6 sp 00007ffd7880cf30 error 6 in python3.11[13cfa6,5bc45e22f000+240000] likely on CPU 0 (core 0, socket 0)
+  kernel: Code: f7 3d 12 00 e8 ab e8 08 00 e9 0a 3e 12 00 e8 a1 e8 08 00 e9 1b 3e 12 00 48 8b 7e 08 4c 8b 48 f8 83 e7 03 49 83 e1 fc 4c 09 cf <49> 89 31 48 89 7e 08 31 f6 48 89 70 f0 48 8b 35 66 72 41 00 48 8b
+
+CRASH on run 8, 1.20 s into it: killed by SIGSEGV
+  kernel: python[3976]: segfault at 3c ip 000057574dda4228 sp 00007ffe98c25b90 error 4 in python3.11[218228,57574dc7d000+240000] likely on CPU 0 (core 0, socket 0)
+  kernel: Code: 67 ff ff ff 66 0f 1f 44 00 00 49 ff 4d 00 0f 85 57 ff ff ff 49 8b 45 08 4c 89 ef ff 50 30 e9 48 ff ff ff 48 8d 05 98 c0 31 00 <49> 39 44 24 08 0f 85 f1 29 f0 ff 48 8d 05 06 ce 32 00 48 39 47 08
+
+CRASH on run 9, 1.10 s into it: killed by SIGSEGV
+  kernel: python[3988]: segfault at 7d6200000009 ip 000062727dd8f228 sp 00007ffd52947670 error 4 in python3.11[218228,62727dc68000+240000] likely on CPU 0 (core 0, socket 0)
+  kernel: Code: 67 ff ff ff 66 0f 1f 44 00 00 49 ff 4d 00 0f 85 57 ff ff ff 49 8b 45 08 4c 89 ef ff 50 30 e9 48 ff ff ff 48 8d 05 98 c0 31 00 <49> 39 44 24 08 0f 85 f1 29 f0 ff 48 8d 05 06 ce 32 00 48 39 47 08
+
+CRASH on run 10, 1.10 s into it: killed by SIGSEGV
+  kernel: python[4000]: segfault at 8 ip 00005d0e6191b235 sp 00007ffcdb264550 error 4 in python3.11[1ee235,5d0e6181e000+240000] likely on CPU 0 (core 0, socket 0)
+  kernel: Code: 00 00 00 0f b6 c2 66 c1 ed 08 48 8b 04 c1 0f b7 ed ff e0 4d 8b 72 f8 48 8b 44 24 08 4c 89 54 24 48 4d 8d 7c 24 02 4c 89 60 38 <49> 8b 46 08 4c 89 f7 ff 90 e0 00 00 00 4c 8b 54 24 48 48 85 c0 0f
+  10 runs clean, 0 MHz
+
+CRASH on run 11, 1.10 s into it: killed by SIGSEGV
+  stderr:     if _shadowed_dict(type(entry)) is _sentinel:
+  stderr:        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  stderr:   File "/home/yuming/pytorch-segfault-investigation/.pixi/envs/default/lib/python3.11/inspect.py", line 1794, in _shadowed_dict
+  stderr:     class_dict = dict_attr.__get__(entry)["__dict__"]
+  stderr:                  ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  stderr: KeyError: ((...),)
+  kernel: python[4012]: segfault at 0 ip 000061107e613fa6 sp 00007ffce652fe40 error 6 in python3.11[13cfa6,61107e5c8000+240000] likely on CPU 0 (core 0, socket 0)
+  kernel: Code: f7 3d 12 00 e8 ab e8 08 00 e9 0a 3e 12 00 e8 a1 e8 08 00 e9 1b 3e 12 00 48 8b 7e 08 4c 8b 48 f8 83 e7 03 49 83 e1 fc 4c 09 cf <49> 89 31 48 89 7e 08 31 f6 48 89 70 f0 48 8b 35 66 72 41 00 48 8b
+
+CRASH on run 12, 1.20 s into it: killed by SIGSEGV
+  kernel: python[4038]: segfault at 8 ip 000055d895e28235 sp 00007ffc391094b0 error 4 in python3.11[1ee235,55d895d2b000+240000] likely on CPU 0 (core 0, socket 0)
+  kernel: Code: 00 00 00 0f b6 c2 66 c1 ed 08 48 8b 04 c1 0f b7 ed ff e0 4d 8b 72 f8 48 8b 44 24 08 4c 89 54 24 48 4d 8d 7c 24 02 4c 89 60 38 <49> 8b 46 08 4c 89 f7 ff 90 e0 00 00 00 4c 8b 54 24 48 48 85 c0 0f
+
+CRASH on run 13, 1.10 s into it: killed by SIGSEGV
+  kernel: python[4078]: segfault at 128 ip 00005dbf783ef4a4 sp 00007ffed864fae0 error 4 in python3.11[2a64a4,5dbf7823a000+240000] likely on CPU 0 (core 0, socket 0)
+  kernel: Code: 84 00 00 00 00 00 e9 2b 29 f2 ff 66 66 2e 0f 1f 84 00 00 00 00 00 55 48 89 f5 53 48 89 fb 52 ff 4f 20 48 89 f7 e8 fc 63 f5 ff <48> 8b bb 28 01 00 00 ff 43 20 48 8d 47 18 48 39 c5 74 0b 48 89 ab
+
+CRASH on run 14, 1.10 s into it: killed by SIGSEGV
+  kernel: python[4090]: segfault at 8 ip 0000614a84b39235 sp 00007ffd56bd8fb0 error 4 in python3.11[1ee235,614a84a3c000+240000] likely on CPU 0 (core 0, socket 0)
+  kernel: Code: 00 00 00 0f b6 c2 66 c1 ed 08 48 8b 04 c1 0f b7 ed ff e0 4d 8b 72 f8 48 8b 44 24 08 4c 89 54 24 48 4d 8d 7c 24 02 4c 89 60 38 <49> 8b 46 08 4c 89 f7 ff 90 e0 00 00 00 4c 8b 54 24 48 48 85 c0 0f
+
+CRASH on run 15, 1.10 s into it: killed by SIGSEGV
+  kernel: python[4102]: segfault at 5e ip 000064c874405b22 sp 00007ffffd673c10 error 6 in python3.11[217b22,64c8742df000+240000] likely on CPU 0 (core 0, socket 0)
+  kernel: Code: 31 c0 e9 61 fe ff ff 90 41 57 66 0f ef c0 41 56 41 55 41 54 55 53 48 83 ec 28 48 8b 05 07 c7 33 00 f3 0f 6f 48 60 4c 8b 60 70 <0f> 11 40 60 48 c7 40 70 00 00 00 00 48 8b 47 20 8b 58 4c 03 58 44
+
+CRASH on run 16, 1.10 s into it: killed by SIGSEGV
+  stderr:     if _shadowed_dict(type(entry)) is _sentinel:
+  stderr:        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  stderr:   File "/home/yuming/pytorch-segfault-investigation/.pixi/envs/default/lib/python3.11/inspect.py", line 1794, in _shadowed_dict
+  stderr:     class_dict = dict_attr.__get__(entry)["__dict__"]
+  stderr:                  ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  stderr: KeyError: ((...),)
+  kernel: python[4114]: segfault at 0 ip 000058515f5c4fa6 sp 00007ffe54e7a0a0 error 6 in python3.11[13cfa6,58515f579000+240000] likely on CPU 0 (core 0, socket 0)
+  kernel: Code: f7 3d 12 00 e8 ab e8 08 00 e9 0a 3e 12 00 e8 a1 e8 08 00 e9 1b 3e 12 00 48 8b 7e 08 4c 8b 48 f8 83 e7 03 49 83 e1 fc 4c 09 cf <49> 89 31 48 89 7e 08 31 f6 48 89 70 f0 48 8b 35 66 72 41 00 48 8b
+
+CRASH on run 17, 1.20 s into it: killed by SIGSEGV
+  stderr:     if _shadowed_dict(type(entry)) is _sentinel:
+  stderr:        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  stderr:   File "/home/yuming/pytorch-segfault-investigation/.pixi/envs/default/lib/python3.11/inspect.py", line 1794, in _shadowed_dict
+  stderr:     class_dict = dict_attr.__get__(entry)["__dict__"]
+  stderr:                  ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  stderr: KeyError: ((...),)
+  kernel: python[4132]: segfault at 0 ip 00005d156f936fa6 sp 00007ffcd36b52b0 error 6 in python3.11[13cfa6,5d156f8eb000+240000] likely on CPU 0 (core 0, socket 0)
+  kernel: Code: f7 3d 12 00 e8 ab e8 08 00 e9 0a 3e 12 00 e8 a1 e8 08 00 e9 1b 3e 12 00 48 8b 7e 08 4c 8b 48 f8 83 e7 03 49 83 e1 fc 4c 09 cf <49> 89 31 48 89 7e 08 31 f6 48 89 70 f0 48 8b 35 66 72 41 00 48 8b
+
+CRASH on run 18, 1.10 s into it: killed by SIGSEGV
+  stderr:     if _shadowed_dict(type(entry)) is _sentinel:
+  stderr:        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  stderr:   File "/home/yuming/pytorch-segfault-investigation/.pixi/envs/default/lib/python3.11/inspect.py", line 1794, in _shadowed_dict
+  stderr:     class_dict = dict_attr.__get__(entry)["__dict__"]
+  stderr:                  ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  stderr: KeyError: ((...),)
+  kernel: python[4151]: segfault at 0 ip 00005f25dca0efa6 sp 00007ffe5e71b8d0 error 6 in python3.11[13cfa6,5f25dc9c3000+240000] likely on CPU 0 (core 0, socket 0)
+  kernel: Code: f7 3d 12 00 e8 ab e8 08 00 e9 0a 3e 12 00 e8 a1 e8 08 00 e9 1b 3e 12 00 48 8b 7e 08 4c 8b 48 f8 83 e7 03 49 83 e1 fc 4c 09 cf <49> 89 31 48 89 7e 08 31 f6 48 89 70 f0 48 8b 35 66 72 41 00 48 8b
+
+CRASH on run 19, 1.10 s into it: killed by SIGSEGV
+  kernel: python[4177]: segfault at 0 ip 0000654af9ad2f27 sp 00007ffe81802520 error 6 in python3.11[32ff27,654af9894000+240000] likely on CPU 0 (core 0, socket 0)
+  kernel: Code: 00 00 00 e9 7b df fc ff 66 66 2e 0f 1f 84 00 00 00 00 00 53 48 8b 4f f0 48 89 fb 48 8b 57 f8 48 8b 41 08 48 83 e2 fc 83 e0 03 <48> 89 0a 48 09 d0 48 89 41 08 31 c0 48 83 67 f8 01 48 89 47 f0 48
+
+CRASH on run 20, 1.10 s into it: killed by SIGSEGV
+  kernel: python[4191]: segfault at 8 ip 000063f8eaecb235 sp 00007ffc6bccf680 error 4 in python3.11[1ee235,63f8eadce000+240000] likely on CPU 0 (core 0, socket 0)
+  kernel: Code: 00 00 00 0f b6 c2 66 c1 ed 08 48 8b 04 c1 0f b7 ed ff e0 4d 8b 72 f8 48 8b 44 24 08 4c 89 54 24 48 4d 8d 7c 24 02 4c 89 60 38 <49> 8b 46 08 4c 89 f7 ff 90 e0 00 00 00 4c 8b 54 24 48 48 85 c0 0f
+  20 runs clean, 0 MHz
+
+CRASH on run 21, 1.20 s into it: killed by SIGSEGV
+  stderr:     if _shadowed_dict(type(entry)) is _sentinel:
+  stderr:        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  stderr:   File "/home/yuming/pytorch-segfault-investigation/.pixi/envs/default/lib/python3.11/inspect.py", line 1794, in _shadowed_dict
+  stderr:     class_dict = dict_attr.__get__(entry)["__dict__"]
+  stderr:                  ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  stderr: KeyError: ((...),)
+  kernel: python[4203]: segfault at 0 ip 00005f2b68f51fa6 sp 00007ffedd71f080 error 6 in python3.11[13cfa6,5f2b68f06000+240000] likely on CPU 0 (core 0, socket 0)
+  kernel: Code: f7 3d 12 00 e8 ab e8 08 00 e9 0a 3e 12 00 e8 a1 e8 08 00 e9 1b 3e 12 00 48 8b 7e 08 4c 8b 48 f8 83 e7 03 49 83 e1 fc 4c 09 cf <49> 89 31 48 89 7e 08 31 f6 48 89 70 f0 48 8b 35 66 72 41 00 48 8b
+
+CRASH on run 22, 1.10 s into it: killed by SIGSEGV
+  kernel: python[4222]: segfault at ec ip 0000599be13fd228 sp 00007ffc18ad5500 error 4 in python3.11[218228,599be12d6000+240000] likely on CPU 0 (core 0, socket 0)
+  kernel: Code: 67 ff ff ff 66 0f 1f 44 00 00 49 ff 4d 00 0f 85 57 ff ff ff 49 8b 45 08 4c 89 ef ff 50 30 e9 48 ff ff ff 48 8d 05 98 c0 31 00 <49> 39 44 24 08 0f 85 f1 29 f0 ff 48 8d 05 06 ce 32 00 48 39 47 08
