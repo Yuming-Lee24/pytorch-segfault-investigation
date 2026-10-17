@@ -14,7 +14,8 @@ motherboard's voltage supply can only be cleared by testing the replacement CPU 
   20 seconds. Both are clean when held to 5.4 GHz, and the other 22 CPUs are clean.
 - **Current firmware does not fix it.** After the update to BIOS 1.AE0 (microcode
   0x121), CPU 0 crashed in 22 of 22 runs and reset the machine with the same machine
-  check as before: CPU 0, bank 3, status `0xbe000000e1c40400`.
+  check as before: CPU 0, bank 3, status `0xbe000000e1c40400`. It also crashes with
+  "Intel Default Settings" selected in the BIOS and the core voltage on Auto.
 - Four fatal machine-check records have been captured, three on CPU 0 and one on CPU 4,
   all with that status word.
 

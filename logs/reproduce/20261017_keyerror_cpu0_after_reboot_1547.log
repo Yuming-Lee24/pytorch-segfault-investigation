@@ -2,7 +2,7 @@ Run by the user in the terminal after a reboot at 15:47:32 (BIOS 1.AE0, microcod
 Powercap limits read afterwards: long_term 200 W / 56 s, short_term 250 W (unchanged from 15:27).
 BIOS settings for this boot, as reported by the user: "Intel Default Settings" selected;
 CPU Lite Load Control = Normal; CPU Core Voltage = Auto (no offset); CPU Loadline
-Calibration Control = Auto. The CPU Lite Load mode below "Normal" is still to be confirmed.
+Calibration Control = Auto; CPU Lite Load = Mode 17 (not changed by the user).
 
 CPU 0, method keyerror, up to 60 runs
 

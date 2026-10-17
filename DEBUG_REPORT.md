@@ -482,6 +482,7 @@ The update also changed the performance scale the CPU reports (`highest_perf` is
 
 - **The crashes are the same as before.** 20 of the 22 land on `python3.11` instructions that crashed before the update (`0x13cfa6`, `0x1ee235`, `0x218228`, `0x217b22`, `0x1ee29b`); two are at sites not seen before. Seven runs first raised the same impossible `KeyError` as before: the loop catches that exception, so it should never escape.
 - **The reset is the same machine check.** The record reads `cpu 0, apicid 0x0, bank 3, status 0xbe000000e1c40400` (uncorrected, processor context corrupt, MSCOD 0xE1C4, "internal timer error"). The status word is the same as in the three earlier records. Its address, `0x5b872c2bc228`, ends in the same three hex digits as the crash site `python3.11+0x218228`. That suggests it was recorded during the same code, but the record does not name the program, so this is not proven.
+- **It also fails at Intel Default Settings.** After a reboot at 15:47 with "Intel Default Settings" selected in the BIOS, CPU 0 crashed on the first run, 1.2 s in. The voltage settings were checked in the BIOS setup: CPU Core Voltage and CPU Loadline Calibration Control on Auto with no offset, CPU Lite Load Control on Normal, CPU Lite Load on Mode 17 (not changed by the user). As far as is known, MSI's higher Lite Load modes give more voltage, not less, so these settings do not undervolt the CPU.
 - **Not repeated on the new firmware:** CPU 4, and CPU 0 held to 54x. Each run of these tests can reset the machine, and the CPU 0 result already answers the question the update was meant to settle.
 
 Logs: `logs/reproduce/20261017_keyerror_cpu0_after_bios.log`, `logs/reproduce/20261017_firmware_state.txt`, `logs/rootdiag/20261017_152727/mcelog.decoded.txt`. The system journal lost the last 14 crashes in the reset; the script's own log has all 22.
@@ -587,7 +588,7 @@ Ask Intel (or the seller) for a warranty replacement of the Core Ultra 9 285K. P
 
 - **Symptom:** segmentation faults in unrelated programs and spontaneous resets with fatal machine checks, at stock settings with XMP off.
 - **Isolated to two cores at top turbo:** a one-second single-threaded test crashes on CPUs 0 and 4 and on no other core. Both pass when held to 5.4 GHz (§4.9).
-- **Current firmware:** still fails on BIOS 1.AE0 with microcode 0x121, 22 crashes in 22 runs (§4.10).
+- **Current firmware and default settings:** still fails on BIOS 1.AE0 with microcode 0x121, 22 crashes in 22 runs, and crashes again with "Intel Default Settings" selected and no voltage offset (§4.10).
 - **Machine checks:** four fatal records, all bank 3, status `0xbe000000e1c40400` (MCACOD 0x0400, MSCOD 0xE1C4), three on CPU 0 and one on CPU 4 (§4.8.4, §4.9, §4.10). Decoded copies are in `logs/rootdiag/*/mcelog.decoded.txt`.
 - **Other parts cleared:** MemTest86, OCCT and 8-hour stress tests pass; three OS installs, three NVIDIA drivers and three kernels behave the same (§4.11, §5).
 - **Reproducer:** `scripts/reproduce_crash.py`. It needs only Python, no GPU or root.
@@ -695,6 +696,7 @@ Run `sudo scripts/collect_root_diag.sh` before anything else. The machine-check 
 | 2026-10-17 | BIOS updated from 1.A70 to **1.AE0**; microcode 0x118 → **0x121**, ME 19.0.5.1948 → 19.0.5.2175. Turbo ratios and power limits unchanged. |
 | 2026-10-17 15:21 → 15:22 | **CPU 0 crashes in 22 of 22 runs** on the new firmware, then the machine resets. |
 | 2026-10-17 15:27 | Machine-check record names **CPU 0**, same code as all earlier records. Firmware ruled out; CPU replacement recommended. |
+| 2026-10-17 15:48 | With "Intel Default Settings" selected and voltages on Auto, **CPU 0 crashes on the first run**. |
 
 ---
 
