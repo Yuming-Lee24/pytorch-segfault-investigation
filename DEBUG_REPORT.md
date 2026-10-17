@@ -1,9 +1,9 @@
 # PyTorch Segfault Investigation Report
 
-**Date:** 2026-04-17 → 2026-04-21; re-tested 2026-10-05 (§4.6); memory tests 2026-10-05 → 2026-10-06 (§4.7); reproduced and localised 2026-10-07 (§4.8); sharper reproducer 2026-10-10 (§4.9)
+**Date:** 2026-04-17 → 2026-04-21; re-tested 2026-10-05 (§4.6); memory tests 2026-10-05 → 2026-10-06 (§4.7); reproduced and localised 2026-10-07 (§4.8); sharper reproducer 2026-10-10 (§4.9); re-tested on current firmware 2026-10-17 (§4.10)
 **Host:** yuming-MS-7E54 (Ubuntu 24.04.3 LTS)
 **Reporter:** yuming@gmail.com
-**Status (2026-10-10):** **The fault is in the CPU: the two cores that run above 5.5 GHz (Linux CPUs 0 and 4) execute code incorrectly at that speed.** CPU 0 crashes within a second of starting `scripts/reproduce_crash.py`; CPU 4 crashes about once in 20 seconds. Both are clean when held to 5.4 GHz, and the other 22 CPUs are clean. Whether the processor or the 17-month-old firmware is to blame is not yet settled; a BIOS update followed by a two-minute re-test decides it (§5, §6).
+**Status (2026-10-17):** **The processor is faulty: its two cores that run above 5.5 GHz (Linux CPUs 0 and 4) execute code incorrectly at that speed, and current firmware does not fix it.** CPU 0 crashes within a second of starting `scripts/reproduce_crash.py`; CPU 4 crashes about once in 20 seconds. Both are clean when held to 5.4 GHz, and the other 22 CPUs are clean. After updating to BIOS 1.AE0 with microcode 0x121, CPU 0 still crashed in 22 of 22 runs and raised the same machine check (§4.10). The CPU should be replaced under warranty (§6).
 
 ---
 
@@ -14,9 +14,9 @@ Random segmentation faults during PyTorch training, crashes in unrelated CPU-onl
 - **Reproduction.** `scripts/reproduce_crash.py` pins a tight Python loop to one CPU. On CPU 0 it crashed in 11 of 11 one-second runs. On CPU 4 it crashed in 4 of 94. On CPUs 1–3 and 5–7 it passed 900 of 900, and on two E-cores 120 of 120 (§4.9).
 - **Speed dependence.** CPUs 0 and 4 are the only cores allowed above 55x. Held to 54x (5.4 GHz) by keeping two other P-cores busy, CPU 0 passed 70 of 70 and CPU 4 passed 60 of 60 (§4.9).
 - **Nature of the fault.** Four events on CPU 0 are impossible for a working processor, for example a store that faults at an address its operands cannot produce. No memory contents enter those computations, so the RAM is not the cause (§4.8.3).
-- **Resets.** Three resets provoked by these tests each left a machine-check record with the same code: two name CPU 0 and one names CPU 4 (§4.8.4, §4.9).
+- **Resets.** Four resets provoked by these tests each left a machine-check record with the same code: three name CPU 0 and one names CPU 4 (§4.8.4, §4.9, §4.10).
 - **Why it stayed hidden.** A core reaches its top turbo steps only when the machine is lightly loaded. Every stress test loads many cores at once, which holds them at about 5.4 GHz while it is checking results, so every stress test passed. `torture.py`, `pip`, `localedef` and system updates are all light, single-threaded loads (§4.8.6).
-- **Not yet settled.** Two cores failing in the same speed range points more to how the top turbo steps are powered (firmware or board voltage settings) than to one damaged core, but a processor that is marginal at those steps is not excluded. The BIOS is eight releases behind. Update it, re-test, and replace the CPU under warranty if the fault remains (§5, §6).
+- **Current firmware does not fix it.** The BIOS was eight releases behind, which left firmware as a possible cause. On 2026-10-17 it was updated to 1.AE0, which brings microcode 0x121. CPU 0 then crashed in 22 of 22 one-second runs and reset the machine, leaving the same machine-check record as before (§4.10). Replace the CPU under warranty (§6).
 
 The 2026-10-07 work (§4.8) concluded that only CPU 0 was affected. That was wrong: the test used then was too weak to catch CPU 4's lower failure rate. Sections 4.1–4.7 record how the NVIDIA driver, the OS, PyTorch and the RAM were each suspected and cleared between April and October.
 
@@ -460,7 +460,33 @@ Each run is one second of the loop.
 
 Logs: `logs/reproduce/20261010_*.log`. Kernel logs: `logs/kernel/boot_20261010_*.log`.
 
-### 4.10 Consolidated evidence
+### 4.10 Phase 10 — Current firmware does not fix it (2026-10-17)
+
+The BIOS was updated as planned in §6 Step 2, and the reproducer was run on CPU 0 straight after boot.
+
+| Item | Before (§2.6) | After |
+|---|---|---|
+| BIOS | 1.A70 | **1.AE0** (build date 2026-07-21) |
+| CPU microcode | 0x118 | **0x121**, loaded by the BIOS |
+| Intel ME firmware | 19.0.5.1948 | 19.0.5.2175 |
+| Turbo ratios | 57x on CPUs 0 and 4, 55x on CPUs 1–3 and 5–7 | unchanged |
+| Package power limits, memory speed | PL1 200 W, PL2 off; 4800 MT/s | unchanged |
+
+The update also changed the performance scale the CPU reports (`highest_perf` is now 92 on CPUs 0 and 4 and 88 on the other P-cores, against 66 and 64 before). This is a rescaling only. The maximum frequencies are the same.
+
+**Result:**
+
+| CPU | Condition | Crashed / runs |
+|---|---|---|
+| **CPU 0** | alone, top turbo | **22 / 22**, each about 1.1 s into the run, then a spontaneous reset |
+
+- **The crashes are the same as before.** 20 of the 22 land on `python3.11` instructions that crashed before the update (`0x13cfa6`, `0x1ee235`, `0x218228`, `0x217b22`, `0x1ee29b`); two are at sites not seen before. Seven runs first raised the same impossible `KeyError` as before: the loop catches that exception, so it should never escape.
+- **The reset is the same machine check.** The record reads `cpu 0, apicid 0x0, bank 3, status 0xbe000000e1c40400` (uncorrected, processor context corrupt, MSCOD 0xE1C4, "internal timer error"). The status word is the same as in the three earlier records. Its address, `0x5b872c2bc228`, ends in the same three hex digits as the crash site `python3.11+0x218228`. That suggests it was recorded during the same code, but the record does not name the program, so this is not proven.
+- **Not repeated on the new firmware:** CPU 4, and CPU 0 held to 54x. Each run of these tests can reset the machine, and the CPU 0 result already answers the question the update was meant to settle.
+
+Logs: `logs/reproduce/20261017_keyerror_cpu0_after_bios.log`, `logs/reproduce/20261017_firmware_state.txt`, `logs/rootdiag/20261017_152727/mcelog.decoded.txt`. The system journal lost the last 14 crashes in the reset; the script's own log has all 22.
+
+### 4.11 Consolidated evidence
 
 | Crash | GPU involved? | Explainable by driver bug? | Explainable by bad RAM / CPU cache? |
 |---|---|---|---|
@@ -476,8 +502,9 @@ Logs: `logs/reproduce/20261010_*.log`. Kernel logs: `logs/kernel/boot_20261010_*
 | **Pinned `import torch`: 27 failures in 540 runs on CPU 0, none on any other CPU (2026-10-07)** | **No** | **No** | **RAM: no** (same memory, other CPUs clean). CPU: yes |
 | **Two machine-check resets, both recorded on CPU 0 (2026-10-07)** | **No** | **No** | CPU: yes |
 | **`reproduce_crash.py`: CPU 0 crashes 11 of 11, CPU 4 4 of 94, both clean at 54x; machine check recorded on CPU 4 (2026-10-10)** | **No** | **No** | CPU: yes |
+| **Same reproducer on BIOS 1.AE0 / microcode 0x121: CPU 0 crashes 22 of 22, then a machine check on CPU 0 (2026-10-17)** | **No** | **No** | CPU: yes; firmware: no |
 
-Phases 8 and 9 narrow the "hardware" column to one component: only **the CPU mis-executing on cores 0 and 4 at top turbo** explains every row.
+Phases 8 to 10 narrow the "hardware" column to one component: only **the CPU mis-executing on cores 0 and 4 at top turbo** explains every row.
 
 Tests that have passed, for comparison:
 
@@ -503,19 +530,19 @@ Under their sustained all-core load these tests held the P-cores at about 54x, w
 1. **It follows those two cores.** The one-second reproducer crashes on CPUs 0 and 4 and on no other CPU (§4.9.2).
 2. **It depends on speed.** Both cores are clean at 54x, and the six P-cores limited to 55x are clean. Only CPUs 0 and 4 are allowed 56x and 57x (§4.9.2).
 3. **It is the processor, not the data.** Four events on CPU 0 cannot occur on a working processor, and none involves memory contents (§4.8.3).
-4. **The resets are the same fault.** Three captured machine-check records carry the same code, two from CPU 0 and one from CPU 4 (§4.8.4, §4.9.2).
+4. **The resets are the same fault.** Four captured machine-check records carry the same code, three from CPU 0 and one from CPU 4 (§4.8.4, §4.9.2, §4.10).
 5. **It is consistent across the history.** Every kernel crash line that names a CPU names CPU 0 or CPU 4, apart from one deliberate test crash and one follow-on oops (§4.8.3).
+6. **Current firmware does not change it.** On BIOS 1.AE0 with microcode 0x121, CPU 0 crashes in every run and raises the same machine check (§4.10).
 
 CPU 0 is far worse than CPU 4: it fails within a second where CPU 4 takes about twenty.
 
-### Open: why those steps fail
+### Firmware or processor: settled by the update
 
-| Candidate | For | Against |
-|---|---|---|
-| **Firmware or board voltage settings** (BIOS 1.A70, microcode 0x118, ME 19.0.5; loadline and voltage options) | Two cores fail in the same speed range, which points to how the 56x and 57x steps are powered rather than to one damaged core. The BIOS is seventeen months old, and voltage and frequency handling is under firmware control. Intel has since fixed errata with matching symptoms (§4.8.5). | The BIOS voltage settings have not been read. Turbo ratios are at Intel's values and the power limits are at or below them. |
-| **A processor that is marginal at its top steps** | The two cores fail at very different rates, as two physically different cores would. At least one published case of an unstable 285K with clean memory tests was cured by replacing the CPU (`logs/agent_reports/web-arl-instability.md`). | Not yet re-tested on current firmware. |
+Before 2026-10-17 two explanations were open: the 17-month-old firmware powering the top turbo steps badly, or a processor that is marginal at those steps. The update to BIOS 1.AE0 with microcode 0x121 removed the first. CPU 0 failed exactly as before, 22 of 22 runs with the same crash sites and the same machine-check code (§4.10). The turbo ratios, power limits and memory speed read the same before and after the update, so no setting changed in a way that could hide or cause the difference.
 
-These cannot be separated without changing the firmware, the BIOS settings or the hardware (§6). At 57x CPU 0 was requesting 1.32–1.36 V (three samples) against 1.36–1.38 V for CPU 4 (two samples); that is too few to rely on, but it would fit CPU 0 being the worse of the two.
+That leaves the processor. The two cores fail at very different rates, as two physically different cores would, and at least one published case of an unstable 285K with clean memory tests was cured by replacing the CPU (`logs/agent_reports/web-arl-instability.md`).
+
+The motherboard's voltage regulation cannot be excluded from this machine alone. A replacement CPU in the same board, or this CPU in another board, separates the two. At 57x CPU 0 was requesting 1.32–1.36 V (three samples) against 1.36–1.38 V for CPU 4 (two samples); that is too few to rely on, but it would fit CPU 0 being the worse of the two.
 
 ### Ruled out
 
@@ -527,8 +554,11 @@ These cannot be separated without changing the firmware, the BIOS settings or th
 - **Memory overclock.** XMP is off; the RAM runs at JEDEC 4800.
 - **Something special about the boot CPU.** CPU 4 is not the boot CPU and fails too.
 
+- **Outdated firmware.** BIOS 1.AE0 with microcode 0x121 fails the same way (§4.10).
+
 ### Not ruled out
 
+- **Motherboard voltage regulation.** See above; a replacement CPU in this board tests it.
 - **Power supply.** Never swapped. It would have to affect two cores, and only at their top speed under light load.
 
 **Correction kept from earlier versions:** the CPU is a Core Ultra 9 285K (Arrow Lake). The Raptor Lake degradation issue and its extended warranty do not apply.
@@ -539,37 +569,32 @@ These cannot be separated without changing the firmware, the BIOS settings or th
 
 ### Step 1 — Keep work away from the fault (now, reversible)
 
-- **Best: limit the P-core turbo ratio to 54 in the BIOS.** Both failing cores are clean at that speed, and the limit protects every program, including the kernel and background updates. It costs about 5 % in single-thread speed. Check it with the Step 3 commands; both should pass.
+- **Best: limit the P-core turbo ratio to 54 in the BIOS.** Both failing cores are clean at that speed, and the limit protects every program, including the kernel and background updates. It costs about 5 % in single-thread speed. Check it by running the reproducer on CPUs 0 and 4; both should pass. The BIOS update of 2026-10-17 did not set this limit.
 - **Without a reboot: prefix a job with `taskset -c 1-3,5-23`.** This keeps that job off CPUs 0 and 4. The kernel and every other program still use them.
 - **`unattended-upgrade` runs once a day.** Both unprovoked resets of 2026-10-06 and 2026-10-07 happened while it was running, and it segfaulted on CPU 0 on 2026-10-10. Expect more unless the ratio limit is in place.
 
-### Step 2 — Update the firmware
+### Steps 2 and 3 — Update the firmware and re-test (done 2026-10-17)
 
-1. Photograph the BIOS settings first (OC, CPU and voltage pages). The update resets them, and they are the only record of the current voltage configuration.
-2. Flash **7E54v1AE0** (2026-08-03) from MSI's support page for the PRO Z890-S WIFI, using M-FLASH inside the BIOS setup, not from Linux.
-3. Load defaults. Confirm XMP and "200S Boost" are off and the CPU is on Intel Default Settings.
-4. In Linux, record `journalctl -k | grep microcode` and `cat /sys/class/mei/mei0/fw_ver`.
-
-Flashing carries some risk: this board has no BIOS flashback button, and a reset during the flash could leave it unbootable. The risk is small, because the machine sat in the UEFI MemTest86 environment for nearly 23 hours without a reset, and all the resets have happened in Linux.
-
-### Step 3 — Re-run the reproducer (about two minutes)
+The BIOS was updated to 1.AE0 (microcode 0x121), and the reproducer was run again. CPU 0 still crashed in every run (§4.10), which is the "firmware was not the cause" outcome. To repeat the test:
 
 ```bash
 .pixi/envs/default/bin/python scripts/reproduce_crash.py --cpu 0 --max 60
-.pixi/envs/default/bin/python scripts/reproduce_crash.py --cpu 4 --max 60 --keep-going
 ```
 
-Run them with nothing else heavy running. They can reset the machine if the fault is still present.
+### Step 4 — Replace the CPU under warranty (next)
 
-| Result | Meaning |
-|---|---|
-| CPU 0 crashes | Firmware was not the cause. Go to Step 4. |
-| Both pass, at about 5600 MHz or more | Repeat after a reboot, with `--max 300` on each. Two clean sets mean the firmware fixed it. Run `sudo scripts/collect_root_diag.sh` and compare the voltage the two cores request at 57x with the earlier captures. |
-| The script says the pass "proves nothing" | The core never reached its top speed. Close other programs and run it again. |
+Ask Intel (or the seller) for a warranty replacement of the Core Ultra 9 285K. Points for the claim:
 
-### Step 4 — Replace the CPU
+- **Symptom:** segmentation faults in unrelated programs and spontaneous resets with fatal machine checks, at stock settings with XMP off.
+- **Isolated to two cores at top turbo:** a one-second single-threaded test crashes on CPUs 0 and 4 and on no other core. Both pass when held to 5.4 GHz (§4.9).
+- **Current firmware:** still fails on BIOS 1.AE0 with microcode 0x121, 22 crashes in 22 runs (§4.10).
+- **Machine checks:** four fatal records, all bank 3, status `0xbe000000e1c40400` (MCACOD 0x0400, MSCOD 0xE1C4), three on CPU 0 and one on CPU 4 (§4.8.4, §4.9, §4.10). Decoded copies are in `logs/rootdiag/*/mcelog.decoded.txt`.
+- **Other parts cleared:** MemTest86, OCCT and 8-hour stress tests pass; three OS installs, three NVIDIA drivers and three kernels behave the same (§4.11, §5).
+- **Reproducer:** `scripts/reproduce_crash.py`. It needs only Python, no GPU or root.
 
-If the fault remains on current firmware at default settings, ask Intel for a warranty replacement. The useful evidence is §4.8 and §4.9 of this report, the three decoded machine-check records and the reproducer. If another Z890 board can be borrowed, trying the CPU in it first would separate the CPU from the board.
+§1 summarises the whole investigation. `dmidecode.txt` in the root captures holds board and DIMM serial numbers; leave it out of anything sent outside.
+
+Until the replacement arrives, keep the measures of Step 1 in place. When the new CPU is fitted, run the reproducer on each P-core (`--cpu 0` to `--cpu 7`, `--max 300`), with nothing else running. If a core still fails, suspect the board.
 
 ### After any spontaneous reset
 
@@ -604,16 +629,16 @@ Run `sudo scripts/collect_root_diag.sh` before anything else. The machine-check 
 | `~/pytorch-segfault-investigation/0510-test-result/occt-screenshot/OCCT-26106-123526.png` | OCCT Memory, 1 h, no errors |
 | `~/pytorch-segfault-investigation/0510-test-result/occt-screenshot/OCCT-26106-013836.png` | OCCT Memory, second 1 h run, no errors |
 | `scripts/reproduce_crash.py` | **The reproducer** (§4.9). One-second runs pinned to one CPU; CPU 0 crashes within a second |
-| `logs/reproduce/20261010_*.log` | Its results per CPU and condition |
+| `logs/reproduce/20261010_*.log`, `20261017_*` | Its results per CPU and condition, and the firmware state after the BIOS update |
 | `scripts/core_probe.py` | Earlier per-CPU test and self-check (§4.8.2). CPU only, no root |
 | `scripts/cpu_conditions.sh` | Compares conditions on one CPU in small interleaved blocks (alone, one or two other P-cores busy, store bypass disabled) |
 | `scripts/run_torture_loop.sh` | Runs `torture.py` repeatedly, optionally confined to a CPU list, and records how each run ended |
 | `scripts/collect_root_diag.sh` | Root-only capture: machine-check buffer, BERT record, pstore, MSRs, turbostat. Run it straight after any spontaneous reset |
-| `scripts/decode_mcelog.py`, `scripts/decode_bert.py` | Decoders for the two captures above. `decode_mcelog.py` has been run on two real records |
+| `scripts/decode_mcelog.py`, `scripts/decode_bert.py` | Decoders for the two captures above. `decode_mcelog.py` has been run on four real records |
 | `logs/core_probe/*.tsv` | Every per-CPU test result of 2026-10-07 |
 | `logs/forensics/spawn_crash_*.txt` | `gdb` summaries of five CPU 0 crash cores |
 | `logs/kernel/boot_*_kernel.log` | Kernel logs of four boots of 2026-10-07 (12:38, 13:23, 14:09, 15:20), including the oops |
-| `logs/rootdiag/20261007_133822/`, `…_143159/`, `…_152153/`, `20261010_160907/` | Root captures. The last three each hold a machine-check record (`mcelog.decoded.txt`): CPU 0, CPU 0, CPU 4. `dmidecode.txt` contains board and DIMM serial numbers |
+| `logs/rootdiag/20261007_133822/`, `…_143159/`, `…_152153/`, `20261010_160907/`, `20261017_152727/` | Root captures. The last four each hold a machine-check record (`mcelog.decoded.txt`): CPU 0, CPU 0, CPU 4, CPU 0. `dmidecode.txt` contains board and DIMM serial numbers |
 | `logs/agent_reports/*.md` | Supporting analyses with sources: crash forensics, journal timeline, firmware and errata research, MemTest86/OCCT facts. The `review-*.md` files are five independent attempts to refute the Phase 8 conclusions; they hold the checks behind several statements in §4.8.3 and §5 |
 | `logs/torture/summary_20261007_*.tsv` | The runs confined to CPUs 1–23. Run #9's summary has no row because the machine hung first; its log is `logs/torture/20261007_130343.log` |
 | `~/pytorch-segfault-investigation/logs/gpu_burn/*` | 8-hour gpu-burn logs (Ubuntu 22 era) |
@@ -667,22 +692,26 @@ Run `sudo scripts/collect_root_diag.sh` before anything else. The machine-check 
 | 2026-10-10 16:02 | **CPU 0 crashes in 11 of 11 runs**, each within a second. Held to 54x it passes 70 of 70. |
 | 2026-10-10 16:05 | Spontaneous reset during a CPU 4 run. Machine-check record names **CPU 4**, same code as the CPU 0 records. |
 | 2026-10-10 16:09 → 16:24 | CPU 4 held to 54x passes 60 of 60. CPUs 1, 2, 3, 5, 6, 7 pass 120 of 120 each at 55x. |
+| 2026-10-17 | BIOS updated from 1.A70 to **1.AE0**; microcode 0x118 → **0x121**, ME 19.0.5.1948 → 19.0.5.2175. Turbo ratios and power limits unchanged. |
+| 2026-10-17 15:21 → 15:22 | **CPU 0 crashes in 22 of 22 runs** on the new firmware, then the machine resets. |
+| 2026-10-17 15:27 | Machine-check record names **CPU 0**, same code as all earlier records. Firmware ruled out; CPU replacement recommended. |
 
 ---
 
 ## 10. Open Questions
 
-1. **Does the fault remain on current firmware?** This decides between a firmware or settings cause and a hardware one (§6 Steps 2–4).
+1. **Is the board involved?** A replacement CPU in this board settles it (§5, §6 Step 4).
 2. **What are the BIOS voltage settings?** They cannot be read from Linux.
 3. **Does 56x fail, or only 57x?** Only "54x and 55x pass, top turbo fails" is known. Setting the ratio limit to 55 and then 56 in the BIOS would show it.
 4. **Does another machine with the same CPU, board and BIOS fail the same test?** If it does, the cause is firmware or settings, not this processor.
 5. **Is one specific operation at fault?** Most crashes are on a code path that makes a 16-byte access across a cache-line boundary (§4.8.3). The reproducer exercises that path but does not isolate the access.
 
 **Resolved:**
+- ~~Does the fault remain on current firmware?~~ — Yes. BIOS 1.AE0 with microcode 0x121 fails the same way (§4.10).
 - ~~Does the fault follow a specific CPU core?~~ — It follows two: CPUs 0 and 4, the only cores allowed above 55x (§4.9).
 - ~~Is the fault confined to speeds above 5.4 GHz?~~ — Yes for both cores (§4.9.2).
 - ~~Which CPU raised the unprovoked machine checks?~~ — Their records were lost, but CPU 4 has now been recorded raising the same one, and the busy thread was on CPU 4 shortly before the first (§4.8.4).
-- ~~Is the CPU at fault?~~ — The fault is in how it executes on those two cores. Whether the processor or its firmware is to blame is open question 1.
+- ~~Is the CPU at fault?~~ — Yes. It mis-executes on those two cores, and current firmware does not change that (§4.10).
 - ~~Does reseating or isolating DIMMs matter?~~ — No longer relevant; RAM is cleared (§5).
 - ~~Does a memory test find errors?~~ — No. MemTest86 V11.7 ran 4 passes with 0 errors, and OCCT Memory passed twice (§4.7).
 - ~~Driver 590 bug~~ — driver 580 crashes identically (Phase 5).
