@@ -1,0 +1,12 @@
+Notes on 20261017_161053.log (written by Claude from the logs, 2026-10-17 16:2x)
+
+- Started 16:10:53 by the user, most likely as `taskset -c 0 .pixi/envs/default/bin/python torture.py`
+  (the exact command was not captured). BIOS 1.AE0, microcode 0x121, Intel Default Settings.
+- Last line ">>> step 844"; last stats line "step 800 ... elapsed 178s" (GPU 97 %, 61 C, 333 W).
+  The file ends in NUL bytes: data the filesystem had allocated but not written when the machine stopped.
+  The file's mtime is 16:14.
+- The machine hung and restarted. The system journal of that boot stops at 16:10:16 (not flushed).
+- Next boot, 16:15:23: "mce: [Hardware Error]: Machine check events logged", BERT 1 record.
+  That boot's journal ends at 16:15:27, and the machine booted again at 16:17:23.
+  The second restart left no machine-check message, and the record from 16:15 was not captured
+  (collect_root_diag.sh was not run in that boot), so it is lost.
