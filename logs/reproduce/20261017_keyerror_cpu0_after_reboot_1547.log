@@ -1,0 +1,11 @@
+Run by the user in the terminal after a reboot at 15:47:32 (BIOS 1.AE0, microcode 0x121).
+Powercap limits read afterwards: long_term 200 W / 56 s, short_term 250 W (unchanged from 15:27).
+BIOS settings for this boot, as reported by the user: "Intel Default Settings" selected;
+CPU Lite Load Control = Normal; CPU Core Voltage = Auto (no offset); CPU Loadline
+Calibration Control = Auto; CPU Lite Load = Mode 17 (not changed by the user).
+
+CPU 0, method keyerror, up to 60 runs
+
+CRASH on run 1, 1.20 s into it: killed by SIGSEGV
+  kernel: python[3451]: segfault at 20 ip 00005c4830e548a8 sp 00007ffd988ef5d0 error 4 in python3.11[1f38a8,5c4830d52000+240000] likely on CPU 0 (core 0, socket 0)
+  kernel: Code: 8b 44 24 08 49 89 ea 48 83 c0 48 48 89 44 24 18 48 8b 74 24 40 4c 89 f8 48 8b 5c 24 08 4d 89 d6 48 29 f0 48 d1 f8 44 8d 60 ff <4c> 8b 43 20 49 8b 48 28 48 8b 71 10 48 8d 41 20 48 8d 14 30 48 83

@@ -1,0 +1,38 @@
+Copied from the user's terminal (tab 0) on 2026-10-17, boot of 15:47:32. BIOS 1.AE0, microcode 0x121,
+Intel Default Settings, CPU Lite Load Mode 17, core voltage Auto. Typos in the commands are the user's.
+
+Summary of the runs (from the terminal; script output lines quoted):
+
+1. reproduce_crash.py --cpu 0 --max 60
+   CRASH on run 1, 1.10 s into it: killed by SIGSEGV (GPF in python3.11[218228])
+2. reproduce_crash.py --cpu 0 --max 60 --keep-going
+   17 of 17 runs failed, then stopped with Ctrl+C. 15 x SIGSEGV, 2 x "exit status 1" with
+   "SystemError: <class 'SystemError'> returned a result with an exception set" 0.10 s in.
+   Two of the SIGSEGV runs first printed an escaped "KeyError: ((...),)".
+3. reproduce_crash.py --cpu 4 --max 60 --keep-going
+   CRASH on run 8 (SIGSEGV, python3.11[1044a8]), CRASH on run 10 (SIGSEGV, python3.11[218228])
+   "2 crashes in 60 runs (69 s), CPU 4 at about 5571 MHz"
+4. reproduce_crash.py --cpu 4 --max 60 --keep-going --method import
+   "No crash in 60 runs (65 s), CPU 4 at about 5626 MHz"
+
+Note: the "N runs clean" progress lines are printed every 10 runs whether or not any crashed.
+
+Kernel log of this boot (journalctl -k), every user-space fault:
+2026-10-17T15:56:48+02:00 yuming-MS-7E54 kernel: traps: python[3682] general protection fault ip:636c3dfe4228 sp:7ffe8480c860 error:0 in python3.11[218228,636c3debd000+240000]
+2026-10-17T15:57:49+02:00 yuming-MS-7E54 kernel: python[3753]: segfault at 8 ip 000062b69b35b235 sp 00007ffcc9c927c0 error 4 in python3.11[1ee235,62b69b25e000+240000] likely on CPU 0 (core 0, socket 0)
+2026-10-17T15:57:51+02:00 yuming-MS-7E54 kernel: traps: python[3765] general protection fault ip:5c0022116228 sp:7ffd8a7b5990 error:0 in python3.11[218228,5c0021fef000+240000]
+2026-10-17T15:57:53+02:00 yuming-MS-7E54 kernel: python[3783]: segfault at 8 ip 00005ef46f639235 sp 00007ffc88203eb0 error 4 in python3.11[1ee235,5ef46f53c000+240000] likely on CPU 0 (core 0, socket 0)
+2026-10-17T15:57:55+02:00 yuming-MS-7E54 kernel: python[3793]: segfault at 0 ip 0000621a66d53fa6 sp 00007fff044b7cb0 error 6 in python3.11[13cfa6,621a66d08000+240000] likely on CPU 0 (core 0, socket 0)
+2026-10-17T15:57:57+02:00 yuming-MS-7E54 kernel: traps: python[3803] general protection fault ip:652ba46aa56c sp:7ffc150f6fd0 error:0 in python3.11[1ff56c,652ba459c000+240000]
+2026-10-17T15:58:00+02:00 yuming-MS-7E54 kernel: python[3813]: segfault at 128 ip 0000627c3880c4a4 sp 00007ffd680ffa90 error 4 in python3.11[2a64a4,627c38657000+240000] likely on CPU 0 (core 0, socket 0)
+2026-10-17T15:58:02+02:00 yuming-MS-7E54 kernel: python[3823]: segfault at 10 ip 000055599b590228 sp 00007fff4f384650 error 4 in python3.11[218228,55599b469000+240000] likely on CPU 0 (core 0, socket 0)
+2026-10-17T15:58:04+02:00 yuming-MS-7E54 kernel: traps: python[3840] general protection fault ip:5be708bac6c6 sp:7ffdf727b3b0 error:0 in python3.11[1e06c6,5be708abd000+240000]
+2026-10-17T15:58:06+02:00 yuming-MS-7E54 kernel: traps: python[3850] general protection fault ip:5b3ab5695228 sp:7ffd6eac6980 error:0 in python3.11[218228,5b3ab556e000+240000]
+2026-10-17T15:58:08+02:00 yuming-MS-7E54 kernel: python[3860]: segfault at 752e00000009 ip 000055bdd6e67228 sp 00007ffd9e676450 error 4 in python3.11[218228,55bdd6d40000+240000] likely on CPU 0 (core 0, socket 0)
+2026-10-17T15:58:10+02:00 yuming-MS-7E54 kernel: python[3870]: segfault at 70bb00000009 ip 00005efa86e74228 sp 00007ffff5164f40 error 4 in python3.11[218228,5efa86d4d000+240000] likely on CPU 0 (core 0, socket 0)
+2026-10-17T15:58:13+02:00 yuming-MS-7E54 kernel: traps: python[3880] general protection fault ip:590ab00f8228 sp:7ffda8abbbf0 error:0 in python3.11[218228,590aaffd1000+240000]
+2026-10-17T15:58:15+02:00 yuming-MS-7E54 kernel: traps: python[3890] general protection fault ip:56858ef21560 sp:7ffc06ea9f10 error:0 in python3.11[1ff560,56858ee13000+240000]
+2026-10-17T15:58:17+02:00 yuming-MS-7E54 kernel: python[3900]: segfault at 0 ip 000063d035c22fa6 sp 00007fffa0785c90 error 6 in python3.11[13cfa6,63d035bd7000+240000] likely on CPU 0 (core 0, socket 0)
+2026-10-17T15:58:20+02:00 yuming-MS-7E54 kernel: python[3914]: segfault at 8 ip 0000618215ad7235 sp 00007ffd3a095860 error 4 in python3.11[1ee235,6182159da000+240000] likely on CPU 0 (core 0, socket 0)
+2026-10-17T15:58:37+02:00 yuming-MS-7E54 kernel: python[3956]: segfault at 0 ip 0000645bbebd24a8 sp 00007ffe44e7aa70 error 6 in python3.11[1044a8,645bbebbf000+240000] likely on CPU 4 (core 24, socket 0)
+2026-10-17T15:58:40+02:00 yuming-MS-7E54 kernel: python[3969]: segfault at 3c ip 0000560e0f3a0228 sp 00007ffc03807370 error 4 in python3.11[218228,560e0f279000+240000] likely on CPU 4 (core 24, socket 0)

@@ -3,18 +3,24 @@
 Investigation of intermittent segmentation faults during PyTorch training, crashes in
 unrelated programs and spontaneous resets on an RTX 4090 / Core Ultra 9 285K workstation.
 
-## Current status (2026-10-10)
+## Current status (2026-10-17)
 
-**The fault is in the CPU.** Its two fastest cores (Linux CPUs 0 and 4) execute code
-incorrectly when they run in their top turbo steps, above 5.5 GHz. The NVIDIA driver, the
-OS, PyTorch and the RAM are cleared.
+**The CPU is faulty and should be replaced under warranty.** Its two fastest cores (Linux
+CPUs 0 and 4) execute code incorrectly when they run in their top turbo steps, above
+5.5 GHz. The NVIDIA driver, the OS, PyTorch, the RAM and the firmware are cleared. The
+motherboard's voltage supply can only be cleared by testing the replacement CPU in it.
 
 - CPU 0 crashes within a second of starting the reproducer. CPU 4 crashes about once in
   20 seconds. Both are clean when held to 5.4 GHz, and the other 22 CPUs are clean.
-- Not yet settled: whether the processor or the 17-month-old BIOS is to blame. Update the
-  BIOS, re-run the reproducer, and replace the CPU if the fault remains.
+- **Current firmware does not fix it.** After the update to BIOS 1.AE0 (microcode
+  0x121), CPU 0 crashed in 22 of 22 runs and reset the machine with the same machine
+  check as before: CPU 0, bank 3, status `0xbe000000e1c40400`. It also crashes with
+  "Intel Default Settings" selected in the BIOS and the core voltage on Auto.
+- Four fatal machine-check records have been captured, three on CPU 0 and one on CPU 4,
+  all with that status word.
 
-Full evidence and the step-by-step plan are in [DEBUG_REPORT.md](DEBUG_REPORT.md), §4.8, §4.9, §5 and §6.
+For the warranty claim, see [DEBUG_REPORT.md](DEBUG_REPORT.md) §6 Step 4 (summary of the
+evidence), §4.10 (the re-test on current firmware) and §1 (the whole investigation).
 
 ## Reproduce it
 
@@ -54,7 +60,7 @@ taskset -c 1-3,5-23 pixi run python torture.py
 | [logs/reproduce/](logs/reproduce/) | Reproducer results per CPU and condition |
 | [logs/core_probe/](logs/core_probe/) | Earlier per-CPU test results |
 | [logs/forensics/](logs/forensics/) | `gdb` summaries of crash cores |
-| [logs/rootdiag/](logs/rootdiag/) | Root captures, including the decoded machine-check records |
+| [logs/rootdiag/](logs/rootdiag/) | Root captures, including the four decoded machine-check records |
 | [logs/kernel/](logs/kernel/) | Kernel logs of 2026-10-07 |
 | [logs/agent_reports/](logs/agent_reports/) | Supporting analyses and firmware research, with sources |
 | [logs/torture/](logs/torture/) | `torture.py` runs |
