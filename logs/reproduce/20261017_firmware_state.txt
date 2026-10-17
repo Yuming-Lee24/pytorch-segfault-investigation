@@ -1,0 +1,15 @@
+Captured 2026-10-17T15:21:25+02:00 after the BIOS update
+BIOS: 1.AE0 (07/21/2026), board PRO Z890-S WIFI (MS-7E54)
+Microcode: 0x121
+Kernel: 6.14.0-27-generic
+Governor/EPP (cpu0): powersave/performance, no_turbo=0
+cpu0 highest_perf=92 cpuinfo_max_freq=5700000
+cpu1 highest_perf=88 cpuinfo_max_freq=5500000
+cpu2 highest_perf=88 cpuinfo_max_freq=5500000
+cpu3 highest_perf=88 cpuinfo_max_freq=5500000
+cpu4 highest_perf=92 cpuinfo_max_freq=5700000
+cpu5 highest_perf=88 cpuinfo_max_freq=5500000
+cpu6 highest_perf=88 cpuinfo_max_freq=5500000
+cpu7 highest_perf=88 cpuinfo_max_freq=5500000
+cpu8 highest_perf=65 cpuinfo_max_freq=4700000
+cpu16 highest_perf=65 cpuinfo_max_freq=4700000
